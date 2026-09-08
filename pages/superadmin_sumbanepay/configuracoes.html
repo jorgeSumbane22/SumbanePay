@@ -1,0 +1,1905 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Configurações — SumbanePay SuperAdmin</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* ============================================================
+           ROOT VARIABLES - LIGHT MODE
+           ============================================================ */
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 20px rgba(16, 63, 55, 0.06);
+            --sz-shadow-hover: 0 12px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-info: #0dcaf0;
+            --sz-purple: #9b59b6;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+
+        /* ============================================================
+           DARK MODE
+           ============================================================ */
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --sz-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+            --sz-info: #7cbdda;
+            --sz-purple: #b07cc6;
+        }
+
+        /* ============================================================
+           BASE
+           ============================================================ */
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .font-display { font-family: 'Playfair Display', 'Georgia', serif; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sz-paper); }
+        ::-webkit-scrollbar-thumb { background: var(--sz-green); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sz-green-light); }
+
+        /* ============================================================
+           LAYOUT
+           ============================================================ */
+        .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+        .app-row { display: flex; flex: 1; }
+        .app-main { display: flex; flex-direction: column; flex: 1; min-height: 100vh; }
+        .app-content { flex: 1; padding-bottom: 1rem; }
+        .app-footer { flex-shrink: 0; width: 100%; }
+
+        /* ============================================================
+           BRAND
+           ============================================================ */
+        .brand {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); transform: translateY(-1px); }
+        .brand b { color: var(--sz-coral); }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+        }
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(23, 107, 91, 0.4);
+        }
+
+        /* ============================================================
+           BOTÕES
+           ============================================================ */
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz i { transition: var(--transition); }
+        .btn-sz:hover i { transform: translateX(4px); }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+
+        .btn-outline-danger-sz {
+            border: 2px solid var(--sz-danger);
+            color: var(--sz-danger);
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-danger-sz:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-sm-sz {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            color: var(--sz-muted);
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm-sz:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+        }
+        .btn-sm-sz.success:hover { background: var(--sz-green); color: #fff; border-color: var(--sz-green); }
+        .btn-sm-sz.danger:hover { background: var(--sz-danger); color: #fff; border-color: var(--sz-danger); }
+        .btn-sm-sz.warning:hover { background: var(--sz-warning); color: var(--sz-dark); border-color: var(--sz-warning); }
+        .btn-sm-sz.info:hover { background: var(--sz-info); color: #fff; border-color: var(--sz-info); }
+        .btn-sm-sz.purple:hover { background: var(--sz-purple); color: #fff; border-color: var(--sz-purple); }
+        .btn-sm-sz.gold:hover { background: var(--sz-gold); color: var(--sz-dark); border-color: var(--sz-gold); }
+
+        /* ============================================================
+           EYEBROW
+           ============================================================ */
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           SIDEBAR
+           ============================================================ */
+        .sidebar {
+            background: var(--sz-white);
+            min-height: 100vh;
+            border-right: 1px solid var(--sz-line);
+            position: sticky;
+            top: 0;
+            padding: 1.5rem 1rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            max-height: 100vh;
+            overflow-y: auto;
+            width: 260px;
+            flex-shrink: 0;
+        }
+        .sidebar .nav-link {
+            color: var(--sz-muted);
+            border-radius: 8px;
+            margin: 0.15rem 0;
+            padding: 10px 14px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i {
+            width: 22px;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+        .sidebar .nav-link .badge-nav {
+            margin-left: auto;
+            background: var(--sz-coral);
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 1px 8px;
+            border-radius: 12px;
+        }
+
+        [data-theme="dark"] .sidebar {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .sidebar .nav-link { color: #b8c5bf !important; }
+        [data-theme="dark"] .sidebar .nav-link i { color: #8a9a92 !important; }
+        [data-theme="dark"] .sidebar .nav-link:hover,
+        [data-theme="dark"] .sidebar .nav-link.active {
+            background: rgba(42, 157, 143, 0.15) !important;
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .sidebar .nav-link:hover i,
+        [data-theme="dark"] .sidebar .nav-link.active i { color: #f0c97a !important; }
+        [data-theme="dark"] .sidebar .brand { color: #f0efe8 !important; }
+        [data-theme="dark"] .sidebar .brand b { color: #f28a71 !important; }
+        [data-theme="dark"] .sidebar .brand .logo-mark {
+            background: linear-gradient(135deg, #2a9d8f, #1a6b5e) !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-secondary {
+            color: #b8c5bf !important;
+            border-color: #42675b !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-secondary:hover {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-danger-sz {
+            color: #f06a7a !important;
+            border-color: #f06a7a !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-danger-sz:hover {
+            background: #f06a7a !important;
+            color: #0d1c17 !important;
+        }
+
+        /* ============================================================
+           TOP NAV
+           ============================================================ */
+        .top-nav {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 12px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.3;
+        }
+
+        .top-nav .breadcrumb-premium {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--sz-muted);
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item .separator {
+            color: var(--sz-muted-light);
+            font-size: 0.6rem;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item.current {
+            color: var(--sz-ink);
+            font-weight: 600;
+            padding: 4px 8px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item .home-icon {
+            color: var(--sz-green);
+            font-size: 1.1rem;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            padding: 3px 12px 3px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(23, 107, 91, 0.15);
+        }
+        .live-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        [data-theme="dark"] .live-badge {
+            background: rgba(42, 157, 143, 0.15);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.2);
+        }
+        [data-theme="dark"] .live-badge .dot { background: var(--sz-green-light); }
+
+        [data-theme="dark"] .top-nav {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
+            color: #f0c97a !important;
+            background: rgba(42, 157, 143, 0.15) !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item.current {
+            color: #f0efe8 !important;
+            background: rgba(42, 157, 143, 0.15) !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item .separator {
+            color: #6a8a7a !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item .home-icon {
+            color: #2a9d8f !important;
+        }
+
+        .top-nav .user-info-premium {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .top-nav .user-info-premium .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 2px 12px rgba(23, 107, 91, 0.25);
+            transition: var(--transition);
+            cursor: pointer;
+            user-select: none;
+        }
+        .top-nav .user-info-premium .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(23, 107, 91, 0.35);
+        }
+        .top-nav .user-info-premium .user-details {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+            text-align: right;
+        }
+        .top-nav .user-info-premium .user-details .user-name {
+            font-weight: 600;
+            color: var(--sz-ink);
+            font-size: 0.9rem;
+        }
+        .top-nav .user-info-premium .user-details .user-role {
+            font-size: 0.65rem;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .top-nav .user-info-premium .btn-icon-premium {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-muted);
+            cursor: pointer;
+            position: relative;
+            font-size: 1.1rem;
+        }
+        .top-nav .user-info-premium .btn-icon-premium:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+            transform: translateY(-1px);
+        }
+
+        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-name {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-role {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .top-nav .user-info-premium .btn-icon-premium {
+            border-color: #2a4a3e !important;
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .top-nav .user-info-premium .btn-icon-premium:hover {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: #f0c97a !important;
+        }
+
+        /* ============================================================
+           SETTINGS SECTIONS
+           ============================================================ */
+        .settings-section {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            border: 1px solid var(--sz-line);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+        .settings-section:hover {
+            box-shadow: var(--sz-shadow-hover);
+        }
+        .settings-section .section-title {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1.05rem;
+            color: var(--sz-ink);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .settings-section .section-title i {
+            color: var(--sz-gold);
+            font-size: 1.2rem;
+        }
+        .settings-section .form-label {
+            color: var(--sz-ink);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .settings-section .form-control,
+        .settings-section .form-select {
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            padding: 8px 14px;
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            transition: var(--transition);
+        }
+        .settings-section .form-control:focus,
+        .settings-section .form-select:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
+            outline: none;
+        }
+        .settings-section .form-control::placeholder {
+            color: var(--sz-muted-light);
+        }
+        .settings-section .form-check-input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--sz-green);
+            cursor: pointer;
+        }
+        .settings-section .form-check-label {
+            color: var(--sz-ink);
+            font-size: 0.9rem;
+        }
+
+        [data-theme="dark"] .settings-section {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .settings-section .section-title {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .settings-section .form-label {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .settings-section .form-control,
+        [data-theme="dark"] .settings-section .form-select {
+            background: #162f27 !important;
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .settings-section .form-control:focus,
+        [data-theme="dark"] .settings-section .form-select:focus {
+            border-color: #f0c97a !important;
+            box-shadow: 0 0 0 3px rgba(240, 201, 122, 0.15) !important;
+        }
+        [data-theme="dark"] .settings-section .form-control::placeholder {
+            color: #6a8a7a !important;
+        }
+        [data-theme="dark"] .settings-section .form-check-label {
+            color: #f0efe8 !important;
+        }
+
+        /* ============================================================
+           QUICK ACTIONS
+           ============================================================ */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .quick-action-item {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            padding: 1.2rem 0.75rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--sz-muted);
+            box-shadow: var(--sz-shadow);
+        }
+        .quick-action-item:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-green);
+            color: var(--sz-ink);
+        }
+        .quick-action-item i {
+            font-size: 1.6rem;
+            color: var(--sz-green);
+            display: block;
+            margin-bottom: 6px;
+            transition: var(--transition);
+        }
+        .quick-action-item:hover i {
+            transform: scale(1.1);
+            color: var(--sz-coral);
+        }
+        .quick-action-item span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        [data-theme="dark"] .quick-action-item {
+            background: var(--sz-white);
+            border-color: #2a4a3e;
+            color: #b8c5bf;
+        }
+        [data-theme="dark"] .quick-action-item:hover {
+            border-color: #f0c97a;
+            color: #f0efe8;
+        }
+        [data-theme="dark"] .quick-action-item i { color: #2a9d8f; }
+        [data-theme="dark"] .quick-action-item:hover i { color: #f28a71; }
+
+        /* ============================================================
+           CARD
+           ============================================================ */
+        .card-sz {
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            background: var(--sz-white);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        .card-sz:hover { box-shadow: var(--sz-shadow-hover); }
+        .card-sz .card-header-custom {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .card-sz .card-header-custom h5 {
+            margin: 0;
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1rem;
+            color: var(--sz-ink);
+        }
+
+        [data-theme="dark"] .card-sz {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .card-sz .card-header-custom {
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .card-sz .card-header-custom h5 {
+            color: #f0efe8 !important;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .app-footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 0.75rem 2rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        .app-footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .app-footer .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-footer .footer-brand .footer-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+        }
+        .app-footer .footer-brand .footer-company {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .app-footer .footer-brand .footer-company b { color: var(--sz-coral); }
+        .app-footer .footer-brand .footer-version {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            background: var(--sz-paper);
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+        .app-footer .footer-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .app-footer .footer-user-info .user-data-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-data-item i {
+            color: var(--sz-green);
+            font-size: 0.85rem;
+            width: 16px;
+            text-align: center;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value {
+            color: var(--sz-ink);
+            font-weight: 500;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value.email-value {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        .app-footer .footer-user-info .user-status .status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        [data-theme="dark"] .app-footer {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .app-footer .footer-brand .footer-company {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-brand .footer-version {
+            background: #162f27 !important;
+            color: #6a8a7a !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item i {
+            color: #2a9d8f !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value.email-value {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status {
+            background: rgba(42, 157, 143, 0.12);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.15);
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status .status-dot {
+            background: var(--sz-green-light);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .sidebar { width: 100%; min-height: auto; position: relative; padding: 1rem; max-height: none; }
+            .top-nav { padding: 12px 16px; }
+            .app-footer .footer-content { flex-direction: column; text-align: center; }
+            .app-footer .footer-user-info { justify-content: center; }
+        }
+        @media (max-width: 768px) {
+            .top-nav { padding: 10px 14px; }
+            .top-nav .breadcrumb-premium { font-size: 0.75rem; }
+            .top-nav .user-info-premium .user-details .user-name { font-size: 0.8rem; }
+            .top-nav .user-info-premium .user-details .user-role { display: none; }
+            .top-nav .user-info-premium .user-avatar { width: 32px; height: 32px; font-size: 0.8rem; }
+            .settings-section { padding: 1rem; }
+            .app-footer { padding: 0.5rem 1rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.65rem; }
+            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.6rem; }
+            .quick-actions { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 425px) {
+            .brand { font-size: 1rem; }
+            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
+            .top-nav .breadcrumb-premium { font-size: 0.65rem; }
+            .top-nav .breadcrumb-premium .breadcrumb-item .separator { display: none; }
+            .top-nav .user-info-premium .user-avatar { width: 28px; height: 28px; font-size: 0.7rem; }
+            .top-nav .user-info-premium .btn-icon-premium { width: 32px; height: 32px; font-size: 0.9rem; }
+            .settings-section { padding: 0.75rem; }
+            .app-footer .footer-user-info { gap: 0.4rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.55rem; }
+            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.5rem; }
+            .app-footer .footer-user-info .user-status { font-size: 0.5rem; padding: 2px 8px; }
+            .app-footer .footer-brand .footer-company { font-size: 0.8rem; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .quick-action-item { padding: 0.8rem 0.5rem; }
+            .quick-action-item i { font-size: 1.2rem; }
+        }
+        /* ============================================================
+           THEME ACCESSIBILITY OVERRIDES - SETTINGS PAGE
+           ============================================================ */
+        :root {
+            color-scheme: light;
+            --sz-focus: #0b5ed7;
+            --sz-surface-2: #f0efe8;
+            --sz-input-bg: #ffffff;
+            --sz-on-accent: #ffffff;
+        }
+        [data-theme="dark"] {
+            color-scheme: dark;
+            --sz-focus: #8fc7ff;
+            --sz-surface-2: #1d3b31;
+            --sz-input-bg: #10271f;
+            --sz-on-accent: #07130f;
+        }
+        body, .app-wrapper, .app-main, .app-content { background-color: var(--sz-paper); color: var(--sz-ink); }
+        .text-muted { color: var(--sz-muted) !important; }
+        .bg-light { background-color: var(--sz-surface-2) !important; color: var(--sz-ink) !important; }
+        .bg-white { background-color: var(--sz-white) !important; color: var(--sz-ink) !important; }
+        .border, .border-top, .border-end, .border-bottom, .border-start { border-color: var(--sz-line) !important; }
+        .stat-card .stat-value, .stat-card .stat-label, .stat-card .stat-change,
+        .table-custom tbody td, .table-custom tbody td strong, .card-sz, .card-sz h1,
+        .card-sz h2, .card-sz h3, .card-sz h4, .card-sz h5, .card-sz h6 { color: var(--sz-ink); }
+        [data-theme="dark"] .stat-card .stat-value,
+        [data-theme="dark"] .card-sz h1, [data-theme="dark"] .card-sz h2,
+        [data-theme="dark"] .card-sz h3, [data-theme="dark"] .card-sz h4,
+        [data-theme="dark"] .card-sz h5, [data-theme="dark"] .card-sz h6 {
+            color: #f0efe8 !important; opacity: 1 !important;
+        }
+        [data-theme="dark"] .stat-card .stat-label,
+        [data-theme="dark"] .stat-card .stat-change { color: #c0d0c8 !important; opacity: 1 !important; }
+        .form-control, .form-select, .form-check-input, .input-group-text, textarea, select,
+        input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+            background-color: var(--sz-input-bg); color: var(--sz-ink); border-color: var(--sz-line);
+        }
+        .form-control::placeholder, textarea::placeholder { color: var(--sz-muted); opacity: 1; }
+        .form-control:focus, .form-select:focus, textarea:focus, select:focus, input:focus,
+        button:focus-visible, a:focus-visible {
+            color: var(--sz-ink); background-color: var(--sz-input-bg); border-color: var(--sz-focus);
+            box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--sz-focus) 25%, transparent);
+            outline: 2px solid transparent;
+        }
+        .form-label, .form-check-label, label { color: var(--sz-ink); }
+        .table-custom thead th { color: var(--sz-muted); }
+        .table-custom tbody td, .table-custom tbody td strong { color: var(--sz-ink); }
+        [data-theme="dark"] .table-custom thead th { color: #c0d0c8 !important; background: #0a1a14 !important; }
+        [data-theme="dark"] .table-custom tbody td,
+        [data-theme="dark"] .table-custom tbody td strong { color: #f0efe8 !important; }
+        [data-theme="dark"] .table-custom tbody tr:hover { background: rgba(42, 157, 143, 0.12) !important; }
+        .dropdown-menu, .modal-content, .modal-content-sz, .offcanvas, .popover {
+            background-color: var(--sz-white); color: var(--sz-ink); border-color: var(--sz-line);
+        }
+        .dropdown-item { color: var(--sz-ink); }
+        .dropdown-item:hover, .dropdown-item:focus { background-color: var(--sz-surface-2); color: var(--sz-ink); }
+        [data-theme="dark"] .modal-content-sz .modal-title,
+        [data-theme="dark"] .modal-content-sz .form-label,
+        [data-theme="dark"] .permission-item label { color: #f0efe8 !important; }
+        [data-theme="dark"] .modal-content-sz .form-control,
+        [data-theme="dark"] .modal-content-sz .form-select { background: #10271f !important; color: #f0efe8 !important; border-color: #42675b !important; }
+        .badge, .badge-role, .badge-status, .badge-permission { opacity: 1; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <!-- ============================================================
+    APP WRAPPER
+    ============================================================ -->
+    <div class="app-wrapper">
+
+        <!-- APP ROW (SIDEBAR + MAIN) -->
+        <div class="app-row">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" role="navigation">
+                <div class="mb-4">
+                    <a class="brand" href="index.html">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <div class="small text-muted mt-2" style="font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> SuperAdmin
+                    </div>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="index.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="utilizadores.html"><i class="bi bi-people me-2"></i>Utilizadores <span class="badge-nav" id="userBadge">0</span></a>
+                    <a class="nav-link" href="empresas.html"><i class="bi bi-building me-2"></i>Empresas <span class="badge-nav" id="companyBadge">0</span></a>
+                    <a class="nav-link" href="pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos <span class="badge-nav" id="paymentBadge">0</span></a>
+                    <a class="nav-link" href="faturacao.html"><i class="bi bi-receipt me-2"></i>Faturação <span class="badge-nav" id="invoiceBadge">0</span></a>
+                    <a class="nav-link" href="relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link" href="notificacoes.html"><i class="bi bi-bell me-2"></i>Notificações <span class="badge-nav" id="notifBadge">0</span></a>
+                    <a class="nav-link" href="suporte.html"><i class="bi bi-ticket me-2"></i>Suporte <span class="badge-nav" id="ticketBadge">0</span></a>
+                    <a class="nav-link" href="actividades.html"><i class="bi bi-clipboard-data me-2"></i>Auditoria <span class="badge-nav" id="auditBadge">0</span></a>
+                    <a class="nav-link" href="roles.html"><i class="bi bi-shield-lock me-2"></i>Roles & Permissões</a>
+                    <a class="nav-link" href="comunicacao.html"><i class="bi bi-megaphone me-2"></i>Comunicação</a>
+                    <a class="nav-link" href="seguranca.html"><i class="bi bi-shield-check me-2"></i>Segurança</a>
+                    <a class="nav-link active" href="configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                </nav>
+                <div class="mt-4 d-flex flex-column gap-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
+                        <i class="bi bi-circle-half me-2"></i>Tema
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger-sz w-100" onclick="logoutAdmin()">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sair
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="app-main">
+
+                <!-- TOP NAV -->
+                <div class="top-nav">
+                    <div class="breadcrumb-premium">
+                        <span class="breadcrumb-item">
+                            <i class="bi bi-house-fill home-icon"></i>
+                            <a href="index.html">Dashboard</a>
+                        </span>
+                        <span class="separator">›</span>
+                        <span class="breadcrumb-item current">
+                            <i class="bi bi-gear me-1"></i> Configurações
+                        </span>
+                        <span class="live-badge ms-2">
+                            <span class="dot"></span>
+                            AO VIVO
+                        </span>
+                    </div>
+
+                    <div class="user-info-premium">
+                        <div class="user-details text-end">
+                            <span class="user-name" id="userDisplay">
+                                <i class="bi bi-person-circle me-1"></i> Carregando...
+                            </span>
+                            <span class="user-role" id="userRole">SuperAdmin</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">S</div>
+                        <button class="btn-icon-premium" onclick="toggleTheme()" title="Alternar tema">
+                            <i class="bi bi-circle-half"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CONTEÚDO -->
+                <div class="app-content container-fluid p-3 p-lg-4">
+
+                    <!-- HEADER -->
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+                        <div>
+                            <div class="eyebrow"><i class="bi bi-gear me-1"></i> ADMINISTRAÇÃO</div>
+                            <h1 class="font-display" style="font-size:clamp(1.8rem,3vw,2.5rem);margin:0;">
+                                Configurações <em style="color:var(--sz-coral);font-style:normal;">✦</em>
+                            </h1>
+                            <p class="text-muted mt-1" style="font-size:0.9rem;">
+                                Configuração global do SumbanePay
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn-outline-sz btn-sm" onclick="exportConfig()">
+                                <i class="bi bi-file-earmark-code"></i> Exportar
+                            </button>
+                            <button class="btn-outline-sz btn-sm" onclick="importConfig()">
+                                <i class="bi bi-file-earmark-arrow-up"></i> Importar
+                            </button>
+                            <button class="btn-outline-sz btn-sm" onclick="resetDefaults()">
+                                <i class="bi bi-arrow-counterclockwise"></i> Padrão
+                            </button>
+                            <button class="btn-sz" onclick="saveAllSettings()">
+                                <i class="bi bi-check-lg"></i> Guardar Tudo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- QUICK ACTIONS - CORRIGIDAS -->
+                    <div class="quick-actions">
+                        <a href="#empresa" class="quick-action-item">
+                            <i class="bi bi-building"></i>
+                            <span>Empresa</span>
+                        </a>
+                        <a href="#pagamentos" class="quick-action-item">
+                            <i class="bi bi-wallet2"></i>
+                            <span>Pagamentos</span>
+                        </a>
+                        <a href="#faturacao" class="quick-action-item">
+                            <i class="bi bi-receipt"></i>
+                            <span>Faturação</span>
+                        </a>
+                        <a href="#seguranca" class="quick-action-item">
+                            <i class="bi bi-shield-check"></i>
+                            <span>Segurança</span>
+                        </a>
+                        <a href="#backup" class="quick-action-item">
+                            <i class="bi bi-cloud-arrow-down"></i>
+                            <span>Backup</span>
+                        </a>
+                        <a href="#gerais" class="quick-action-item">
+                            <i class="bi bi-sliders2"></i>
+                            <span>Gerais</span>
+                        </a>
+                    </div>
+
+                    <!-- ============================================================
+                    CONFIGURAÇÕES - FORMULÁRIO
+                    ============================================================ -->
+                    <form id="settingsForm" onsubmit="event.preventDefault(); saveAllSettings();">
+
+                        <!-- EMPRESA -->
+                        <div class="settings-section" id="empresa">
+                            <div class="section-title">
+                                <i class="bi bi-building"></i>
+                                Dados da Empresa
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="companyName">Nome da Empresa</label>
+                                    <input id="companyName" class="form-control" type="text" placeholder="SumbanePay">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="companyNuit">NUIT</label>
+                                    <input id="companyNuit" class="form-control" type="text" placeholder="NUIT da empresa">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="companyEmail">Email</label>
+                                    <input id="companyEmail" class="form-control" type="email" placeholder="contato@empresa.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="companyPhone">Telefone</label>
+                                    <input id="companyPhone" class="form-control" type="text" placeholder="84 000 0000">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="companyAddress">Endereço</label>
+                                    <input id="companyAddress" class="form-control" type="text" placeholder="Rua, número, bairro">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="companyCity">Cidade</label>
+                                    <input id="companyCity" class="form-control" type="text" placeholder="Maputo">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="companyLogo">Logo URL</label>
+                                    <input id="companyLogo" class="form-control" type="text" placeholder="https://exemplo.com/logo.png">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="companyFavicon">Favicon URL</label>
+                                    <input id="companyFavicon" class="form-control" type="text" placeholder="https://exemplo.com/favicon.ico">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="companyFooter">Rodapé Facturas</label>
+                                    <input id="companyFooter" class="form-control" type="text" placeholder="Obrigado pela preferência!">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PAGAMENTOS -->
+                        <div class="settings-section" id="pagamentos">
+                            <div class="section-title">
+                                <i class="bi bi-wallet2"></i>
+                                Configurações de Pagamento
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label" for="paymentMpesa">M-Pesa</label>
+                                    <input id="paymentMpesa" class="form-control" type="text" placeholder="84 000 0000">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="paymentEmola">e-Mola</label>
+                                    <input id="paymentEmola" class="form-control" type="text" placeholder="84 000 0000">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="paymentWhatsApp">WhatsApp</label>
+                                    <input id="paymentWhatsApp" class="form-control" type="text" placeholder="84 000 0000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FATURAÇÃO -->
+                        <div class="settings-section" id="faturacao">
+                            <div class="section-title">
+                                <i class="bi bi-receipt"></i>
+                                Configurações de Faturação
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label" for="invoicePrefix">Prefixo Factura</label>
+                                    <input id="invoicePrefix" class="form-control" type="text" placeholder="FT">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="invoiceCurrency">Moeda</label>
+                                    <select id="invoiceCurrency" class="form-select">
+                                        <option value="MZN">MZN - Metical</option>
+                                        <option value="USD">USD - Dólar</option>
+                                        <option value="EUR">EUR - Euro</option>
+                                        <option value="ZAR">ZAR - Rand</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="invoiceTax">IVA (%)</label>
+                                    <input id="invoiceTax" class="form-control" type="number" step="0.01" placeholder="16">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="invoiceDueDays">Dias para Vencimento</label>
+                                    <input id="invoiceDueDays" class="form-control" type="number" placeholder="30">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="invoiceFooter">Mensagem Rodapé</label>
+                                    <input id="invoiceFooter" class="form-control" type="text" placeholder="Obrigado pela preferência!">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SEGURANÇA -->
+                        <div class="settings-section" id="seguranca">
+                            <div class="section-title">
+                                <i class="bi bi-shield-check"></i>
+                                Segurança
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="security2fa">
+                                        <label class="form-check-label" for="security2fa">Autenticação de dois factores (2FA)</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="securitySession">
+                                        <label class="form-check-label" for="securitySession">Sessão única por dispositivo</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="securityIpRestrict">
+                                        <label class="form-check-label" for="securityIpRestrict">Restrição de IP</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="securitySessionTimeout">Tempo de Sessão (minutos)</label>
+                                    <input id="securitySessionTimeout" class="form-control" type="number" placeholder="60">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="securityMaxAttempts">Máximo de tentativas login</label>
+                                    <input id="securityMaxAttempts" class="form-control" type="number" placeholder="5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BACKUP -->
+                        <div class="settings-section" id="backup">
+                            <div class="section-title">
+                                <i class="bi bi-cloud-arrow-down"></i>
+                                Backup
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="backupAuto">
+                                        <label class="form-check-label" for="backupAuto">Backup automático</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="backupFrequency">Frequência (dias)</label>
+                                    <input id="backupFrequency" class="form-control" type="number" placeholder="7">
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <button type="button" class="btn-outline-sz btn-sm" onclick="runBackup()">
+                                            <i class="bi bi-cloud-upload"></i> Fazer Backup Agora
+                                        </button>
+                                        <button type="button" class="btn-outline-sz btn-sm" onclick="restoreBackup()">
+                                            <i class="bi bi-cloud-download"></i> Restaurar Backup
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PREFERÊNCIAS GERAIS -->
+                        <div class="settings-section" id="gerais">
+                            <div class="section-title">
+                                <i class="bi bi-sliders2"></i>
+                                Preferências Gerais
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label" for="generalCurrency">Moeda Padrão</label>
+                                    <select id="generalCurrency" class="form-select">
+                                        <option value="MZN">Metical (MT)</option>
+                                        <option value="USD">Dólar ($)</option>
+                                        <option value="EUR">Euro (€)</option>
+                                        <option value="ZAR">Rand (R)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="generalLocale">Localização</label>
+                                    <select id="generalLocale" class="form-select">
+                                        <option value="pt-MZ">Português (Moçambique)</option>
+                                        <option value="pt-PT">Português (Portugal)</option>
+                                        <option value="pt-BR">Português (Brasil)</option>
+                                        <option value="en-US">English (US)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="generalTimezone">Fuso Horário</label>
+                                    <select id="generalTimezone" class="form-select">
+                                        <option value="Africa/Maputo">Africa/Maputo</option>
+                                        <option value="Africa/Johannesburg">Africa/Johannesburg</option>
+                                        <option value="Europe/Lisbon">Europe/Lisbon</option>
+                                        <option value="UTC">UTC</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="generalNotifications">
+                                        <label class="form-check-label" for="generalNotifications">Notificações por email para administradores</label>
+                                    </div>
+                                    <div class="form-check mt-1">
+                                        <input class="form-check-input" type="checkbox" id="generalDarkMode">
+                                        <label class="form-check-label" for="generalDarkMode">Modo escuro como padrão</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BOTÃO SALVAR -->
+                        <div class="text-end mt-3">
+                            <button type="submit" class="btn-sz">
+                                <i class="bi bi-check-lg"></i> Guardar Todas as Configurações
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">Pay</div>
+                            <span class="footer-company">Sumbane<b>Pay</b></span>
+                            <span class="footer-version">v1.0.0</span>
+                        </div>
+                        <div class="footer-user-info" id="footerUserInfo">
+                            <span class="user-data-item">
+                                <i class="bi bi-person"></i>
+                                <span class="data-value" id="footerUserName">Carregando...</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-envelope"></i>
+                                <span class="data-value email-value" id="footerUserEmail">carregando@email.com</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-shield-check"></i>
+                                <span class="data-value" id="footerUserRole">SuperAdmin</span>
+                            </span>
+                            <span class="user-status">
+                                <span class="status-dot"></span>
+                                Online
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-clock"></i>
+                                <span class="data-value" id="footerLastUpdate">—</span>
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* ============================================================
+           CONFIGURAÇÕES - SUMBANEPAY SUPERADMIN
+           Versão: 30.0.0
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+        const ADMIN_EMAIL = "jsumbane22@gmail.com";
+
+        let autoRefreshInterval = null;
+        let isSaving = false;
+
+        // ======== FUNÇÕES CORE ========
+        function read(k, f) {
+            try { const data = localStorage.getItem(KEY + k); return data ? JSON.parse(data) : f; } catch (e) { return f; }
+        }
+
+        function write(k, v) {
+            localStorage.setItem(KEY + k, JSON.stringify(v));
+        }
+
+        function getAll(k) { return read(k, []); }
+
+        function generateId(prefix) { return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+        function escapeHTML(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+            }[char]));
+        }
+
+        function formatDateTime(d) {
+            if (!d) return '-';
+            return new Date(d).toLocaleString('pt-PT', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function toast(t, icon = 'success') {
+            Swal.fire({ toast: true, position: 'top-end', timer: 3000, showConfirmButton: false, icon, title: t });
+        }
+
+        function confirmAction(title, text, confirmText = 'Sim, confirmar') {
+            return Swal.fire({
+                title, text, icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#176b5b',
+                cancelButtonColor: '#dc3545',
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Cancelar',
+                background: getComputedStyle(document.documentElement).getPropertyValue('--sz-white') || '#ffffff',
+                color: getComputedStyle(document.documentElement).getPropertyValue('--sz-ink') || '#19362e'
+            });
+        }
+
+        // ======== TEMA ========
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+            localStorage.setItem('sumbanepay_theme', next);
+            // Atualiza os campos e configurações imediatamente após trocar o tema.
+            if (typeof renderSettings === 'function') renderSettings();
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function loadTheme() {
+            const saved = localStorage.getItem('sumbanepay_theme');
+            const system = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(saved || (system ? 'dark' : 'light'));
+        }
+
+        // ======== SESSÃO ========
+        function requireAdmin() {
+            try {
+                const session = JSON.parse(localStorage.getItem(KEY + 'admin_session'));
+                if (session && session.loggedIn && session.email === ADMIN_EMAIL) {
+                    if (Date.now() - session.timestamp < 86400000) return true;
+                    localStorage.removeItem(KEY + 'admin_session');
+                }
+            } catch (e) {}
+            window.location.href = "superadmin-login.html";
+            return false;
+        }
+
+        function logoutAdmin() {
+            confirmAction('Sair da área Superadmin?', 'Terá que fazer login novamente para aceder.', 'Sair')
+                .then(result => {
+                    if (result.isConfirmed) {
+                        localStorage.removeItem(KEY + 'admin_session');
+                        window.location.replace('superadmin-login.html?logout=true');
+                    }
+                });
+        }
+
+        // ======== GARANTIR SUPERADMIN ========
+        function ensureSuperAdmin() {
+            const users = getAll('users');
+            const exists = users.find(u => u.email === ADMIN_EMAIL);
+            if (!exists) {
+                users.push({
+                    id: generateId('u'),
+                    name: 'Jorge Sumbane',
+                    email: ADMIN_EMAIL,
+                    password: "JLS5872347",
+                    phone: '84 587 2347',
+                    business: 'SumbanePay',
+                    role: 'superadmin',
+                    status: 'ativo',
+                    createdAt: new Date().toISOString(),
+                    permissions: {
+                        dashboard: true, vendas: true, faturas: true, clientes: true,
+                        produtos: true, pagamentos: true, relatorios: true,
+                        configuracoes: true, utilizadores: true, superadmin: true
+                    }
+                });
+                write('users', users);
+            }
+        }
+
+        // ======== ADD ACTIVITY ========
+        function addActivity(type, title, desc) {
+            const activities = read('activities', []);
+            activities.unshift({
+                id: generateId('act'),
+                type: type || 'config',
+                title: title || 'Configuração alterada',
+                desc: desc || '',
+                admin: 'SuperAdmin',
+                ip: '127.0.0.1',
+                date: new Date().toISOString()
+            });
+            if (activities.length > 100) activities.splice(100);
+            write('activities', activities);
+        }
+
+        // ======== DEFAULT SETTINGS ========
+        function getDefaultSettings() {
+            return {
+                company: {
+                    name: 'SumbanePay',
+                    nuit: '123456789',
+                    email: 'contato@sumbanepay.co.mz',
+                    phone: '84 000 0000',
+                    address: 'Av. 24 de Julho, Maputo',
+                    city: 'Maputo',
+                    logo: '',
+                    favicon: '',
+                    footer: 'Obrigado pela preferência!'
+                },
+                payment: {
+                    mpesa: '84 000 0000',
+                    emola: '84 000 0000',
+                    whatsapp: '84 000 0000'
+                },
+                invoice: {
+                    prefix: 'FT',
+                    currency: 'MZN',
+                    tax: 16,
+                    dueDays: 30,
+                    footer: 'Obrigado pela preferência!'
+                },
+                security: {
+                    twoFactor: false,
+                    singleSession: false,
+                    ipRestrict: false,
+                    sessionTimeout: 60,
+                    maxAttempts: 5
+                },
+                backup: {
+                    auto: false,
+                    frequency: 7
+                },
+                general: {
+                    currency: 'MZN',
+                    locale: 'pt-MZ',
+                    timezone: 'Africa/Maputo',
+                    notifications: true,
+                    darkMode: false
+                }
+            };
+        }
+
+        // ======== LOAD SETTINGS ========
+        function loadSettings() {
+            const settings = read('settings', null);
+            if (!settings) {
+                const defaults = getDefaultSettings();
+                write('settings', defaults);
+                return defaults;
+            }
+            return settings;
+        }
+
+        // ======== SAVE ALL SETTINGS ========
+        function saveAllSettings() {
+            if (isSaving) return;
+            isSaving = true;
+
+            const settings = {
+                company: {
+                    name: document.getElementById('companyName').value.trim(),
+                    nuit: document.getElementById('companyNuit').value.trim(),
+                    email: document.getElementById('companyEmail').value.trim(),
+                    phone: document.getElementById('companyPhone').value.trim(),
+                    address: document.getElementById('companyAddress').value.trim(),
+                    city: document.getElementById('companyCity').value.trim(),
+                    logo: document.getElementById('companyLogo').value.trim(),
+                    favicon: document.getElementById('companyFavicon').value.trim(),
+                    footer: document.getElementById('companyFooter').value.trim()
+                },
+                payment: {
+                    mpesa: document.getElementById('paymentMpesa').value.trim(),
+                    emola: document.getElementById('paymentEmola').value.trim(),
+                    whatsapp: document.getElementById('paymentWhatsApp').value.trim()
+                },
+                invoice: {
+                    prefix: document.getElementById('invoicePrefix').value.trim(),
+                    currency: document.getElementById('invoiceCurrency').value,
+                    tax: parseFloat(document.getElementById('invoiceTax').value) || 0,
+                    dueDays: parseInt(document.getElementById('invoiceDueDays').value) || 30,
+                    footer: document.getElementById('invoiceFooter').value.trim()
+                },
+                security: {
+                    twoFactor: document.getElementById('security2fa').checked,
+                    singleSession: document.getElementById('securitySession').checked,
+                    ipRestrict: document.getElementById('securityIpRestrict').checked,
+                    sessionTimeout: parseInt(document.getElementById('securitySessionTimeout').value) || 60,
+                    maxAttempts: parseInt(document.getElementById('securityMaxAttempts').value) || 5
+                },
+                backup: {
+                    auto: document.getElementById('backupAuto').checked,
+                    frequency: parseInt(document.getElementById('backupFrequency').value) || 7
+                },
+                general: {
+                    currency: document.getElementById('generalCurrency').value,
+                    locale: document.getElementById('generalLocale').value,
+                    timezone: document.getElementById('generalTimezone').value,
+                    notifications: document.getElementById('generalNotifications').checked,
+                    darkMode: document.getElementById('generalDarkMode').checked
+                }
+            };
+
+            write('settings', settings);
+
+            // Aplicar tema escuro se selecionado
+            if (settings.general.darkMode) {
+                applyTheme('dark');
+                localStorage.setItem('sumbanepay_theme', 'dark');
+            } else {
+                applyTheme('light');
+                localStorage.setItem('sumbanepay_theme', 'light');
+            }
+
+            addActivity('config', 'Configurações actualizadas', 'Todas as configurações foram salvas');
+
+            toast('✅ Configurações guardadas com sucesso!');
+            isSaving = false;
+        }
+
+        // ======== LOAD FORM ========
+        function loadSettingsForm() {
+            const settings = loadSettings();
+
+            // Empresa
+            document.getElementById('companyName').value = settings.company.name || '';
+            document.getElementById('companyNuit').value = settings.company.nuit || '';
+            document.getElementById('companyEmail').value = settings.company.email || '';
+            document.getElementById('companyPhone').value = settings.company.phone || '';
+            document.getElementById('companyAddress').value = settings.company.address || '';
+            document.getElementById('companyCity').value = settings.company.city || '';
+            document.getElementById('companyLogo').value = settings.company.logo || '';
+            document.getElementById('companyFavicon').value = settings.company.favicon || '';
+            document.getElementById('companyFooter').value = settings.company.footer || '';
+
+            // Pagamentos
+            document.getElementById('paymentMpesa').value = settings.payment.mpesa || '';
+            document.getElementById('paymentEmola').value = settings.payment.emola || '';
+            document.getElementById('paymentWhatsApp').value = settings.payment.whatsapp || '';
+
+            // Faturação
+            document.getElementById('invoicePrefix').value = settings.invoice.prefix || 'FT';
+            document.getElementById('invoiceCurrency').value = settings.invoice.currency || 'MZN';
+            document.getElementById('invoiceTax').value = settings.invoice.tax || 16;
+            document.getElementById('invoiceDueDays').value = settings.invoice.dueDays || 30;
+            document.getElementById('invoiceFooter').value = settings.invoice.footer || '';
+
+            // Segurança
+            document.getElementById('security2fa').checked = settings.security.twoFactor || false;
+            document.getElementById('securitySession').checked = settings.security.singleSession || false;
+            document.getElementById('securityIpRestrict').checked = settings.security.ipRestrict || false;
+            document.getElementById('securitySessionTimeout').value = settings.security.sessionTimeout || 60;
+            document.getElementById('securityMaxAttempts').value = settings.security.maxAttempts || 5;
+
+            // Backup
+            document.getElementById('backupAuto').checked = settings.backup.auto || false;
+            document.getElementById('backupFrequency').value = settings.backup.frequency || 7;
+
+            // Gerais
+            document.getElementById('generalCurrency').value = settings.general.currency || 'MZN';
+            document.getElementById('generalLocale').value = settings.general.locale || 'pt-MZ';
+            document.getElementById('generalTimezone').value = settings.general.timezone || 'Africa/Maputo';
+            document.getElementById('generalNotifications').checked = settings.general.notifications !== undefined ? settings.general.notifications : true;
+            document.getElementById('generalDarkMode').checked = settings.general.darkMode || false;
+        }
+
+        // ======== RENDER SETTINGS ========
+        function renderSettings() {
+            if (!requireAdmin()) return;
+
+            ensureSuperAdmin();
+
+            const users = getAll('users');
+            const admin = users.find(u => u.email === ADMIN_EMAIL);
+
+            if (admin) {
+                document.getElementById('userDisplay').textContent = admin.name || 'Superadmin';
+                document.getElementById('userAvatar').textContent = (admin.name || 'S').charAt(0).toUpperCase();
+                document.getElementById('footerUserName').textContent = admin.name || 'Superadmin';
+                document.getElementById('footerUserEmail').textContent = admin.email || 'superadmin@email.com';
+            }
+
+            const now = new Date();
+            document.getElementById('footerLastUpdate').textContent = 'Última atualização: ' + now.toLocaleTimeString('pt-PT');
+
+            loadSettingsForm();
+        }
+
+        // ======== EXPORT CONFIG ========
+        function exportConfig() {
+            const settings = loadSettings();
+            const data = {
+                exportadoEm: new Date().toISOString(),
+                versao: '1.0.0',
+                settings: settings
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `configuracao_${new Date().toISOString().slice(0,10)}.json`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            toast('Configurações exportadas com sucesso!');
+        }
+
+        // ======== IMPORT CONFIG ========
+        function importConfig() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        if (data.settings) {
+                            confirmAction(
+                                'Importar configurações?',
+                                'As configurações actuais serão substituídas.',
+                                'Importar'
+                            ).then(result => {
+                                if (result.isConfirmed) {
+                                    write('settings', data.settings);
+                                    loadSettingsForm();
+                                    addActivity('config', 'Configurações importadas', 'Configurações importadas de arquivo');
+                                    toast('✅ Configurações importadas com sucesso!');
+                                }
+                            });
+                        } else {
+                            toast('Arquivo inválido.', 'error');
+                        }
+                    } catch (error) {
+                        toast('Erro ao ler o arquivo.', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // ======== RESET DEFAULTS ========
+        function resetDefaults() {
+            confirmAction(
+                'Restaurar configurações padrão?',
+                'Todas as configurações serão redefinidas para os valores padrão.',
+                'Restaurar'
+            ).then(result => {
+                if (result.isConfirmed) {
+                    const defaults = getDefaultSettings();
+                    write('settings', defaults);
+                    loadSettingsForm();
+                    addActivity('config', 'Configurações restauradas', 'Configurações restauradas para valores padrão');
+                    toast('✅ Configurações restauradas para o padrão!');
+                }
+            });
+        }
+
+        // ======== RUN BACKUP ========
+        function runBackup() {
+            const settings = loadSettings();
+            const data = {
+                backupEm: new Date().toISOString(),
+                configuracao: settings,
+                utilizadores: getAll('users'),
+                empresas: getAll('companies'),
+                pagamentos: getAll('payments'),
+                faturas: getAll('invoices')
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `backup_${new Date().toISOString().slice(0,10)}.json`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            addActivity('backup', 'Backup realizado', 'Backup manual executado');
+            toast('✅ Backup realizado com sucesso!');
+        }
+
+        // ======== RESTORE BACKUP ========
+        function restoreBackup() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        if (data.configuracao) {
+                            confirmAction(
+                                'Restaurar backup?',
+                                'Todos os dados actuais serão substituídos pelo backup.',
+                                'Restaurar'
+                            ).then(result => {
+                                if (result.isConfirmed) {
+                                    // Restaurar configurações
+                                    write('settings', data.configuracao);
+
+                                    // Restaurar dados
+                                    if (data.utilizadores) write('users', data.utilizadores);
+                                    if (data.empresas) write('companies', data.empresas);
+                                    if (data.pagamentos) write('payments', data.pagamentos);
+                                    if (data.faturas) write('invoices', data.faturas);
+
+                                    loadSettingsForm();
+                                    addActivity('backup', 'Backup restaurado', 'Backup restaurado com sucesso');
+                                    toast('✅ Backup restaurado com sucesso!');
+                                }
+                            });
+                        } else {
+                            toast('Arquivo de backup inválido.', 'error');
+                        }
+                    } catch (error) {
+                        toast('Erro ao ler o arquivo.', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // ======== FORCE REFRESH ========
+        function forceRefresh() {
+            loadSettingsForm();
+            toast('Dados actualizados!');
+        }
+
+        // ======== START AUTO REFRESH ========
+        function startAutoRefresh() {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            autoRefreshInterval = setInterval(function() {
+                const session = localStorage.getItem(KEY + 'admin_session');
+                if (!session) {
+                    clearInterval(autoRefreshInterval);
+                    window.location.replace('superadmin-login.html');
+                } else {
+                    renderSettings();
+                }
+            }, 60000);
+        }
+
+        // ======== PREVENÇÃO BFCACHE ========
+        function preventBFCache() {
+            window.addEventListener('pageshow', function(e) {
+                if (e.persisted) {
+                    const session = localStorage.getItem(KEY + 'admin_session');
+                    if (!session) window.location.replace('superadmin-login.html');
+                    else renderSettings();
+                }
+            });
+        }
+
+        // ======== INICIALIZAÇÃO ========
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+            if (!requireAdmin()) return;
+
+            renderSettings();
+            preventBFCache();
+            startAutoRefresh();
+
+            window.addEventListener('storage', function(e) {
+                if (e.key && e.key.startsWith(KEY)) {
+                    renderSettings();
+                }
+            });
+        });
+
+        // ======== EXPORTA ========
+        window.logoutAdmin = logoutAdmin;
+        window.toggleTheme = toggleTheme;
+        window.renderSettings = renderSettings;
+        window.forceRefresh = forceRefresh;
+        window.saveAllSettings = saveAllSettings;
+        window.exportConfig = exportConfig;
+        window.importConfig = importConfig;
+        window.resetDefaults = resetDefaults;
+        window.runBackup = runBackup;
+        window.restoreBackup = restoreBackup;
+        window.loadSettings = loadSettings;
+        window.loadSettingsForm = loadSettingsForm;
+        window.getDefaultSettings = getDefaultSettings;
+        window.KEY = KEY;
+        window.read = read;
+        window.write = write;
+        window.getAll = getAll;
+        window.generateId = generateId;
+        window.formatDateTime = formatDateTime;
+        window.toast = toast;
+        window.confirmAction = confirmAction;
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

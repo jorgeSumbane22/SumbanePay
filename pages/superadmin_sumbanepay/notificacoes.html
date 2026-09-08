@@ -1,0 +1,2234 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notificações — SumbanePay SuperAdmin</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* ============================================================
+           ROOT VARIABLES - LIGHT MODE
+           ============================================================ */
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 20px rgba(16, 63, 55, 0.06);
+            --sz-shadow-hover: 0 12px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-info: #0dcaf0;
+            --sz-purple: #9b59b6;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+
+        /* ============================================================
+           DARK MODE
+           ============================================================ */
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --sz-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+            --sz-info: #7cbdda;
+            --sz-purple: #b07cc6;
+        }
+
+        /* ============================================================
+           BASE
+           ============================================================ */
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .font-display { font-family: 'Playfair Display', 'Georgia', serif; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sz-paper); }
+        ::-webkit-scrollbar-thumb { background: var(--sz-green); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sz-green-light); }
+
+        /* ============================================================
+           LAYOUT
+           ============================================================ */
+        .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+        .app-row { display: flex; flex: 1; }
+        .app-main { display: flex; flex-direction: column; flex: 1; min-height: 100vh; }
+        .app-content { flex: 1; padding-bottom: 1rem; }
+        .app-footer { flex-shrink: 0; width: 100%; }
+
+        /* ============================================================
+           BRAND
+           ============================================================ */
+        .brand {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); transform: translateY(-1px); }
+        .brand b { color: var(--sz-coral); }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+        }
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(23, 107, 91, 0.4);
+        }
+
+        /* ============================================================
+           BOTÕES
+           ============================================================ */
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz i { transition: var(--transition); }
+        .btn-sz:hover i { transform: translateX(4px); }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+
+        .btn-outline-danger-sz {
+            border: 2px solid var(--sz-danger);
+            color: var(--sz-danger);
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-danger-sz:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-sm-sz {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            color: var(--sz-muted);
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm-sz:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+        }
+        .btn-sm-sz.success:hover { background: var(--sz-green); color: #fff; border-color: var(--sz-green); }
+        .btn-sm-sz.danger:hover { background: var(--sz-danger); color: #fff; border-color: var(--sz-danger); }
+        .btn-sm-sz.warning:hover { background: var(--sz-warning); color: var(--sz-dark); border-color: var(--sz-warning); }
+        .btn-sm-sz.info:hover { background: var(--sz-info); color: #fff; border-color: var(--sz-info); }
+        .btn-sm-sz.purple:hover { background: var(--sz-purple); color: #fff; border-color: var(--sz-purple); }
+        .btn-sm-sz.gold:hover { background: var(--sz-gold); color: var(--sz-dark); border-color: var(--sz-gold); }
+
+        /* ============================================================
+           EYEBROW
+           ============================================================ */
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           SIDEBAR
+           ============================================================ */
+        .sidebar {
+            background: var(--sz-white);
+            min-height: 100vh;
+            border-right: 1px solid var(--sz-line);
+            position: sticky;
+            top: 0;
+            padding: 1.5rem 1rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            max-height: 100vh;
+            overflow-y: auto;
+            width: 260px;
+            flex-shrink: 0;
+        }
+        .sidebar .nav-link {
+            color: var(--sz-muted);
+            border-radius: 8px;
+            margin: 0.15rem 0;
+            padding: 10px 14px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i {
+            width: 22px;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+        .sidebar .nav-link .badge-nav {
+            margin-left: auto;
+            background: var(--sz-coral);
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 1px 8px;
+            border-radius: 12px;
+        }
+
+        [data-theme="dark"] .sidebar {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .sidebar .nav-link { color: #b8c5bf !important; }
+        [data-theme="dark"] .sidebar .nav-link i { color: #8a9a92 !important; }
+        [data-theme="dark"] .sidebar .nav-link:hover,
+        [data-theme="dark"] .sidebar .nav-link.active {
+            background: rgba(42, 157, 143, 0.15) !important;
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .sidebar .nav-link:hover i,
+        [data-theme="dark"] .sidebar .nav-link.active i { color: #f0c97a !important; }
+        [data-theme="dark"] .sidebar .brand { color: #f0efe8 !important; }
+        [data-theme="dark"] .sidebar .brand b { color: #f28a71 !important; }
+        [data-theme="dark"] .sidebar .brand .logo-mark {
+            background: linear-gradient(135deg, #2a9d8f, #1a6b5e) !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-secondary {
+            color: #b8c5bf !important;
+            border-color: #42675b !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-secondary:hover {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-danger-sz {
+            color: #f06a7a !important;
+            border-color: #f06a7a !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-danger-sz:hover {
+            background: #f06a7a !important;
+            color: #0d1c17 !important;
+        }
+
+        /* ============================================================
+           TOP NAV
+           ============================================================ */
+        .top-nav {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 12px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.3;
+        }
+
+        .top-nav .breadcrumb-premium {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--sz-muted);
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item .separator {
+            color: var(--sz-muted-light);
+            font-size: 0.6rem;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item.current {
+            color: var(--sz-ink);
+            font-weight: 600;
+            padding: 4px 8px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item .home-icon {
+            color: var(--sz-green);
+            font-size: 1.1rem;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            padding: 3px 12px 3px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(23, 107, 91, 0.15);
+        }
+        .live-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        [data-theme="dark"] .live-badge {
+            background: rgba(42, 157, 143, 0.15);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.2);
+        }
+        [data-theme="dark"] .live-badge .dot { background: var(--sz-green-light); }
+
+        [data-theme="dark"] .top-nav {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
+            color: #f0c97a !important;
+            background: rgba(42, 157, 143, 0.15) !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item.current {
+            color: #f0efe8 !important;
+            background: rgba(42, 157, 143, 0.15) !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item .separator {
+            color: #6a8a7a !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item .home-icon {
+            color: #2a9d8f !important;
+        }
+
+        .top-nav .user-info-premium {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .top-nav .user-info-premium .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 2px 12px rgba(23, 107, 91, 0.25);
+            transition: var(--transition);
+            cursor: pointer;
+            user-select: none;
+        }
+        .top-nav .user-info-premium .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(23, 107, 91, 0.35);
+        }
+        .top-nav .user-info-premium .user-details {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+            text-align: right;
+        }
+        .top-nav .user-info-premium .user-details .user-name {
+            font-weight: 600;
+            color: var(--sz-ink);
+            font-size: 0.9rem;
+        }
+        .top-nav .user-info-premium .user-details .user-role {
+            font-size: 0.65rem;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .top-nav .user-info-premium .btn-icon-premium {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-muted);
+            cursor: pointer;
+            position: relative;
+            font-size: 1.1rem;
+        }
+        .top-nav .user-info-premium .btn-icon-premium:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+            transform: translateY(-1px);
+        }
+
+        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-name {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-role {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .top-nav .user-info-premium .btn-icon-premium {
+            border-color: #2a4a3e !important;
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .top-nav .user-info-premium .btn-icon-premium:hover {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: #f0c97a !important;
+        }
+
+        /* ============================================================
+           STAT CARDS
+           ============================================================ */
+        .stat-card {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            padding: 1.25rem 1.5rem;
+            border: 1px solid var(--sz-line);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--sz-shadow-hover);
+        }
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--sz-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+        }
+        .stat-card .stat-icon.green { background: rgba(23, 107, 91, 0.12); color: var(--sz-green); }
+        .stat-card .stat-icon.gold { background: rgba(232, 179, 91, 0.12); color: var(--sz-gold); }
+        .stat-card .stat-icon.coral { background: rgba(239, 109, 78, 0.12); color: var(--sz-coral); }
+        .stat-card .stat-icon.blue { background: rgba(124, 157, 181, 0.12); color: #7c9db5; }
+        .stat-card .stat-icon.red { background: rgba(220, 53, 69, 0.12); color: var(--sz-danger); }
+        .stat-card .stat-icon.purple { background: rgba(155, 89, 182, 0.12); color: #9b59b6; }
+        .stat-card .stat-icon.teal { background: rgba(13, 202, 240, 0.12); color: #0dcaf0; }
+
+        .stat-card .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--sz-muted);
+            font-weight: 700;
+        }
+        .stat-card .stat-value {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--sz-ink);
+            line-height: 1.2;
+            margin-top: 2px;
+        }
+        .stat-card .stat-change {
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 6px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-card .stat-change.up { color: var(--sz-green); background: rgba(23, 107, 91, 0.08); }
+        .stat-card .stat-change.down { color: var(--sz-danger); background: rgba(220, 53, 69, 0.08); }
+        .stat-card .stat-change.neutral { color: var(--sz-muted); background: rgba(90, 106, 98, 0.06); }
+
+        .stat-card.green { border-left: 4px solid var(--sz-green); }
+        .stat-card.gold { border-left: 4px solid var(--sz-gold); }
+        .stat-card.coral { border-left: 4px solid var(--sz-coral); }
+        .stat-card.blue { border-left: 4px solid #7c9db5; }
+        .stat-card.red { border-left: 4px solid var(--sz-danger); }
+        .stat-card.purple { border-left: 4px solid #9b59b6; }
+        .stat-card.teal { border-left: 4px solid #0dcaf0; }
+
+        [data-theme="dark"] .stat-card {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .stat-card .stat-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .stat-card .stat-label { color: #a0b0a8 !important; }
+        [data-theme="dark"] .stat-card .stat-change { color: #a0b0a8 !important; }
+        [data-theme="dark"] .stat-card .stat-icon.green { background: rgba(42, 157, 143, 0.15); color: var(--sz-green-light); }
+        [data-theme="dark"] .stat-card .stat-icon.gold { background: rgba(240, 201, 122, 0.15); color: var(--sz-gold); }
+        [data-theme="dark"] .stat-card .stat-icon.coral { background: rgba(242, 138, 113, 0.15); color: var(--sz-coral); }
+        [data-theme="dark"] .stat-card .stat-icon.blue { background: rgba(124, 189, 218, 0.15); color: #7cbdda; }
+        [data-theme="dark"] .stat-card .stat-icon.red { background: rgba(240, 106, 122, 0.15); color: var(--sz-danger); }
+        [data-theme="dark"] .stat-card .stat-icon.purple { background: rgba(176, 124, 198, 0.15); color: #b07cc6; }
+        [data-theme="dark"] .stat-card .stat-icon.teal { background: rgba(124, 189, 218, 0.15); color: #7cbdda; }
+
+        /* ============================================================
+           QUICK ACTIONS
+           ============================================================ */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .quick-action-item {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            padding: 1.2rem 0.75rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--sz-muted);
+            box-shadow: var(--sz-shadow);
+        }
+        .quick-action-item:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-green);
+            color: var(--sz-ink);
+        }
+        .quick-action-item i {
+            font-size: 1.6rem;
+            color: var(--sz-green);
+            display: block;
+            margin-bottom: 6px;
+            transition: var(--transition);
+        }
+        .quick-action-item:hover i {
+            transform: scale(1.1);
+            color: var(--sz-coral);
+        }
+        .quick-action-item span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        [data-theme="dark"] .quick-action-item {
+            background: var(--sz-white);
+            border-color: #2a4a3e;
+            color: #b8c5bf;
+        }
+        [data-theme="dark"] .quick-action-item:hover {
+            border-color: #f0c97a;
+            color: #f0efe8;
+        }
+        [data-theme="dark"] .quick-action-item i { color: #2a9d8f; }
+        [data-theme="dark"] .quick-action-item:hover i { color: #f28a71; }
+
+        /* ============================================================
+           NOTIFICATION ITEMS
+           ============================================================ */
+        .notif-item {
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius-sm);
+            transition: var(--transition);
+            background: var(--sz-white);
+            margin-bottom: 0.5rem;
+        }
+        .notif-item:hover {
+            box-shadow: var(--sz-shadow-hover);
+            transform: translateX(4px);
+        }
+        .notif-item.unread {
+            border-left: 4px solid var(--sz-gold);
+            background: rgba(232, 179, 91, 0.04);
+        }
+        .notif-item .notif-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .notif-item .notif-title {
+            font-weight: 600;
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .notif-item .notif-badge {
+            font-size: 0.55rem;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .notif-item .notif-badge.system { background: var(--sz-info); color: #fff; }
+        .notif-item .notif-badge.user { background: var(--sz-green); color: #fff; }
+        .notif-item .notif-badge.company { background: var(--sz-gold); color: var(--sz-dark); }
+        .notif-item .notif-badge.all { background: var(--sz-purple); color: #fff; }
+        .notif-item .notif-badge.plan { background: var(--sz-coral); color: #fff; }
+
+        .notif-item .notif-message {
+            color: var(--sz-muted);
+            font-size: 0.85rem;
+            margin: 0.5rem 0;
+        }
+        .notif-item .notif-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--sz-muted);
+        }
+        .notif-item .notif-footer .notif-target {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            background: var(--sz-paper);
+            border: 1px solid var(--sz-line);
+        }
+
+        [data-theme="dark"] .notif-item {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .notif-item .notif-title {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .notif-item .notif-message {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .notif-item .notif-footer {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .notif-item.unread {
+            background: rgba(240, 201, 122, 0.06);
+        }
+        [data-theme="dark"] .notif-item .notif-footer .notif-target {
+            background: var(--sz-paper);
+            border-color: var(--sz-line);
+        }
+
+        /* ============================================================
+           CARD
+           ============================================================ */
+        .card-sz {
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            background: var(--sz-white);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        .card-sz:hover { box-shadow: var(--sz-shadow-hover); }
+        .card-sz .card-header-custom {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .card-sz .card-header-custom h5 {
+            margin: 0;
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1rem;
+            color: var(--sz-ink);
+        }
+
+        [data-theme="dark"] .card-sz {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .card-sz .card-header-custom {
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .card-sz .card-header-custom h5 {
+            color: #f0efe8 !important;
+        }
+
+        /* ============================================================
+           FILTERS
+           ============================================================ */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .filter-bar .form-control,
+        .filter-bar .form-select {
+            border-radius: 8px;
+            border: 2px solid var(--sz-line);
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            background: var(--sz-white);
+            transition: var(--transition);
+            color: var(--sz-ink);
+        }
+        .filter-bar .form-control:focus,
+        .filter-bar .form-select:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
+        }
+        .filter-bar .form-control { min-width: 150px; }
+
+        [data-theme="dark"] .filter-bar .form-control,
+        [data-theme="dark"] .filter-bar .form-select {
+            background: #162f27 !important;
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .filter-bar .form-control::placeholder {
+            color: #6a8a7a !important;
+        }
+        [data-theme="dark"] .filter-bar .form-control:focus,
+        [data-theme="dark"] .filter-bar .form-select:focus {
+            border-color: #f0c97a !important;
+            box-shadow: 0 0 0 3px rgba(240, 201, 122, 0.15) !important;
+        }
+
+        /* ============================================================
+           PAGINATION
+           ============================================================ */
+        .pagination-custom .page-link {
+            border: 1px solid var(--sz-line);
+            color: var(--sz-muted);
+            background: var(--sz-white);
+            transition: var(--transition);
+        }
+        .pagination-custom .page-link:hover {
+            background: var(--sz-paper);
+            color: var(--sz-green);
+            border-color: var(--sz-green);
+        }
+        .pagination-custom .page-item.active .page-link {
+            background: var(--sz-green);
+            border-color: var(--sz-green);
+            color: #fff;
+        }
+        [data-theme="dark"] .pagination-custom .page-link {
+            background: var(--sz-white);
+            border-color: #2a4a3e !important;
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .pagination-custom .page-link:hover {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .pagination-custom .page-item.active .page-link {
+            background: #2a9d8f !important;
+            border-color: #2a9d8f !important;
+            color: #fff !important;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .app-footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 0.75rem 2rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        .app-footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .app-footer .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-footer .footer-brand .footer-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+        }
+        .app-footer .footer-brand .footer-company {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .app-footer .footer-brand .footer-company b { color: var(--sz-coral); }
+        .app-footer .footer-brand .footer-version {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            background: var(--sz-paper);
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+        .app-footer .footer-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .app-footer .footer-user-info .user-data-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-data-item i {
+            color: var(--sz-green);
+            font-size: 0.85rem;
+            width: 16px;
+            text-align: center;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value {
+            color: var(--sz-ink);
+            font-weight: 500;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value.email-value {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        .app-footer .footer-user-info .user-status .status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        [data-theme="dark"] .app-footer {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .app-footer .footer-brand .footer-company {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-brand .footer-version {
+            background: #162f27 !important;
+            color: #6a8a7a !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item i {
+            color: #2a9d8f !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value.email-value {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status {
+            background: rgba(42, 157, 143, 0.12);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.15);
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status .status-dot {
+            background: var(--sz-green-light);
+        }
+
+        /* ============================================================
+           MODAL
+           ============================================================ */
+        .modal-content-sz {
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            border-radius: var(--sz-radius);
+            border: 1px solid var(--sz-line);
+        }
+        .modal-content-sz .modal-header {
+            border-bottom-color: var(--sz-line);
+            padding: 1rem 1.5rem;
+        }
+        .modal-content-sz .modal-header .modal-title {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            color: var(--sz-ink);
+        }
+        .modal-content-sz .modal-body { padding: 1.5rem; }
+        .modal-content-sz .modal-footer {
+            border-top-color: var(--sz-line);
+            padding: 1rem 1.5rem;
+        }
+        .modal-content-sz .form-label {
+            color: var(--sz-ink);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .modal-content-sz .form-label .required { color: var(--sz-danger); }
+        .modal-content-sz .form-control,
+        .modal-content-sz .form-select {
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            padding: 8px 14px;
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            transition: var(--transition);
+        }
+        .modal-content-sz .form-control:focus,
+        .modal-content-sz .form-select:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
+            outline: none;
+        }
+        .modal-content-sz .form-control::placeholder { color: var(--sz-muted-light); }
+
+        [data-theme="dark"] .modal-content-sz {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .modal-content-sz .modal-header {
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .modal-content-sz .modal-header .modal-title {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .modal-content-sz .modal-footer {
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .modal-content-sz .form-label {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .modal-content-sz .form-control,
+        [data-theme="dark"] .modal-content-sz .form-select {
+            background: #162f27 !important;
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .modal-content-sz .form-control:focus,
+        [data-theme="dark"] .modal-content-sz .form-select:focus {
+            border-color: #f0c97a !important;
+            box-shadow: 0 0 0 3px rgba(240, 201, 122, 0.15) !important;
+        }
+        [data-theme="dark"] .modal-content-sz .form-control::placeholder {
+            color: #6a8a7a !important;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .sidebar { width: 100%; min-height: auto; position: relative; padding: 1rem; max-height: none; }
+            .stat-card .stat-value { font-size: 1.5rem; }
+            .top-nav { padding: 12px 16px; }
+            .app-footer .footer-content { flex-direction: column; text-align: center; }
+            .app-footer .footer-user-info { justify-content: center; }
+        }
+        @media (max-width: 768px) {
+            .top-nav { padding: 10px 14px; }
+            .top-nav .breadcrumb-premium { font-size: 0.75rem; }
+            .top-nav .user-info-premium .user-details .user-name { font-size: 0.8rem; }
+            .top-nav .user-info-premium .user-details .user-role { display: none; }
+            .top-nav .user-info-premium .user-avatar { width: 32px; height: 32px; font-size: 0.8rem; }
+            .stat-card { padding: 1rem; }
+            .stat-card .stat-value { font-size: 1.3rem; }
+            .quick-actions { grid-template-columns: repeat(3, 1fr); }
+            .app-footer { padding: 0.5rem 1rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.65rem; }
+            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.6rem; }
+        }
+        @media (max-width: 425px) {
+            .brand { font-size: 1rem; }
+            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
+            .top-nav .breadcrumb-premium { font-size: 0.65rem; }
+            .top-nav .breadcrumb-premium .breadcrumb-item .separator { display: none; }
+            .top-nav .user-info-premium .user-avatar { width: 28px; height: 28px; font-size: 0.7rem; }
+            .top-nav .user-info-premium .btn-icon-premium { width: 32px; height: 32px; font-size: 0.9rem; }
+            .stat-card .stat-value { font-size: 1.1rem; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .quick-action-item { padding: 0.8rem 0.5rem; }
+            .quick-action-item i { font-size: 1.2rem; }
+            .app-footer .footer-user-info { gap: 0.4rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.55rem; }
+            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.5rem; }
+            .app-footer .footer-user-info .user-status { font-size: 0.5rem; padding: 2px 8px; }
+            .app-footer .footer-brand .footer-company { font-size: 0.8rem; }
+        }
+        /* ============================================================
+           THEME ACCESSIBILITY OVERRIDES - NOTIFICATIONS PAGE
+           ============================================================ */
+        :root {
+            color-scheme: light;
+            --sz-focus: #0b5ed7;
+            --sz-surface-2: #f0efe8;
+            --sz-input-bg: #ffffff;
+            --sz-on-accent: #ffffff;
+        }
+        [data-theme="dark"] {
+            color-scheme: dark;
+            --sz-focus: #8fc7ff;
+            --sz-surface-2: #1d3b31;
+            --sz-input-bg: #10271f;
+            --sz-on-accent: #07130f;
+        }
+        body, .app-wrapper, .app-main, .app-content { background-color: var(--sz-paper); color: var(--sz-ink); }
+        .text-muted { color: var(--sz-muted) !important; }
+        .bg-light { background-color: var(--sz-surface-2) !important; color: var(--sz-ink) !important; }
+        .bg-white { background-color: var(--sz-white) !important; color: var(--sz-ink) !important; }
+        .border, .border-top, .border-end, .border-bottom, .border-start { border-color: var(--sz-line) !important; }
+        .stat-card .stat-value, .stat-card .stat-label, .stat-card .stat-change,
+        .table-custom tbody td, .table-custom tbody td strong, .card-sz, .card-sz h1,
+        .card-sz h2, .card-sz h3, .card-sz h4, .card-sz h5, .card-sz h6 { color: var(--sz-ink); }
+        [data-theme="dark"] .stat-card .stat-value,
+        [data-theme="dark"] .card-sz h1, [data-theme="dark"] .card-sz h2,
+        [data-theme="dark"] .card-sz h3, [data-theme="dark"] .card-sz h4,
+        [data-theme="dark"] .card-sz h5, [data-theme="dark"] .card-sz h6 {
+            color: #f0efe8 !important; opacity: 1 !important;
+        }
+        [data-theme="dark"] .stat-card .stat-label,
+        [data-theme="dark"] .stat-card .stat-change { color: #c0d0c8 !important; opacity: 1 !important; }
+        .form-control, .form-select, .form-check-input, .input-group-text, textarea, select,
+        input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+            background-color: var(--sz-input-bg); color: var(--sz-ink); border-color: var(--sz-line);
+        }
+        .form-control::placeholder, textarea::placeholder { color: var(--sz-muted); opacity: 1; }
+        .form-control:focus, .form-select:focus, textarea:focus, select:focus, input:focus,
+        button:focus-visible, a:focus-visible {
+            color: var(--sz-ink); background-color: var(--sz-input-bg); border-color: var(--sz-focus);
+            box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--sz-focus) 25%, transparent);
+            outline: 2px solid transparent;
+        }
+        .form-label, .form-check-label, label { color: var(--sz-ink); }
+        .table-custom thead th { color: var(--sz-muted); }
+        .table-custom tbody td, .table-custom tbody td strong { color: var(--sz-ink); }
+        [data-theme="dark"] .table-custom thead th { color: #c0d0c8 !important; background: #0a1a14 !important; }
+        [data-theme="dark"] .table-custom tbody td,
+        [data-theme="dark"] .table-custom tbody td strong { color: #f0efe8 !important; }
+        [data-theme="dark"] .table-custom tbody tr:hover { background: rgba(42, 157, 143, 0.12) !important; }
+        .dropdown-menu, .modal-content, .modal-content-sz, .offcanvas, .popover {
+            background-color: var(--sz-white); color: var(--sz-ink); border-color: var(--sz-line);
+        }
+        .dropdown-item { color: var(--sz-ink); }
+        .dropdown-item:hover, .dropdown-item:focus { background-color: var(--sz-surface-2); color: var(--sz-ink); }
+        [data-theme="dark"] .modal-content-sz .modal-title,
+        [data-theme="dark"] .modal-content-sz .form-label,
+        [data-theme="dark"] .permission-item label { color: #f0efe8 !important; }
+        [data-theme="dark"] .modal-content-sz .form-control,
+        [data-theme="dark"] .modal-content-sz .form-select { background: #10271f !important; color: #f0efe8 !important; border-color: #42675b !important; }
+        .badge, .badge-role, .badge-status, .badge-permission { opacity: 1; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <!-- ============================================================
+    APP WRAPPER
+    ============================================================ -->
+    <div class="app-wrapper">
+
+        <!-- APP ROW (SIDEBAR + MAIN) -->
+        <div class="app-row">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" role="navigation">
+                <div class="mb-4">
+                    <a class="brand" href="index.html">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <div class="small text-muted mt-2" style="font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> SuperAdmin
+                    </div>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="index.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="utilizadores.html"><i class="bi bi-people me-2"></i>Utilizadores <span class="badge-nav" id="userBadge">0</span></a>
+                    <a class="nav-link" href="empresas.html"><i class="bi bi-building me-2"></i>Empresas <span class="badge-nav" id="companyBadge">0</span></a>
+                    <a class="nav-link" href="pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos <span class="badge-nav" id="paymentBadge">0</span></a>
+                    <a class="nav-link" href="faturacao.html"><i class="bi bi-receipt me-2"></i>Faturação <span class="badge-nav" id="invoiceBadge">0</span></a>
+                    <a class="nav-link" href="relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link active" href="notificacoes.html"><i class="bi bi-bell me-2"></i>Notificações <span class="badge-nav" id="notifBadge">0</span></a>
+                    <a class="nav-link" href="suporte.html"><i class="bi bi-ticket me-2"></i>Suporte</a>
+                    <a class="nav-link" href="actividades.html"><i class="bi bi-clipboard-data me-2"></i>Auditoria</a>
+                    <a class="nav-link" href="roles.html"><i class="bi bi-shield-lock me-2"></i>Permissões</a>
+                    <a class="nav-link" href="comunicacao.html"><i class="bi bi-megaphone me-2"></i>Comunicação</a>
+                    <a class="nav-link" href="seguranca.html"><i class="bi bi-shield-check me-2"></i>Segurança</a>
+                    <a class="nav-link" href="configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                </nav>
+                <div class="mt-4 d-flex flex-column gap-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
+                        <i class="bi bi-circle-half me-2"></i>Tema
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger-sz w-100" onclick="logoutAdmin()">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sair
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="app-main">
+
+                <!-- TOP NAV -->
+                <div class="top-nav">
+                    <div class="breadcrumb-premium">
+                        <span class="breadcrumb-item">
+                            <i class="bi bi-house-fill home-icon"></i>
+                            <a href="index.html">Dashboard</a>
+                        </span>
+                        <span class="separator">›</span>
+                        <span class="breadcrumb-item current">
+                            <i class="bi bi-bell me-1"></i> Notificações
+                        </span>
+                        <span class="live-badge ms-2">
+                            <span class="dot"></span>
+                            AO VIVO
+                        </span>
+                    </div>
+
+                    <div class="user-info-premium">
+                        <div class="user-details text-end">
+                            <span class="user-name" id="userDisplay">
+                                <i class="bi bi-person-circle me-1"></i> Carregando...
+                            </span>
+                            <span class="user-role" id="userRole">SuperAdmin</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">S</div>
+                        <button class="btn-icon-premium" onclick="toggleTheme()" title="Alternar tema">
+                            <i class="bi bi-circle-half"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CONTEÚDO -->
+                <div class="app-content container-fluid p-3 p-lg-4">
+
+                    <!-- HEADER -->
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+                        <div>
+                            <div class="eyebrow"><i class="bi bi-bell me-1"></i> COMUNICAÇÃO</div>
+                            <h1 class="font-display" style="font-size:clamp(1.8rem,3vw,2.5rem);margin:0;">
+                                Notificações <em style="color:var(--sz-coral);font-style:normal;">✦</em>
+                            </h1>
+                            <p class="text-muted mt-1" style="font-size:0.9rem;">
+                                Comunicação com utilizadores e empresas
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn-outline-sz btn-sm" onclick="markAllRead()">
+                                <i class="bi bi-check2-all"></i> Marcar todas lidas
+                            </button>
+                            <button class="btn-outline-sz btn-sm" onclick="exportJSON()">
+                                <i class="bi bi-file-earmark-code"></i> JSON
+                            </button>
+                            <button class="btn-outline-sz btn-sm" onclick="forceRefresh()">
+                                <i class="bi bi-arrow-clockwise"></i> Actualizar
+                            </button>
+                            <button class="btn-sz" onclick="openCreateNotificationModal()">
+                                <i class="bi bi-plus-lg"></i> Nova Notificação
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- QUICK ACTIONS -->
+                    <div class="quick-actions">
+                        <a href="#" onclick="openCreateNotificationModal('user')" class="quick-action-item">
+                            <i class="bi bi-person"></i>
+                            <span>Para Utilizador</span>
+                        </a>
+                        <a href="#" onclick="openCreateNotificationModal('company')" class="quick-action-item">
+                            <i class="bi bi-building"></i>
+                            <span>Para Empresa</span>
+                        </a>
+                        <a href="#" onclick="openCreateNotificationModal('all')" class="quick-action-item">
+                            <i class="bi bi-globe"></i>
+                            <span>Para Todos</span>
+                        </a>
+                        <a href="#" onclick="openCreateNotificationModal('plan')" class="quick-action-item">
+                            <i class="bi bi-box-seam"></i>
+                            <span>Por Plano</span>
+                        </a>
+                        <a href="#" onclick="viewHistory()" class="quick-action-item">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Histórico</span>
+                        </a>
+                    </div>
+
+                    <!-- STATS CARDS -->
+                    <div class="row g-3">
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card green">
+                                <div class="stat-icon green"><i class="bi bi-bell"></i></div>
+                                <div class="stat-label">Total Notificações</div>
+                                <div class="stat-value" id="totalNotifs">0</div>
+                                <div class="stat-change neutral">Enviadas</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card gold">
+                                <div class="stat-icon gold"><i class="bi bi-envelope-open"></i></div>
+                                <div class="stat-label">Lidas</div>
+                                <div class="stat-value" id="readNotifs">0</div>
+                                <div class="stat-change up"><i class="bi bi-arrow-up"></i> Lidas</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card coral">
+                                <div class="stat-icon coral"><i class="bi bi-envelope"></i></div>
+                                <div class="stat-label">Não Lidas</div>
+                                <div class="stat-value" id="unreadNotifs">0</div>
+                                <div class="stat-change down"><i class="bi bi-arrow-down"></i> Pendentes</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card purple">
+                                <div class="stat-icon purple"><i class="bi bi-clock-history"></i></div>
+                                <div class="stat-label">Último Envio</div>
+                                <div class="stat-value" id="lastSent" style="font-size:1rem;">—</div>
+                                <div class="stat-change neutral">Última</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FILTERS -->
+                    <div class="card-sz p-3 mt-3">
+                        <div class="filter-bar">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-search text-muted"></i>
+                                <input class="form-control" id="searchInput" placeholder="Pesquisar..." oninput="renderNotifications()">
+                            </div>
+                            <select class="form-select" id="typeFilter" onchange="renderNotifications()" style="min-width:140px;">
+                                <option value="">Todos os tipos</option>
+                                <option value="system">Sistema</option>
+                                <option value="user">Utilizador</option>
+                                <option value="company">Empresa</option>
+                                <option value="all">Todos</option>
+                                <option value="plan">Plano</option>
+                            </select>
+                            <select class="form-select" id="readFilter" onchange="renderNotifications()" style="min-width:140px;">
+                                <option value="">Todos os estados</option>
+                                <option value="read">Lidas</option>
+                                <option value="unread">Não lidas</option>
+                            </select>
+                            <button class="btn-sm-sz" onclick="resetFilters()">
+                                <i class="bi bi-arrow-counterclockwise"></i> Limpar
+                            </button>
+                            <span class="text-muted small ms-auto" style="font-size:0.7rem;">
+                                <i class="bi bi-database"></i> <span id="notifCount">0</span> notificações
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- NOTIFICATIONS LIST -->
+                    <div class="card-sz mt-3">
+                        <div class="card-header-custom">
+                            <h5><i class="bi bi-bell me-2" style="color:var(--sz-gold);"></i>Notificações</h5>
+                            <span class="text-muted small" id="notifListCount">0 itens</span>
+                        </div>
+                        <div class="p-3" id="notificationsContainer">
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-inbox" style="font-size:2.5rem;display:block;opacity:0.3;margin-bottom:0.5rem;"></i>
+                                Carregando notificações...
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center p-3 border-top border-light">
+                            <span class="text-muted small" id="paginationInfo">Mostrando 0 de 0</span>
+                            <nav>
+                                <ul class="pagination pagination-custom mb-0" id="paginationControls"></ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">Pay</div>
+                            <span class="footer-company">Sumbane<b>Pay</b></span>
+                            <span class="footer-version">v1.0.0</span>
+                        </div>
+                        <div class="footer-user-info" id="footerUserInfo">
+                            <span class="user-data-item">
+                                <i class="bi bi-person"></i>
+                                <span class="data-value" id="footerUserName">Carregando...</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-envelope"></i>
+                                <span class="data-value email-value" id="footerUserEmail">carregando@email.com</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-shield-check"></i>
+                                <span class="data-value" id="footerUserRole">SuperAdmin</span>
+                            </span>
+                            <span class="user-status">
+                                <span class="status-dot"></span>
+                                Online
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-clock"></i>
+                                <span class="data-value" id="footerLastUpdate">—</span>
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    MODAL CRIAR NOTIFICAÇÃO
+    ============================================================ -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-content-sz">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notifModalTitle">
+                        <i class="bi bi-plus-circle me-2" style="color:var(--sz-coral);"></i>
+                        Nova Notificação
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="notificationForm" onsubmit="sendNotification(event)">
+                        <div class="mb-3">
+                            <label class="form-label" for="notifType">Tipo de Notificação <span class="required">*</span></label>
+                            <select id="notifType" class="form-select" required onchange="toggleTargetFields()">
+                                <option value="system">Sistema</option>
+                                <option value="user">Para Utilizador</option>
+                                <option value="company">Para Empresa</option>
+                                <option value="all">Para Todos</option>
+                                <option value="plan">Por Plano</option>
+                            </select>
+                        </div>
+
+                        <div id="targetFields" style="display:none;">
+                            <div class="mb-3" id="userTarget">
+                                <label class="form-label" for="notifUser">Seleccionar Utilizador <span class="required">*</span></label>
+                                <select id="notifUser" class="form-select">
+                                    <option value="">Seleccione um utilizador</option>
+                                </select>
+                            </div>
+                            <div class="mb-3" id="companyTarget">
+                                <label class="form-label" for="notifCompany">Seleccionar Empresa <span class="required">*</span></label>
+                                <select id="notifCompany" class="form-select">
+                                    <option value="">Seleccione uma empresa</option>
+                                </select>
+                            </div>
+                            <div class="mb-3" id="planTarget">
+                                <label class="form-label" for="notifPlan">Plano <span class="required">*</span></label>
+                                <select id="notifPlan" class="form-select">
+                                    <option value="basic">Básico</option>
+                                    <option value="pro">Profissional</option>
+                                    <option value="premium">Premium</option>
+                                    <option value="enterprise">Enterprise</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="notifTitle">Título <span class="required">*</span></label>
+                            <input id="notifTitle" class="form-control" type="text" placeholder="Título da notificação" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="notifMessage">Mensagem <span class="required">*</span></label>
+                            <textarea id="notifMessage" class="form-control" rows="4" placeholder="Conteúdo da notificação..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="notifPriority">Prioridade</label>
+                            <select id="notifPriority" class="form-select">
+                                <option value="normal">Normal</option>
+                                <option value="high">Alta</option>
+                                <option value="urgent">Urgente</option>
+                            </select>
+                        </div>
+
+                        <div class="alert alert-info" style="background:rgba(23,107,91,0.06);border-color:var(--sz-line);color:var(--sz-ink);border-radius:8px;font-size:0.85rem;">
+                            <i class="bi bi-info-circle me-1"></i>
+                            A notificação será enviada imediatamente para o(s) destinatário(s).
+                        </div>
+
+                        <button type="submit" class="btn-sz w-100" id="sendNotifBtn">
+                            <i class="bi bi-send"></i> Enviar Notificação
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* ============================================================
+           NOTIFICAÇÕES - SUMBANEPAY SUPERADMIN
+           Versão: 25.0.0
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+        const ADMIN_EMAIL = "jsumbane22@gmail.com";
+
+        let notifModalInstance = null;
+        let sortField = 'date';
+        let sortDirection = 'desc';
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let isRendering = false;
+        let autoRefreshInterval = null;
+
+        // ======== FUNÇÕES CORE ========
+        function read(k, f) {
+            try { const data = localStorage.getItem(KEY + k); return data ? JSON.parse(data) : f; } catch (e) { return f; }
+        }
+
+        function write(k, v) {
+            localStorage.setItem(KEY + k, JSON.stringify(v));
+        }
+
+        function getAll(k) { return read(k, []); }
+
+        function getById(k, id) {
+            const items = getAll(k);
+            return items.find(item => item.id === id) || null;
+        }
+
+        function generateId(prefix) { return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+        function escapeHTML(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+            }[char]));
+        }
+
+        function formatDateTime(d) {
+            if (!d) return '-';
+            return new Date(d).toLocaleString('pt-PT', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function toast(t, icon = 'success') {
+            Swal.fire({ toast: true, position: 'top-end', timer: 3000, showConfirmButton: false, icon, title: t });
+        }
+
+        function confirmAction(title, text, confirmText = 'Sim, confirmar') {
+            return Swal.fire({
+                title, text, icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#176b5b',
+                cancelButtonColor: '#dc3545',
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Cancelar',
+                background: getComputedStyle(document.documentElement).getPropertyValue('--sz-white') || '#ffffff',
+                color: getComputedStyle(document.documentElement).getPropertyValue('--sz-ink') || '#19362e'
+            });
+        }
+
+        // ======== TEMA ========
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+            localStorage.setItem('sumbanepay_theme', next);
+            // Atualiza os números e a tabela imediatamente após trocar o tema.
+            if (typeof renderNotifications === 'function') renderNotifications();
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function loadTheme() {
+            const saved = localStorage.getItem('sumbanepay_theme');
+            const system = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(saved || (system ? 'dark' : 'light'));
+        }
+
+        // ======== SESSÃO ========
+        function requireAdmin() {
+            try {
+                const session = JSON.parse(localStorage.getItem(KEY + 'admin_session'));
+                if (session && session.loggedIn && session.email === ADMIN_EMAIL) {
+                    if (Date.now() - session.timestamp < 86400000) return true;
+                    localStorage.removeItem(KEY + 'admin_session');
+                }
+            } catch (e) {}
+            window.location.href = "superadmin-login.html";
+            return false;
+        }
+
+        function logoutAdmin() {
+            confirmAction('Sair da área Superadmin?', 'Terá que fazer login novamente para aceder.', 'Sair')
+                .then(result => {
+                    if (result.isConfirmed) {
+                        localStorage.removeItem(KEY + 'admin_session');
+                        window.location.replace('superadmin-login.html?logout=true');
+                    }
+                });
+        }
+
+        // ======== GARANTIR SUPERADMIN ========
+        function ensureSuperAdmin() {
+            const users = getAll('users');
+            const exists = users.find(u => u.email === ADMIN_EMAIL);
+            if (!exists) {
+                users.push({
+                    id: generateId('u'),
+                    name: 'Jorge Sumbane',
+                    email: ADMIN_EMAIL,
+                    password: "JLS5872347",
+                    phone: '84 587 2347',
+                    business: 'SumbanePay',
+                    role: 'superadmin',
+                    status: 'ativo',
+                    createdAt: new Date().toISOString(),
+                    permissions: {
+                        dashboard: true, vendas: true, faturas: true, clientes: true,
+                        produtos: true, pagamentos: true, relatorios: true,
+                        configuracoes: true, utilizadores: true, superadmin: true
+                    }
+                });
+                write('users', users);
+            }
+        }
+
+        // ======== SEED NOTIFICATIONS ========
+        function seedNotifications() {
+            const notifications = getAll('notifications');
+            if (notifications.length === 0) {
+                const defaultNotifs = [
+                    {
+                        id: generateId('notif'),
+                        type: 'system',
+                        title: 'Bem-vindo ao SuperAdmin',
+                        message: 'A plataforma está pronta para ser gerida. Acompanhe todas as métricas em tempo real.',
+                        target: 'all',
+                        priority: 'normal',
+                        read: false,
+                        sentBy: 'Sistema',
+                        date: new Date().toISOString()
+                    },
+                    {
+                        id: generateId('notif'),
+                        type: 'user',
+                        title: 'Novo utilizador registado',
+                        message: 'João Silva acabou de criar uma conta na plataforma.',
+                        target: 'user',
+                        targetId: '',
+                        targetName: 'João Silva',
+                        priority: 'normal',
+                        read: false,
+                        sentBy: 'Sistema',
+                        date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        id: generateId('notif'),
+                        type: 'company',
+                        title: 'Nova empresa cadastrada',
+                        message: 'A empresa "Tech Solutions" foi cadastrada na plataforma.',
+                        target: 'company',
+                        targetId: '',
+                        targetName: 'Tech Solutions',
+                        priority: 'normal',
+                        read: true,
+                        sentBy: 'Sistema',
+                        date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        id: generateId('notif'),
+                        type: 'all',
+                        title: 'Actualização do sistema',
+                        message: 'A plataforma foi actualizada com novas funcionalidades.',
+                        target: 'all',
+                        priority: 'high',
+                        read: false,
+                        sentBy: 'SuperAdmin',
+                        date: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        id: generateId('notif'),
+                        type: 'plan',
+                        title: 'Novo plano disponível',
+                        message: 'O plano Enterprise está agora disponível para todas as empresas.',
+                        target: 'plan',
+                        targetId: 'enterprise',
+                        targetName: 'Enterprise',
+                        priority: 'normal',
+                        read: true,
+                        sentBy: 'Sistema',
+                        date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                ];
+                write('notifications', defaultNotifications);
+            }
+        }
+
+        // ======== TOGGLE TARGET FIELDS ========
+        function toggleTargetFields() {
+            const type = document.getElementById('notifType').value;
+            const targetFields = document.getElementById('targetFields');
+            const userTarget = document.getElementById('userTarget');
+            const companyTarget = document.getElementById('companyTarget');
+            const planTarget = document.getElementById('planTarget');
+
+            targetFields.style.display = 'none';
+            userTarget.style.display = 'none';
+            companyTarget.style.display = 'none';
+            planTarget.style.display = 'none';
+
+            if (type === 'user') {
+                targetFields.style.display = 'block';
+                userTarget.style.display = 'block';
+            } else if (type === 'company') {
+                targetFields.style.display = 'block';
+                companyTarget.style.display = 'block';
+            } else if (type === 'plan') {
+                targetFields.style.display = 'block';
+                planTarget.style.display = 'block';
+            }
+        }
+
+        // ======== POPULATE SELECTS ========
+        function populateTargets() {
+            const users = getAll('users');
+            const companies = getAll('companies');
+
+            const userSelect = document.getElementById('notifUser');
+            userSelect.innerHTML = '<option value="">Seleccione um utilizador</option>';
+            users.forEach(u => {
+                userSelect.innerHTML += `<option value="${u.id}">${escapeHTML(u.name)} - ${escapeHTML(u.email)}</option>`;
+            });
+
+            const companySelect = document.getElementById('notifCompany');
+            companySelect.innerHTML = '<option value="">Seleccione uma empresa</option>';
+            companies.forEach(c => {
+                companySelect.innerHTML += `<option value="${c.id}">${escapeHTML(c.name)} - ${escapeHTML(c.email)}</option>`;
+            });
+        }
+
+        // ======== RENDER NOTIFICATIONS ========
+        function renderNotifications() {
+            if (isRendering) return;
+            if (!requireAdmin()) return;
+
+            isRendering = true;
+
+            try {
+                ensureSuperAdmin();
+                seedNotifications();
+
+                const notifications = getAll('notifications');
+                const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
+                const typeFilter = document.getElementById('typeFilter')?.value || '';
+                const readFilter = document.getElementById('readFilter')?.value || '';
+
+                let filtered = notifications.filter(n => {
+                    const matchSearch = (n.title + n.message + n.type + n.target).toLowerCase().includes(query);
+                    const matchType = !typeFilter || n.type === typeFilter;
+                    const matchRead = !readFilter || (readFilter === 'read' ? n.read === true : n.read === false);
+                    return matchSearch && matchType && matchRead;
+                });
+
+                filtered.sort((a, b) => {
+                    let va = a[sortField] || '';
+                    let vb = b[sortField] || '';
+                    if (sortField === 'date') {
+                        va = new Date(va);
+                        vb = new Date(vb);
+                    } else {
+                        va = String(va).toLowerCase();
+                        vb = String(vb).toLowerCase();
+                    }
+                    if (va < vb) return sortDirection === 'asc' ? -1 : 1;
+                    if (va > vb) return sortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                });
+
+                const total = notifications.length;
+                const read = notifications.filter(n => n.read === true).length;
+                const unread = total - read;
+                const last = notifications.length > 0 ? notifications[0].date : null;
+
+                document.getElementById('totalNotifs').textContent = total;
+                document.getElementById('readNotifs').textContent = read;
+                document.getElementById('unreadNotifs').textContent = unread;
+                document.getElementById('lastSent').textContent = last ? formatDateTime(last) : '—';
+                document.getElementById('notifBadge').textContent = unread;
+                document.getElementById('notifCount').textContent = filtered.length;
+
+                const admin = getAll('users').find(u => u.email === ADMIN_EMAIL);
+                if (admin) {
+                    document.getElementById('userDisplay').textContent = admin.name || 'Superadmin';
+                    document.getElementById('userAvatar').textContent = (admin.name || 'S').charAt(0).toUpperCase();
+                    document.getElementById('footerUserName').textContent = admin.name || 'Superadmin';
+                    document.getElementById('footerUserEmail').textContent = admin.email || 'superadmin@email.com';
+                }
+
+                const now = new Date();
+                document.getElementById('footerLastUpdate').textContent = 'Última atualização: ' + now.toLocaleTimeString('pt-PT');
+
+                const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+                if (currentPage > totalPages) currentPage = totalPages;
+                const start = (currentPage - 1) * itemsPerPage;
+                const end = Math.min(start + itemsPerPage, filtered.length);
+                const pageItems = filtered.slice(start, end);
+
+                const container = document.getElementById('notificationsContainer');
+                if (!container) return;
+
+                if (filtered.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-inbox" style="font-size:2.5rem;display:block;opacity:0.3;margin-bottom:0.5rem;"></i>
+                            Nenhuma notificação encontrada.<br>
+                            <small>Ajuste os filtros ou crie uma nova notificação.</small>
+                        </div>
+                    `;
+                } else {
+                    const typeLabels = {
+                        'system': { label: 'Sistema', class: 'system' },
+                        'user': { label: 'Utilizador', class: 'user' },
+                        'company': { label: 'Empresa', class: 'company' },
+                        'all': { label: 'Todos', class: 'all' },
+                        'plan': { label: 'Plano', class: 'plan' }
+                    };
+
+                    container.innerHTML = pageItems.map(n => {
+                        const typeInfo = typeLabels[n.type] || typeLabels.system;
+                        const targetLabel = n.target === 'all' ? 'Todos' :
+                            n.target === 'user' ? `Utilizador: ${escapeHTML(n.targetName || 'N/A')}` :
+                            n.target === 'company' ? `Empresa: ${escapeHTML(n.targetName || 'N/A')}` :
+                            n.target === 'plan' ? `Plano: ${escapeHTML(n.targetName || 'N/A')}` : n.target;
+
+                        return `
+                        <div class="notif-item ${!n.read ? 'unread' : ''}" onclick="toggleRead('${n.id}')">
+                            <div class="notif-header">
+                                <span class="notif-title">${escapeHTML(n.title || '—')}</span>
+                                <span class="notif-badge ${typeInfo.class}">${typeInfo.label}</span>
+                            </div>
+                            <div class="notif-message">${escapeHTML(n.message || '—')}</div>
+                            <div class="notif-footer">
+                                <div>
+                                    <span class="notif-target">
+                                        <i class="bi bi-tag"></i> ${targetLabel}
+                                    </span>
+                                    ${n.priority === 'high' ? ' <span class="badge bg-warning text-dark" style="font-size:0.5rem;">Alta</span>' : ''}
+                                    ${n.priority === 'urgent' ? ' <span class="badge bg-danger" style="font-size:0.5rem;">Urgente</span>' : ''}
+                                    ${!n.read ? ' <span class="badge bg-primary" style="font-size:0.5rem;">Nova</span>' : ''}
+                                </div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <span>${formatDateTime(n.date)}</span>
+                                    <button class="btn-sm-sz danger" onclick="event.stopPropagation();deleteNotification('${n.id}')" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `}).join('');
+                }
+
+                document.getElementById('notifListCount').textContent = `${filtered.length} itens`;
+                document.getElementById('paginationInfo').textContent =
+                    filtered.length > 0 ? `Mostrando ${start + 1} a ${end} de ${filtered.length}` : 'Mostrando 0 de 0';
+
+                const pagControls = document.getElementById('paginationControls');
+                if (pagControls) {
+                    let html = '';
+                    html += `<li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">«</a>
+                    </li>`;
+                    for (let i = 1; i <= Math.min(totalPages, 7); i++) {
+                        html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                            <a class="page-link" href="#" onclick="goToPage(${i})">${i}</a>
+                        </li>`;
+                    }
+                    if (totalPages > 7) {
+                        html += `<li class="page-item disabled"><a class="page-link">…</a></li>`;
+                        html += `<li class="page-item"><a class="page-link" href="#" onclick="goToPage(${totalPages})">${totalPages}</a></li>`;
+                    }
+                    html += `<li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
+                        <a class="page-link" href="#" onclick="goToPage(${currentPage + 1})">»</a>
+                    </li>`;
+                    pagControls.innerHTML = html;
+                }
+
+            } catch (e) {
+                console.warn('Erro ao renderizar notificações:', e);
+            } finally {
+                isRendering = false;
+            }
+        }
+
+        // ======== TOGGLE READ ========
+        function toggleRead(id) {
+            const notifications = getAll('notifications');
+            const updated = notifications.map(n => {
+                if (n.id === id) {
+                    return { ...n, read: !n.read };
+                }
+                return n;
+            });
+            write('notifications', updated);
+            renderNotifications();
+        }
+
+        // ======== MARK ALL READ ========
+        function markAllRead() {
+            const notifications = getAll('notifications');
+            const updated = notifications.map(n => ({ ...n, read: true }));
+            write('notifications', updated);
+            toast('Todas as notificações marcadas como lidas!');
+            renderNotifications();
+        }
+
+        // ======== DELETE NOTIFICATION ========
+        function deleteNotification(id) {
+            confirmAction(
+                'Eliminar notificação?',
+                'Esta acção não pode ser desfeita.',
+                'Eliminar'
+            ).then(result => {
+                if (result.isConfirmed) {
+                    const notifications = getAll('notifications');
+                    const updated = notifications.filter(n => n.id !== id);
+                    write('notifications', updated);
+                    toast('Notificação eliminada.');
+                    renderNotifications();
+                }
+            });
+        }
+
+        // ======== PAGINAÇÃO ========
+        function goToPage(page) {
+            currentPage = page;
+            renderNotifications();
+        }
+
+        // ======== FILTROS ========
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('readFilter').value = '';
+            currentPage = 1;
+            renderNotifications();
+        }
+
+        // ======== FORCE REFRESH ========
+        function forceRefresh() {
+            renderNotifications();
+            toast('Dados actualizados!');
+        }
+
+        // ======== EXPORTAR ========
+        function exportJSON() {
+            const notifications = getAll('notifications');
+            if (!notifications.length) { toast('Sem dados para exportar.', 'warning'); return; }
+            const data = {
+                exportadoEm: new Date().toISOString(),
+                totalNotificacoes: notifications.length,
+                notificacoes: notifications
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `notificacoes_${new Date().toISOString().slice(0,10)}.json`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            toast('JSON exportado com sucesso!');
+        }
+
+        // ======== OPEN CREATE MODAL ========
+        function openCreateNotificationModal(type) {
+            if (type) {
+                document.getElementById('notifType').value = type;
+                toggleTargetFields();
+            }
+
+            document.getElementById('notifTitle').value = '';
+            document.getElementById('notifMessage').value = '';
+            document.getElementById('notifPriority').value = 'normal';
+
+            document.getElementById('notifModalTitle').innerHTML = `
+                <i class="bi bi-plus-circle me-2" style="color:var(--sz-coral);"></i>
+                Nova Notificação
+            `;
+
+            populateTargets();
+
+            if (!notifModalInstance) {
+                notifModalInstance = new bootstrap.Modal(document.getElementById('notificationModal'));
+            }
+            notifModalInstance.show();
+        }
+
+        // ======== SEND NOTIFICATION ========
+        function sendNotification(event) {
+            event.preventDefault();
+
+            const type = document.getElementById('notifType').value;
+            const title = document.getElementById('notifTitle').value.trim();
+            const message = document.getElementById('notifMessage').value.trim();
+            const priority = document.getElementById('notifPriority').value;
+            const sendBtn = document.getElementById('sendNotifBtn');
+
+            if (!title || !message) {
+                toast('Preencha o título e a mensagem.', 'error');
+                return;
+            }
+
+            let target = 'all';
+            let targetId = '';
+            let targetName = '';
+
+            if (type === 'user') {
+                targetId = document.getElementById('notifUser').value;
+                if (!targetId) { toast('Seleccione um utilizador.', 'error'); return; }
+                target = 'user';
+                const users = getAll('users');
+                const user = users.find(u => u.id === targetId);
+                targetName = user ? user.name : 'Utilizador';
+            } else if (type === 'company') {
+                targetId = document.getElementById('notifCompany').value;
+                if (!targetId) { toast('Seleccione uma empresa.', 'error'); return; }
+                target = 'company';
+                const companies = getAll('companies');
+                const company = companies.find(c => c.id === targetId);
+                targetName = company ? company.name : 'Empresa';
+            } else if (type === 'plan') {
+                target = 'plan';
+                targetId = document.getElementById('notifPlan').value;
+                targetName = document.getElementById('notifPlan').options[document.getElementById('notifPlan').selectedIndex]?.text || 'Plano';
+            }
+
+            if (sendBtn) {
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>A enviar...';
+            }
+
+            try {
+                const notifications = getAll('notifications');
+                const newNotif = {
+                    id: generateId('notif'),
+                    type: type,
+                    title: title,
+                    message: message,
+                    target: target,
+                    targetId: targetId,
+                    targetName: targetName,
+                    priority: priority || 'normal',
+                    read: false,
+                    sentBy: 'SuperAdmin',
+                    date: new Date().toISOString()
+                };
+
+                notifications.unshift(newNotif);
+                if (notifications.length > 200) notifications.splice(200);
+                write('notifications', notifications);
+
+                // Registrar atividade
+                const activities = read('activities', []);
+                activities.unshift({
+                    id: generateId('act'),
+                    type: 'notification',
+                    title: `Notificação enviada: ${title}`,
+                    desc: `Para: ${targetName || target} · ${message.substring(0, 50)}...`,
+                    date: new Date().toISOString()
+                });
+                if (activities.length > 100) activities.splice(100);
+                write('activities', activities);
+
+                toast('✅ Notificação enviada com sucesso!');
+
+                if (notifModalInstance) notifModalInstance.hide();
+                renderNotifications();
+            } catch (error) {
+                toast('Erro ao enviar notificação.', 'error');
+            } finally {
+                if (sendBtn) {
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<i class="bi bi-send"></i> Enviar Notificação';
+                }
+            }
+        }
+
+        // ======== VIEW HISTORY ========
+        function viewHistory() {
+            const activities = read('activities', []);
+            const notifActivities = activities.filter(a =>
+                a.type === 'notification' || a.title.includes('Notificação') || a.title.includes('notificação')
+            );
+
+            if (!notifActivities.length) {
+                toast('Nenhum histórico de notificações.', 'info');
+                return;
+            }
+
+            const html = notifActivities.slice(0, 30).map(a => `
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--sz-line);font-size:0.8rem;">
+                    <div>
+                        <strong>${escapeHTML(a.title)}</strong>
+                        <div style="font-size:0.7rem;color:var(--sz-muted);">${escapeHTML(a.desc || '')}</div>
+                    </div>
+                    <span style="color:var(--sz-muted);font-size:0.65rem;">${formatDateTime(a.date)}</span>
+                </div>
+            `).join('');
+
+            Swal.fire({
+                title: '📋 Histórico de Notificações',
+                width: 600,
+                html: `<div style="max-height:400px;overflow-y:auto;text-align:left;">${html}</div>`,
+                icon: 'info',
+                confirmButtonText: 'Fechar',
+                confirmButtonColor: '#176b5b',
+                background: getComputedStyle(document.documentElement).getPropertyValue('--sz-white') || '#ffffff',
+                color: getComputedStyle(document.documentElement).getPropertyValue('--sz-ink') || '#19362e'
+            });
+        }
+
+        // ======== START AUTO REFRESH ========
+        function startAutoRefresh() {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            autoRefreshInterval = setInterval(function() {
+                const session = localStorage.getItem(KEY + 'admin_session');
+                if (!session) {
+                    clearInterval(autoRefreshInterval);
+                    window.location.replace('superadmin-login.html');
+                } else {
+                    renderNotifications();
+                }
+            }, 30000);
+        }
+
+        // ======== PREVENÇÃO BFCACHE ========
+        function preventBFCache() {
+            window.addEventListener('pageshow', function(e) {
+                if (e.persisted) {
+                    const session = localStorage.getItem(KEY + 'admin_session');
+                    if (!session) window.location.replace('superadmin-login.html');
+                    else renderNotifications();
+                }
+            });
+        }
+
+        // ======== INICIALIZAÇÃO ========
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+            if (!requireAdmin()) return;
+
+            renderNotifications();
+            preventBFCache();
+            startAutoRefresh();
+
+            document.getElementById('notifType')?.addEventListener('change', toggleTargetFields);
+
+            window.addEventListener('storage', function(e) {
+                if (e.key && e.key.startsWith(KEY)) {
+                    renderNotifications();
+                }
+            });
+        });
+
+        // ======== EXPORTA ========
+        window.logoutAdmin = logoutAdmin;
+        window.toggleTheme = toggleTheme;
+        window.renderNotifications = renderNotifications;
+        window.toggleRead = toggleRead;
+        window.markAllRead = markAllRead;
+        window.deleteNotification = deleteNotification;
+        window.goToPage = goToPage;
+        window.resetFilters = resetFilters;
+        window.forceRefresh = forceRefresh;
+        window.exportJSON = exportJSON;
+        window.openCreateNotificationModal = openCreateNotificationModal;
+        window.sendNotification = sendNotification;
+        window.toggleTargetFields = toggleTargetFields;
+        window.populateTargets = populateTargets;
+        window.viewHistory = viewHistory;
+        window.KEY = KEY;
+        window.read = read;
+        window.write = write;
+        window.getAll = getAll;
+        window.getById = getById;
+        window.generateId = generateId;
+        window.formatDateTime = formatDateTime;
+        window.toast = toast;
+        window.confirmAction = confirmAction;
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>404 | SumbanePay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* ============================================================
+           ROOT VARIABLES
+           ============================================================ */
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-green-dark: #0f4a3e;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-coral-light: #f28a71;
+            --sz-gold: #e8b35b;
+            --sz-gold-light: #f0c97a;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 24px rgba(16, 63, 55, 0.08);
+            --sz-shadow-hover: 0 8px 40px rgba(16, 63, 55, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-display: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+        }
+
+        /* ============================================================
+           DARK MODE
+           ============================================================ */
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-green-dark: #1a7a6b;
+            --sz-coral: #f28a71;
+            --sz-coral-light: #f5a58f;
+            --sz-gold: #f0c97a;
+            --sz-gold-light: #f5d99a;
+            --sz-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            --sz-shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.6);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+        }
+
+        /* ============================================================
+           BASE
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: var(--font-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .font-display {
+            font-family: var(--font-display);
+        }
+
+        a {
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        /* ============================================================
+           SCROLLBAR
+           ============================================================ */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--sz-paper);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--sz-green);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--sz-green-dark);
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .header {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+            backdrop-filter: blur(12px);
+            background: rgba(var(--sz-white-rgb, 255, 255, 255), 0.92);
+            transition: background 0.4s ease, border-color 0.4s ease;
+            box-shadow: 0 1px 0 var(--sz-line);
+        }
+
+        [data-theme="dark"] .header {
+            background: rgba(22, 47, 39, 0.92);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            gap: 16px;
+        }
+
+        .brand {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.4rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .brand:hover {
+            color: var(--sz-green);
+            transform: translateY(-1px);
+        }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 16px rgba(23, 107, 91, 0.4);
+        }
+
+        .brand b {
+            color: var(--sz-coral);
+        }
+
+        .brand-tagline {
+            font-size: 0.6rem;
+            color: var(--sz-muted);
+            font-weight: 400;
+            font-family: var(--font-primary);
+            letter-spacing: 0.3px;
+            display: block;
+            margin-top: -2px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-toggle {
+            border: none;
+            background: transparent;
+            color: var(--sz-ink);
+            font-size: 1.2rem;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+        }
+
+        [data-theme="dark"] .theme-toggle:hover {
+            background: rgba(42, 157, 143, 0.15);
+            color: var(--sz-green-light);
+        }
+
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-dark));
+            color: #ffffff;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: var(--font-primary);
+        }
+
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(23, 107, 91, 0.35);
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--sz-green-dark), var(--sz-green));
+        }
+
+        [data-theme="dark"] .btn-sz {
+            box-shadow: 0 4px 14px rgba(42, 157, 143, 0.3);
+        }
+
+        [data-theme="dark"] .btn-sz:hover {
+            box-shadow: 0 6px 28px rgba(42, 157, 143, 0.4);
+        }
+
+        /* ============================================================
+           MAIN - 404
+           ============================================================ */
+        .error-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 1.5rem;
+        }
+
+        .error-container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .error-number {
+            font-size: clamp(6rem, 15vw, 12rem);
+            font-weight: 800;
+            color: var(--sz-green);
+            font-family: var(--font-display);
+            line-height: 1;
+            letter-spacing: -0.04em;
+            opacity: 0.15;
+            user-select: none;
+        }
+
+        [data-theme="dark"] .error-number {
+            opacity: 0.12;
+            color: var(--sz-green-light);
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            color: var(--sz-coral);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .error-container h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            color: var(--sz-ink);
+            margin-bottom: 0.75rem;
+            font-family: var(--font-display);
+        }
+
+        .error-container h1 em {
+            color: var(--sz-coral);
+            font-style: normal;
+        }
+
+        .error-container p {
+            color: var(--sz-muted);
+            font-size: 1.1rem;
+            max-width: 450px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .error-actions .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: var(--font-primary);
+        }
+
+        .error-actions .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+
+        [data-theme="dark"] .error-actions .btn-outline-sz {
+            border-color: var(--sz-green-light);
+            color: var(--sz-green-light);
+        }
+
+        [data-theme="dark"] .error-actions .btn-outline-sz:hover {
+            background: var(--sz-green-light);
+            color: var(--sz-paper);
+        }
+
+        .error-links {
+            margin-top: 2.5rem;
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+        }
+
+        .error-links a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .error-links a:hover {
+            color: var(--sz-green);
+        }
+
+        [data-theme="dark"] .error-links a:hover {
+            color: var(--sz-green-light);
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 1.5rem 0;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        [data-theme="dark"] .footer {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .footer-content span {
+            font-size: 0.8rem;
+            color: var(--sz-muted);
+        }
+
+        .footer-content a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-content a:hover {
+            color: var(--sz-green);
+        }
+
+        [data-theme="dark"] .footer-content a:hover {
+            color: var(--sz-green-light);
+        }
+
+        .footer-content .developer {
+            color: var(--sz-coral);
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] .footer-content .developer {
+            color: var(--sz-coral-light);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-wrap: wrap;
+            }
+
+            .error-wrapper {
+                padding: 2.5rem 1rem;
+            }
+
+            .error-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .error-actions .btn-sz,
+            .error-actions .btn-outline-sz {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 425px) {
+            .brand {
+                font-size: 1.1rem;
+            }
+
+            .brand-tagline {
+                font-size: 0.55rem;
+            }
+
+            .logo-mark {
+                width: 28px;
+                height: 28px;
+                font-size: 0.6rem;
+            }
+
+            .error-container p {
+                font-size: 0.95rem;
+            }
+
+            .error-links {
+                gap: 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
+    <header class="header" role="banner">
+        <div class="container" style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
+            <div class="header-inner">
+                <a class="brand" href="../index.html" aria-label="SumbanePay - Início">
+                    <span class="logo-mark" aria-hidden="true">Pay</span>
+                    <span>
+                        Sumbane<b>Pay</b>
+                        <span class="brand-tagline">Fature. Venda. Cresça.</span>
+                    </span>
+                </a>
+
+                <div class="header-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema escuro/claro">
+                        <i class="bi bi-moon-fill" id="themeIcon" aria-hidden="true"></i>
+                    </button>
+                    <a class="btn-sz" href="dashboard.html" aria-label="Ir para o dashboard">
+                        <i class="bi bi-grid-1x2" aria-hidden="true"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    MAIN - 404
+    ============================================================ -->
+    <main class="error-wrapper">
+        <div class="error-container">
+            <div class="error-number" aria-hidden="true">404</div>
+            <span class="error-icon" aria-hidden="true">🔍</span>
+            <h1>Ops! <em>Página perdida</em></h1>
+            <p>
+                Parece que a página que procura foi movida, removida ou nunca existiu.
+                Não se preocupe — estamos aqui para o ajudar a voltar ao caminho certo.
+            </p>
+            <div class="error-actions">
+                <a class="btn-sz" href="dashboard.html">
+                    <i class="bi bi-grid-1x2" aria-hidden="true"></i> Ir para o Dashboard
+                </a>
+                <a class="btn-outline-sz" href="../index.html">
+                    <i class="bi bi-house" aria-hidden="true"></i> Página Inicial
+                </a>
+            </div>
+            <div class="error-links">
+                <a href="clientes.html"><i class="bi bi-people" aria-hidden="true"></i> Clientes</a>
+                <a href="faturas.html"><i class="bi bi-receipt" aria-hidden="true"></i> Faturas</a>
+                <a href="pagamentos.html"><i class="bi bi-wallet2" aria-hidden="true"></i> Pagamentos</a>
+                <a href="relatorios.html"><i class="bi bi-bar-chart" aria-hidden="true"></i> Relatórios</a>
+                <a href="suporte.html"><i class="bi bi-question-circle" aria-hidden="true"></i> Suporte</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-content">
+            <span>
+                © 2026 <a href="../index.html">SumbanePay</a>. Todos os direitos reservados.
+            </span>
+            <span>
+                Desenvolvido por <span class="developer">Jorge Sumbane</span>
+            </span>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
+    <script>
+        /* ============================================================
+           SUMBANEPAY - 404 PAGE
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+
+        // =============================================================
+        // DADOS PADRÃO
+        // =============================================================
+        const seed = {
+            settings: { theme: 'light' }
+        };
+
+        // =============================================================
+        // FUNÇÕES CORE
+        // =============================================================
+
+        function getData(key) {
+            try {
+                const data = localStorage.getItem(KEY + key);
+                return data ? JSON.parse(data) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function saveData(key, data) {
+            localStorage.setItem(KEY + key, JSON.stringify(data));
+            return data;
+        }
+
+        // =============================================================
+        // TEMA (DARK MODE)
+        // =============================================================
+
+        function toggleTheme() {
+            const settings = getData('settings') || {};
+            const currentTheme = settings.theme || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            settings.theme = newTheme;
+            saveData('settings', settings);
+            applyTheme(newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            }
+        }
+
+        function loadTheme() {
+            const settings = getData('settings') || {};
+            const theme = settings.theme || 'light';
+            applyTheme(theme);
+            updateThemeIcon(theme);
+        }
+
+        // =============================================================
+        // INICIALIZAÇÃO
+        // =============================================================
+
+        function boot() {
+            // Seed data
+            Object.entries(seed).forEach(([key, value]) => {
+                if (localStorage.getItem(KEY + key) === null) {
+                    saveData(key, value);
+                }
+            });
+
+            // Carregar tema
+            loadTheme();
+        }
+
+        // EXPORTA FUNÇÕES GLOBAIS
+        window.toggleTheme = toggleTheme;
+        window.getData = getData;
+        window.saveData = saveData;
+
+        // INICIAR
+        document.addEventListener('DOMContentLoaded', boot);
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

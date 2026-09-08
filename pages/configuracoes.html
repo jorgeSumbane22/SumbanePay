@@ -1,0 +1,2275 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Configurações — SumbanePay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <style>
+        /* ========== ESTILOS COMPLETOS ========== */
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 20px rgba(16, 63, 55, 0.06);
+            --sz-shadow-hover: 0 12px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-info: #0dcaf0;
+            --sz-purple: #9b59b6;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --sz-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+            --sz-info: #7cbdda;
+            --sz-purple: #b07cc6;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+        .font-display { font-family: 'Playfair Display', 'Georgia', serif; }
+
+        .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+        .app-row { display: flex; flex: 1; }
+        .app-main { display: flex; flex-direction: column; flex: 1; min-height: 100vh; }
+        .app-content { flex: 1; padding-bottom: 1rem; }
+        .app-footer { flex-shrink: 0; width: 100%; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sz-paper); }
+        ::-webkit-scrollbar-thumb { background: var(--sz-green); border-radius: 10px; }
+
+        .brand {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); transform: translateY(-1px); }
+        .brand b { color: var(--sz-coral); }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+        }
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(23, 107, 91, 0.4);
+        }
+
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz i { transition: var(--transition); }
+        .btn-sz:hover i { transform: translateX(4px); }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+
+        .btn-outline-danger-sz {
+            border: 2px solid var(--sz-danger);
+            color: var(--sz-danger);
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-danger-sz:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(220, 53, 69, 0.3);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .quick-action-item {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            padding: 1.2rem 0.75rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--sz-muted);
+            box-shadow: var(--sz-shadow);
+        }
+        .quick-action-item:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-green);
+            color: var(--sz-ink);
+        }
+        .quick-action-item i {
+            font-size: 1.6rem;
+            color: var(--sz-green);
+            display: block;
+            margin-bottom: 6px;
+            transition: var(--transition);
+        }
+        .quick-action-item:hover i {
+            transform: scale(1.1);
+            color: var(--sz-coral);
+        }
+        .quick-action-item span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .sidebar {
+            background: var(--sz-white);
+            border-right: 1px solid var(--sz-line);
+            padding: 1.5rem 1rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            width: 260px;
+            flex-shrink: 0;
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar .nav-link {
+            color: var(--sz-muted);
+            border-radius: 8px;
+            margin: 0.15rem 0;
+            padding: 10px 14px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i {
+            width: 22px;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+
+        .top-nav {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 12px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.3;
+        }
+
+        .top-nav .breadcrumb-premium {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--sz-muted);
+            font-size: 0.85rem;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item .separator {
+            color: var(--sz-muted-light);
+            font-size: 0.6rem;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item.current {
+            color: var(--sz-ink);
+            font-weight: 600;
+            padding: 4px 8px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item .home-icon {
+            color: var(--sz-green);
+            font-size: 1.1rem;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            padding: 3px 12px 3px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(23, 107, 91, 0.15);
+        }
+        .live-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .top-nav .user-info-premium {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .top-nav .user-info-premium .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 2px 12px rgba(23, 107, 91, 0.25);
+            transition: var(--transition);
+            cursor: pointer;
+            user-select: none;
+        }
+        .top-nav .user-info-premium .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(23, 107, 91, 0.35);
+        }
+        .top-nav .user-info-premium .user-details .user-name {
+            font-weight: 600;
+            color: var(--sz-ink);
+            font-size: 0.9rem;
+        }
+        .top-nav .user-info-premium .user-details .user-role {
+            font-size: 0.65rem;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .top-nav .user-info-premium .btn-icon-premium {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-muted);
+            cursor: pointer;
+            position: relative;
+            font-size: 1.1rem;
+        }
+        .top-nav .user-info-premium .btn-icon-premium:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+            transform: translateY(-1px);
+        }
+
+        .card-premium {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            border: 1px solid var(--sz-line);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        .card-premium:hover {
+            box-shadow: var(--sz-shadow-hover);
+            transform: translateY(-2px);
+        }
+        .card-premium .card-header-premium {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: rgba(23, 107, 91, 0.02);
+        }
+        .card-premium .card-header-premium h5 {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1rem;
+            color: var(--sz-ink);
+            margin: 0;
+        }
+        .card-premium .card-body-premium { padding: 1.25rem 1.5rem; }
+
+        .settings-nav .nav-link {
+            color: var(--sz-muted);
+            border-radius: var(--sz-radius-sm);
+            padding: 10px 16px;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        .settings-nav .nav-link:hover {
+            background: rgba(23, 107, 91, 0.06);
+            color: var(--sz-green);
+        }
+        .settings-nav .nav-link.active {
+            background: var(--sz-green);
+            color: #fff;
+        }
+        .settings-nav .nav-link i {
+            margin-right: 10px;
+        }
+
+        .settings-form .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--sz-ink);
+        }
+        .settings-form .form-control,
+        .settings-form .form-select {
+            border-radius: 8px;
+            border: 2px solid var(--sz-line);
+            padding: 8px 14px;
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            transition: var(--transition);
+        }
+        .settings-form .form-control:focus,
+        .settings-form .form-select:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 4px rgba(23, 107, 91, 0.08);
+        }
+        .settings-form .form-control::placeholder {
+            color: var(--sz-muted-light);
+        }
+
+        .settings-section {
+            display: none;
+        }
+        .settings-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .app-footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 0.75rem 2rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        .app-footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .app-footer .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-footer .footer-brand .footer-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+        }
+        .app-footer .footer-brand .footer-company {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .app-footer .footer-brand .footer-company b {
+            color: var(--sz-coral);
+        }
+        .app-footer .footer-brand .footer-version {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            background: var(--sz-paper);
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+        .app-footer .footer-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .app-footer .footer-user-info .user-data-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-data-item i {
+            color: var(--sz-green);
+            font-size: 0.85rem;
+            width: 16px;
+            text-align: center;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value {
+            color: var(--sz-ink);
+            font-weight: 500;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value.email-value {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        .app-footer .footer-user-info .user-status .status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        .logo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            border: 2px dashed var(--sz-line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--sz-paper);
+            transition: var(--transition);
+            overflow: hidden;
+            font-size: 2.5rem;
+            color: var(--sz-muted);
+            flex-shrink: 0;
+        }
+        .logo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .logo-preview.has-logo {
+            border-style: solid;
+            border-color: var(--sz-green);
+            background: var(--sz-white);
+        }
+
+        .logo-status {
+            font-size: 0.8rem;
+            margin-top: 6px;
+        }
+        .logo-status .saved {
+            color: var(--sz-success);
+        }
+        .logo-status .not-saved {
+            color: var(--sz-muted);
+        }
+        .logo-status .loading {
+            color: var(--sz-warning);
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .logo-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--sz-line);
+            transition: var(--transition);
+            border-radius: 26px;
+        }
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--sz-green);
+        }
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(22px);
+        }
+
+        .pdf-preview-example {
+            background: white;
+            border-radius: var(--sz-radius-sm);
+            padding: 20px;
+            border: 1px solid var(--sz-line);
+            max-width: 400px;
+            margin-top: 15px;
+        }
+        .pdf-preview-example .pdf-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 2px solid var(--sz-green);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .pdf-preview-example .pdf-logo-placeholder {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: var(--sz-paper);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--sz-line);
+            font-size: 1.5rem;
+            color: var(--sz-muted);
+            overflow: hidden;
+        }
+        .pdf-preview-example .pdf-logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .pdf-preview-example .pdf-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .pdf-preview-example .pdf-company {
+            font-size: 0.8rem;
+            color: var(--sz-muted);
+        }
+
+        [data-theme="dark"] .sidebar {
+            background: #0a1a14;
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .sidebar .brand { color: #f0efe8 !important; }
+        [data-theme="dark"] .sidebar .nav-link { color: #b8c5bf !important; }
+        [data-theme="dark"] .sidebar .nav-link:hover,
+        [data-theme="dark"] .sidebar .nav-link.active {
+            background: rgba(42, 157, 143, 0.15) !important;
+            color: #f0c97a !important;
+        }
+
+        [data-theme="dark"] .top-nav {
+            background: #0a1a14;
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item.current {
+            color: #f0efe8 !important;
+            background: rgba(42, 157, 143, 0.15) !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a { color: #a0b0a8 !important; }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a:hover { color: #f0c97a !important; }
+
+        [data-theme="dark"] .card-premium {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .card-premium .card-header-premium h5 { color: #f0efe8 !important; }
+
+        [data-theme="dark"] .settings-form .form-control,
+        [data-theme="dark"] .settings-form .form-select {
+            background: #162f27;
+            color: #f0efe8;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .settings-form .form-control:focus,
+        [data-theme="dark"] .settings-form .form-select:focus {
+            border-color: #f0c97a;
+            box-shadow: 0 0 0 4px rgba(240, 201, 122, 0.12);
+        }
+
+        [data-theme="dark"] .app-footer {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .app-footer .footer-brand .footer-company { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status {
+            background: rgba(42, 157, 143, 0.12);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.15);
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status .status-dot { background: var(--sz-green-light); }
+
+        [data-theme="dark"] .quick-action-item {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+            color: #b8c5bf;
+        }
+        [data-theme="dark"] .quick-action-item:hover {
+            border-color: var(--sz-gold);
+            color: #f0efe8;
+        }
+        [data-theme="dark"] .quick-action-item i { color: var(--sz-gold); }
+        [data-theme="dark"] .quick-action-item:hover i { color: var(--sz-coral); }
+
+        [data-theme="dark"] .btn-outline-sz {
+            border-color: #2a9d8f !important;
+            color: #2a9d8f !important;
+        }
+        [data-theme="dark"] .btn-outline-sz:hover {
+            background: #2a9d8f !important;
+            color: #fff !important;
+        }
+        [data-theme="dark"] .text-muted { color: #a0b0a8 !important; }
+        [data-theme="dark"] .eyebrow { color: #f28a71 !important; }
+        [data-theme="dark"] .logo-preview {
+            border-color: #2a4a3e;
+            background: #162f27;
+        }
+        [data-theme="dark"] .logo-preview.has-logo {
+            background: var(--sz-white);
+        }
+        [data-theme="dark"] .pdf-preview-example {
+            background: #162f27;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .pdf-preview-example .pdf-logo-placeholder {
+            background: #0d1c17;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .toggle-slider { background: #2a4a3e; }
+
+        @media (max-width: 992px) {
+            .sidebar { width: 100%; min-height: auto; position: relative; padding: 1rem; max-height: none; }
+            .quick-actions { grid-template-columns: repeat(3, 1fr); }
+            .top-nav { padding: 12px 16px; }
+            .app-footer .footer-content { flex-direction: column; text-align: center; }
+            .app-footer .footer-user-info { justify-content: center; }
+        }
+        @media (max-width: 768px) {
+            .top-nav { padding: 10px 14px; }
+            .top-nav .breadcrumb-premium { font-size: 0.75rem; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+            .settings-nav { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 4px; padding-bottom: 4px; }
+            .settings-nav .nav-link { white-space: nowrap; font-size: 0.8rem; padding: 8px 14px; }
+            .app-footer { padding: 0.5rem 1rem; }
+            .logo-preview { width: 70px; height: 70px; font-size: 2rem; }
+        }
+        @media (max-width: 425px) {
+            .brand { font-size: 1rem; }
+            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .quick-action-item { padding: 0.8rem 0.5rem; }
+            .quick-action-item i { font-size: 1.2rem; }
+            .card-premium .card-body-premium { padding: 1rem; }
+            .logo-preview { width: 60px; height: 60px; font-size: 1.5rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <div class="app-row">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" role="navigation">
+                <div class="mb-4">
+                    <a class="brand" href="../index.html">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <div class="small text-muted mt-2" style="font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> Balcão Digital
+                    </div>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="./dashboard.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="./vendas.html"><i class="bi bi-bag me-2"></i>Vendas</a>
+                    <a class="nav-link" href="./nova-venda.html"><i class="bi bi-plus-circle me-2"></i>Nova venda</a>
+                    <a class="nav-link" href="./faturas.html"><i class="bi bi-receipt me-2"></i>Facturas</a>
+                    <a class="nav-link" href="./clientes.html"><i class="bi bi-people me-2"></i>Clientes</a>
+                    <a class="nav-link" href="./produtos.html"><i class="bi bi-box-seam me-2"></i>Produtos</a>
+                    <a class="nav-link" href="./pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos</a>
+                    <a class="nav-link" href="./relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link active" href="./configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                    <a class="nav-link" href="./perfil.html"><i class="bi bi-person me-2"></i>Perfil</a>
+                </nav>
+                <div class="mt-4 d-flex flex-column gap-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
+                        <i class="bi bi-circle-half me-2"></i>Tema
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger-sz w-100" onclick="logout()">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sair
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN -->
+            <main class="app-main">
+
+                <!-- TOP NAV -->
+                <div class="top-nav">
+                    <div class="breadcrumb-premium">
+                        <span class="breadcrumb-item">
+                            <i class="bi bi-house-fill home-icon"></i>
+                            <a href="./dashboard.html">Dashboard</a>
+                        </span>
+                        <span class="separator">›</span>
+                        <span class="breadcrumb-item current">
+                            <i class="bi bi-gear me-1"></i> Configurações
+                        </span>
+                        <span class="live-badge ms-2">
+                            <span class="dot"></span>
+                            AO VIVO
+                        </span>
+                    </div>
+                    <div class="user-info-premium">
+                        <div class="user-details text-end">
+                            <span class="user-name" id="userDisplay"><i class="bi bi-person-circle me-1"></i> Carregando...</span>
+                            <span class="user-role" id="userRole">Administrador</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">S</div>
+                        <button class="btn-icon-premium" onclick="toggleTheme()" title="Alternar tema">
+                            <i class="bi bi-circle-half"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CONTEÚDO -->
+                <div class="app-content container-fluid p-3 p-lg-4">
+
+                    <!-- HEADER -->
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+                        <div>
+                            <div class="eyebrow"><i class="bi bi-gear me-1"></i> PERSONALIZAÇÃO</div>
+                            <h1 class="font-display" style="font-size:clamp(1.8rem,3vw,2.5rem);margin:0;">
+                                Configurações <em style="color:var(--sz-coral);font-style:normal;">✦</em>
+                            </h1>
+                            <p class="text-muted mt-1" style="font-size:0.9rem;">
+                                Gerencie todos os dados da sua empresa e conta
+                                <span class="badge bg-success ms-2" style="font-size:0.55rem;">
+                                    <i class="bi bi-circle-fill me-1" style="font-size:0.35rem;"></i> AO VIVO
+                                </span>
+                            </p>
+                        </div>
+                        <button class="btn-outline-sz btn-sm" onclick="window.location.reload()">
+                            <i class="bi bi-arrow-clockwise"></i> Actualizar
+                        </button>
+                    </div>
+
+                    <!-- QUICK ACTIONS -->
+                    <div class="quick-actions">
+                        <a href="./nova-venda.html" class="quick-action-item">
+                            <i class="bi bi-plus-circle"></i><span>Nova Venda</span>
+                        </a>
+                        <a href="./clientes.html" class="quick-action-item">
+                            <i class="bi bi-person-plus"></i><span>Novo Cliente</span>
+                        </a>
+                        <a href="./produtos.html" class="quick-action-item">
+                            <i class="bi bi-box-plus"></i><span>Novo Produto</span>
+                        </a>
+                        <a href="./faturas.html" class="quick-action-item">
+                            <i class="bi bi-receipt"></i><span>Nova Factura</span>
+                        </a>
+                        <a href="./relatorios.html" class="quick-action-item">
+                            <i class="bi bi-file-earmark-bar-graph"></i><span>Relatórios</span>
+                        </a>
+                        <a href="./configuracoes.html" class="quick-action-item">
+                            <i class="bi bi-gear"></i><span>Configurações</span>
+                        </a>
+                    </div>
+
+                    <!-- SETTINGS CARD -->
+                    <div class="card-premium">
+                        <div class="card-body-premium">
+                            <div class="row g-4">
+                                <!-- NAVEGAÇÃO -->
+                                <div class="col-lg-3">
+                                    <nav class="nav flex-column settings-nav">
+                                        <a class="nav-link active" onclick="showSettingsTab('empresa')" href="#"><i class="bi bi-building"></i> Empresa</a>
+                                        <a class="nav-link" onclick="showSettingsTab('factura')" href="#"><i class="bi bi-receipt"></i> Factura</a>
+                                        <a class="nav-link" onclick="showSettingsTab('pagamentos')" href="#"><i class="bi bi-wallet2"></i> Pagamentos</a>
+                                        <a class="nav-link" onclick="showSettingsTab('seguranca')" href="#"><i class="bi bi-shield-lock"></i> Segurança</a>
+                                        <a class="nav-link" onclick="showSettingsTab('dados')" href="#"><i class="bi bi-database"></i> Dados</a>
+                                        <a class="nav-link" onclick="showSettingsTab('notificacoes')" href="#"><i class="bi bi-bell"></i> Notificações</a>
+                                    </nav>
+                                </div>
+
+                                <!-- CONTEÚDO -->
+                                <div class="col-lg-9">
+                                    <form class="settings-form" id="settingsForm" novalidate>
+
+                                        <!-- ========== EMPRESA ========== -->
+                                        <div class="settings-section active" id="section-empresa">
+                                            <h5 class="font-display mb-3"><i class="bi bi-building me-2" style="color:var(--sz-green);"></i>Dados da Empresa</h5>
+                                            <p class="text-muted small">Informações que aparecem nas facturas e documentos</p>
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="business"><i class="bi bi-shop me-1"></i> Nome do Negócio</label>
+                                                    <input id="business" class="form-control" placeholder="Ex: Minha Loja">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="name"><i class="bi bi-building me-1"></i> Nome da Empresa (Razão Social)</label>
+                                                    <input id="name" class="form-control" placeholder="Ex: Minha Empresa Lda">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="nuit"><i class="bi bi-card-text me-1"></i> NUIT / NIF</label>
+                                                    <input id="nuit" class="form-control" placeholder="Ex: 400123456">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="phone"><i class="bi bi-phone me-1"></i> Telefone</label>
+                                                    <input id="phone" class="form-control" placeholder="Ex: 84 000 0000">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="email"><i class="bi bi-envelope me-1"></i> Email</label>
+                                                    <input id="email" class="form-control" type="email" placeholder="Ex: info@empresa.com">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="website"><i class="bi bi-globe me-1"></i> Website</label>
+                                                    <input id="website" class="form-control" placeholder="Ex: www.minhaempresa.com">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="address"><i class="bi bi-geo-alt me-1"></i> Endereço</label>
+                                                    <input id="address" class="form-control" placeholder="Ex: Av. Julius Nyerere, 123">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="city"><i class="bi bi-buildings me-1"></i> Cidade</label>
+                                                    <input id="city" class="form-control" placeholder="Ex: Maputo">
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label" for="footer"><i class="bi bi-pencil me-1"></i> Mensagem de rodapé</label>
+                                                    <input id="footer" class="form-control" placeholder="Ex: Obrigado pela preferência!">
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label"><i class="bi bi-image me-1"></i> Logotipo da Empresa</label>
+                                                    <div class="d-flex align-items-start gap-4 flex-wrap">
+                                                        <div class="logo-preview" id="logoPreview">
+                                                            <i class="bi bi-image"></i>
+                                                        </div>
+                                                        <div>
+                                                            <div class="logo-actions">
+                                                                <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(event)">
+                                                                <button type="button" class="btn-sz btn-sm" onclick="document.getElementById('logoInput').click()">
+                                                                    <i class="bi bi-upload"></i> Carregar logo
+                                                                </button>
+                                                                <button type="button" class="btn-outline-danger-sz btn-sm" onclick="removeLogo()">
+                                                                    <i class="bi bi-trash"></i> Remover
+                                                                </button>
+                                                            </div>
+                                                            <div class="logo-status" id="logoStatus">
+                                                                <span class="not-saved"><i class="bi bi-circle me-1"></i>Nenhum logotipo carregado</span>
+                                                            </div>
+                                                            <div class="text-muted small mt-2">
+                                                                <i class="bi bi-info-circle"></i> Formatos suportados: JPG, PNG, GIF, SVG, WEBP (máx. 5MB)
+                                                            </div>
+                                                            <div class="text-muted small">
+                                                                <i class="bi bi-check-circle"></i> O logotipo fica salvo permanentemente até ser removido manualmente.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- ========== FACTURA ========== -->
+                                        <div class="settings-section" id="section-factura">
+                                            <h5 class="font-display mb-3"><i class="bi bi-receipt me-2" style="color:var(--sz-gold);"></i>Configurações de Factura</h5>
+                                            <p class="text-muted small">Personalize a forma como as facturas são geradas</p>
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="invoicePrefix"><i class="bi bi-tag me-1"></i> Prefixo da factura</label>
+                                                    <input id="invoicePrefix" class="form-control" placeholder="Ex: FT">
+                                                    <small class="text-muted">Exemplo: FT-0001</small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="currency"><i class="bi bi-cash me-1"></i> Moeda (código)</label>
+                                                    <input id="currency" class="form-control" placeholder="Ex: MZN">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="currencySymbol"><i class="bi bi-cash-stack me-1"></i> Símbolo da moeda</label>
+                                                    <input id="currencySymbol" class="form-control" placeholder="Ex: MT">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="taxRate"><i class="bi bi-percent me-1"></i> Taxa de IVA (%)</label>
+                                                    <input id="taxRate" class="form-control" type="number" placeholder="Ex: 16" step="0.1">
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="showTaxOnInvoice">
+                                                        <label class="form-check-label" for="showTaxOnInvoice">
+                                                            Mostrar IVA nas facturas
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mt-2">
+                                                    <h6 class="font-display"><i class="bi bi-file-pdf me-2"></i>Pré-visualização do PDF com Logotipo</h6>
+                                                    <div class="pdf-preview-example" id="pdfPreview">
+                                                        <div class="pdf-header">
+                                                            <div class="pdf-logo-placeholder" id="pdfLogoPreview">
+                                                                <i class="bi bi-image"></i>
+                                                            </div>
+                                                            <div>
+                                                                <div class="pdf-title">FACTURA</div>
+                                                                <div class="pdf-company" id="pdfCompanyName">SumbanePay</div>
+                                                            </div>
+                                                        </div>
+                                                        <div style="font-size:0.8rem;color:var(--sz-muted);">
+                                                            <p><strong>Cliente:</strong> Exemplo Cliente</p>
+                                                            <p><strong>Valor:</strong> 1.500,00 MT</p>
+                                                            <p><strong>Data:</strong> 07/09/2026</p>
+                                                        </div>
+                                                        <div style="font-size:0.6rem;color:var(--sz-muted-light);border-top:1px solid var(--sz-line);padding-top:8px;text-align:center;">
+                                                            Obrigado pela preferência!
+                                                        </div>
+                                                    </div>
+                                                    <button class="btn-sz btn-sm mt-2" onclick="generatePDFExample()">
+                                                        <i class="bi bi-file-pdf"></i> Gerar PDF de exemplo
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- ========== PAGAMENTOS ========== -->
+                                        <div class="settings-section" id="section-pagamentos">
+                                            <h5 class="font-display mb-3"><i class="bi bi-wallet2 me-2" style="color:var(--sz-purple);"></i>Métodos de Pagamento</h5>
+                                            <p class="text-muted small">Active ou desactive os métodos de pagamento disponíveis</p>
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <div class="d-flex flex-wrap gap-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="payMpesa" checked>
+                                                            <label class="form-check-label" for="payMpesa">M-Pesa</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="payEMola" checked>
+                                                            <label class="form-check-label" for="payEMola">e-Mola</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="payCash" checked>
+                                                            <label class="form-check-label" for="payCash">Dinheiro</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="payTransfer" checked>
+                                                            <label class="form-check-label" for="payTransfer">Transferência</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="payCard">
+                                                            <label class="form-check-label" for="payCard">Cartão de Crédito</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="payPix">
+                                                            <label class="form-check-label" for="payPix">Pix</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label" for="paymentTerms"><i class="bi bi-clock me-1"></i> Prazo de pagamento (dias)</label>
+                                                    <input id="paymentTerms" class="form-control" type="number" placeholder="Ex: 30" value="30">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- ========== SEGURANÇA ========== -->
+                                        <div class="settings-section" id="section-seguranca">
+                                            <h5 class="font-display mb-3"><i class="bi bi-shield-lock me-2" style="color:var(--sz-coral);"></i>Segurança da Conta</h5>
+                                            <p class="text-muted small">Gerencie a segurança da sua conta</p>
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <div class="alert alert-warning" style="border-radius:var(--sz-radius-sm);">
+                                                        <i class="bi bi-exclamation-triangle me-2"></i>
+                                                        <strong>Nota:</strong> Esta é uma versão de demonstração. Os dados são armazenados localmente no seu navegador.
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="securityName"><i class="bi bi-person me-1"></i> Nome de utilizador</label>
+                                                    <input id="securityName" class="form-control" readonly placeholder="Utilizador demo">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="securityEmail"><i class="bi bi-envelope me-1"></i> Email</label>
+                                                    <input id="securityEmail" class="form-control" readonly placeholder="demo@email.com">
+                                                </div>
+                                                <div class="col-12">
+                                                    <hr>
+                                                    <h6 class="font-display"><i class="bi bi-key me-2"></i>Alterar Senha</h6>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="currentPassword"><i class="bi bi-lock me-1"></i> Senha atual</label>
+                                                    <input id="currentPassword" class="form-control" type="password" placeholder="••••••••">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="newPassword"><i class="bi bi-key me-1"></i> Nova senha</label>
+                                                    <input id="newPassword" class="form-control" type="password" placeholder="••••••••" minlength="6">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="confirmPassword"><i class="bi bi-shield-check me-1"></i> Confirmar nova senha</label>
+                                                    <input id="confirmPassword" class="form-control" type="password" placeholder="••••••••">
+                                                </div>
+                                                <div class="col-md-6 d-flex align-items-end">
+                                                    <button type="button" class="btn-sz" onclick="changePassword()">
+                                                        <i class="bi bi-check-lg"></i> Alterar senha
+                                                    </button>
+                                                </div>
+                                                <div class="col-12">
+                                                    <hr>
+                                                    <div class="d-flex flex-wrap gap-2 mt-2">
+                                                        <button type="button" class="btn-outline-danger-sz" onclick="deleteAccount()">
+                                                            <i class="bi bi-person-x"></i> Eliminar conta
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- ========== DADOS ========== -->
+                                        <div class="settings-section" id="section-dados">
+                                            <h5 class="font-display mb-3"><i class="bi bi-database me-2" style="color:var(--sz-purple);"></i>Gestão de Dados</h5>
+                                            <p class="text-muted small">Gerencie, faça backup ou restaure os dados do sistema</p>
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <div class="alert alert-info" style="border-radius:var(--sz-radius-sm);">
+                                                        <i class="bi bi-info-circle me-2"></i>
+                                                        <strong>Dados de demonstração:</strong> Carregue 20 vendas, facturas e pagamentos para testar o sistema.
+                                                    </div>
+                                                    <div class="d-flex flex-wrap gap-2">
+                                                        <button type="button" class="btn-sz" onclick="demoData()">
+                                                            <i class="bi bi-play-circle"></i> Carregar demonstração
+                                                        </button>
+                                                        <button type="button" class="btn-outline-danger-sz" onclick="clearAllData()">
+                                                            <i class="bi bi-trash"></i> Limpar todos os dados
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="d-flex flex-wrap gap-2">
+                                                        <button type="button" class="btn-outline-sz" onclick="exportBackup()">
+                                                            <i class="bi bi-download"></i> Exportar Backup
+                                                        </button>
+                                                        <button type="button" class="btn-outline-sz" onclick="document.getElementById('restoreInput').click()">
+                                                            <i class="bi bi-upload"></i> Restaurar Backup
+                                                        </button>
+                                                        <input type="file" id="restoreInput" accept=".json" style="display:none;" onchange="importBackup(event)">
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mt-2">
+                                                    <div class="card" style="background:var(--sz-paper);border-radius:var(--sz-radius-sm);border:1px solid var(--sz-line);padding:1rem;">
+                                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                                            <span class="text-muted small">
+                                                                <i class="bi bi-database me-1"></i>
+                                                                <span id="dataStats">Carregando estatísticas...</span>
+                                                            </span>
+                                                            <span class="text-muted small">
+                                                                <i class="bi bi-hdd me-1"></i>
+                                                                <span id="dataSize">0 KB</span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- ========== NOTIFICAÇÕES ========== -->
+                                        <div class="settings-section" id="section-notificacoes">
+                                            <h5 class="font-display mb-3"><i class="bi bi-bell me-2" style="color:var(--sz-gold);"></i>Configurações de Notificações</h5>
+                                            <p class="text-muted small">Gerencie como e quando recebe notificações</p>
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="border-color:var(--sz-line);">
+                                                        <div>
+                                                            <strong><i class="bi bi-envelope me-2"></i>Notificações por Email</strong>
+                                                            <div class="text-muted small">Receba notificações sobre vendas e pagamentos por email</div>
+                                                        </div>
+                                                        <div class="toggle-switch">
+                                                            <input type="checkbox" id="notifEmail" checked>
+                                                            <span class="toggle-slider"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="border-color:var(--sz-line);">
+                                                        <div>
+                                                            <strong><i class="bi bi-bell me-2"></i>Notificações Push</strong>
+                                                            <div class="text-muted small">Receba notificações no navegador</div>
+                                                        </div>
+                                                        <div class="toggle-switch">
+                                                            <input type="checkbox" id="notifPush" checked>
+                                                            <span class="toggle-slider"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="border-color:var(--sz-line);">
+                                                        <div>
+                                                            <strong><i class="bi bi-receipt me-2"></i>Notificações de Vendas</strong>
+                                                            <div class="text-muted small">Receba notificações quando uma nova venda é registada</div>
+                                                        </div>
+                                                        <div class="toggle-switch">
+                                                            <input type="checkbox" id="notifSales" checked>
+                                                            <span class="toggle-slider"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="border-color:var(--sz-line);">
+                                                        <div>
+                                                            <strong><i class="bi bi-wallet2 me-2"></i>Notificações de Pagamentos</strong>
+                                                            <div class="text-muted small">Receba notificações quando um pagamento é recebido</div>
+                                                        </div>
+                                                        <div class="toggle-switch">
+                                                            <input type="checkbox" id="notifPayments" checked>
+                                                            <span class="toggle-slider"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center justify-content-between py-2" style="border-color:var(--sz-line);">
+                                                        <div>
+                                                            <strong><i class="bi bi-exclamation-triangle me-2"></i>Alertas de Segurança</strong>
+                                                            <div class="text-muted small">Receba alertas sobre atividades suspeitas na sua conta</div>
+                                                        </div>
+                                                        <div class="toggle-switch">
+                                                            <input type="checkbox" id="notifSecurity" checked>
+                                                            <span class="toggle-slider"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- BOTÃO SALVAR -->
+                                        <div class="mt-4 pt-3 border-top" style="border-color:var(--sz-line);">
+                                            <button type="button" class="btn-sz" onclick="saveAllSettings()">
+                                                <i class="bi bi-check-lg"></i> Guardar todas as configurações
+                                            </button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">Pay</div>
+                            <span class="footer-company">Sumbane<b>Pay</b></span>
+                            <span class="footer-version">v1.0.0</span>
+                        </div>
+                        <div class="footer-user-info" id="footerUserInfo">
+                            <span class="user-data-item"><i class="bi bi-person"></i><span class="data-value" id="footerUserName">Carregando...</span></span>
+                            <span class="user-data-item"><i class="bi bi-envelope"></i><span class="data-value email-value" id="footerUserEmail">carregando@email.com</span></span>
+                            <span class="user-data-item"><i class="bi bi-shield-check"></i><span class="data-value" id="footerUserRole">Utilizador</span></span>
+                            <span class="user-status"><span class="status-dot"></span> Online</span>
+                        </div>
+                    </div>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <script>
+        /* ============================================================
+           CONFIGURAÇÕES COMPLETAS - SUMBANEPAY
+           Versão: 10.0.0 - LOGO CORRIGIDO
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+
+        const seed = {
+            users: [],
+            company: {
+                business: '',
+                name: 'SumbanePay',
+                nuit: '',
+                phone: '',
+                email: '',
+                website: '',
+                address: '',
+                city: 'Maputo',
+                logo: '',
+                invoicePrefix: 'FT',
+                currency: 'MZN',
+                currencySymbol: 'MT',
+                taxRate: 16,
+                showTaxOnInvoice: true,
+                footer: 'Obrigado pela preferência!',
+                paymentTerms: 30
+            },
+            settings: { theme: 'light' },
+            paymentMethods: {
+                mpesa: true,
+                emola: true,
+                cash: true,
+                transfer: true,
+                card: false,
+                pix: false
+            },
+            notifications: {
+                email: true,
+                push: true,
+                sales: true,
+                payments: true,
+                security: true
+            },
+            clients: [],
+            products: [],
+            sales: [],
+            invoices: [],
+            payments: [],
+            invoiceCounter: 0,
+            admin_notifications: []
+        };
+
+        // ======== CORE ========
+        function read(k, f) {
+            try { const data = localStorage.getItem(KEY + k); return data ? JSON.parse(data) : f; } catch (e) { return f; }
+        }
+        function write(k, v) { localStorage.setItem(KEY + k, JSON.stringify(v)); }
+        function getAll(key) { return read(key, []); }
+        function generateId(prefix) { return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+        function money(n) {
+            return new Intl.NumberFormat('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(n) || 0) + ' MT';
+        }
+
+        function toast(msg, icon = 'success') {
+            Swal.fire({ toast: true, position: 'top-end', timer: 3500, showConfirmButton: false, icon: icon, title: msg });
+        }
+
+        function confirmAction(title, text, confirmText = 'Sim, confirmar') {
+            return Swal.fire({
+                title, text, icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#176b5b',
+                cancelButtonColor: '#dc3545',
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Cancelar',
+                background: getComputedStyle(document.documentElement).getPropertyValue('--sz-white') || '#ffffff',
+                color: getComputedStyle(document.documentElement).getPropertyValue('--sz-ink') || '#19362e'
+            });
+        }
+
+        // ======== FUNÇÃO GLOBAL PARA OBTER O LOGOTIPO ========
+        function getCompanyLogo() {
+            const company = read('company', {});
+            return company.logo || null;
+        }
+
+        // ======== FUNÇÃO PARA GERAR PDF COM LOGOTIPO ========
+        function generateInvoicePDF(invoiceData) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'mm', 'a4');
+                    const company = read('company', {});
+                    const logo = company.logo || null;
+
+                    // Dimensões da página
+                    const pageWidth = 210;
+                    const margin = 20;
+                    let y = 20;
+
+                    // ===== CABEÇALHO COM LOGOTIPO =====
+                    if (logo && logo.length > 100) {
+                        try {
+                            // Adicionar logotipo (tamanho 30mm x 30mm)
+                            doc.addImage(logo, 'JPEG', margin, y, 30, 30);
+                            y += 30;
+                        } catch (e) {
+                            console.warn('Erro ao adicionar logotipo:', e);
+                            doc.setFontSize(16);
+                            doc.setTextColor('#176b5b');
+                            doc.text(company.name || 'SumbanePay', margin, y + 15);
+                            y += 30;
+                        }
+                    } else {
+                        doc.setFontSize(16);
+                        doc.setTextColor('#176b5b');
+                        doc.text(company.name || 'SumbanePay', margin, y + 10);
+                        y += 20;
+                    }
+
+                    // Informações da empresa
+                    const rightX = pageWidth - margin - 60;
+                    doc.setFontSize(9);
+                    doc.setTextColor('#666666');
+                    doc.text('FACTURA', rightX, y - 10);
+                    doc.setFontSize(8);
+                    doc.text('Nº: ' + (invoiceData.invoiceNo || 'FT-0001'), rightX, y);
+                    y += 5;
+                    doc.text('Data: ' + (invoiceData.date || new Date().toLocaleDateString('pt-PT')), rightX, y);
+                    y += 8;
+
+                    doc.setDrawColor('#176b5b');
+                    doc.setLineWidth(0.5);
+                    doc.line(margin, y, pageWidth - margin, y);
+                    y += 8;
+
+                    // Cliente
+                    doc.setFontSize(10);
+                    doc.setTextColor('#333333');
+                    doc.text('Cliente:', margin, y);
+                    y += 5;
+                    doc.setFontSize(9);
+                    doc.setTextColor('#666666');
+                    doc.text(invoiceData.clientName || 'Cliente', margin, y);
+                    y += 12;
+
+                    // Itens
+                    doc.setFontSize(10);
+                    doc.setTextColor('#333333');
+                    doc.text('Descrição', margin, y);
+                    doc.text('Qtd', 120, y);
+                    doc.text('Preço', 150, y);
+                    doc.text('Total', 175, y);
+                    y += 2;
+                    doc.setDrawColor('#cccccc');
+                    doc.line(margin, y, pageWidth - margin, y);
+                    y += 6;
+
+                    doc.setFontSize(9);
+                    doc.setTextColor('#444444');
+
+                    const items = invoiceData.items || [{ name: 'Item exemplo', qty: 1, price: 100 }];
+                    items.forEach((item, index) => {
+                        if (y > 250) {
+                            doc.addPage();
+                            y = 20;
+                        }
+                        doc.text(item.name || 'Item', margin, y);
+                        doc.text(String(item.qty || 1), 120, y);
+                        doc.text(String((item.price || 0).toFixed(2)), 150, y);
+                        doc.text(String((item.qty * item.price || 0).toFixed(2)), 175, y);
+                        y += 6;
+                    });
+
+                    y += 4;
+                    doc.setDrawColor('#cccccc');
+                    doc.line(margin, y, pageWidth - margin, y);
+                    y += 8;
+
+                    // Totais
+                    const subtotal = invoiceData.subtotal || items.reduce((sum, i) => sum + (i.qty * i.price), 0);
+                    const discount = invoiceData.discount || 0;
+                    const taxRate = company.taxRate || 0;
+                    const tax = (subtotal - discount) * (taxRate / 100);
+                    const total = (subtotal - discount) + tax;
+
+                    doc.setFontSize(9);
+                    doc.setTextColor('#666666');
+                    doc.text('Subtotal:', 140, y);
+                    doc.text(subtotal.toFixed(2) + ' ' + (company.currencySymbol || 'MT'), 175, y, { align: 'right' });
+                    y += 6;
+
+                    if (discount > 0) {
+                        doc.text('Desconto:', 140, y);
+                        doc.text('-' + discount.toFixed(2) + ' ' + (company.currencySymbol || 'MT'), 175, y, { align: 'right' });
+                        y += 6;
+                    }
+
+                    if (company.showTaxOnInvoice !== false) {
+                        doc.text('IVA (' + taxRate + '%):', 140, y);
+                        doc.text(tax.toFixed(2) + ' ' + (company.currencySymbol || 'MT'), 175, y, { align: 'right' });
+                        y += 6;
+                    }
+
+                    y += 2;
+                    doc.setFontSize(11);
+                    doc.setTextColor('#176b5b');
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('TOTAL:', 140, y);
+                    doc.text(total.toFixed(2) + ' ' + (company.currencySymbol || 'MT'), 175, y, { align: 'right' });
+                    doc.setFont('helvetica', 'normal');
+
+                    y += 12;
+
+                    // Rodapé
+                    doc.setFontSize(8);
+                    doc.setTextColor('#999999');
+                    if (company.footer) {
+                        doc.text(company.footer, margin, y);
+                        y += 6;
+                    }
+                    doc.text(company.name + ' | ' + (company.phone || '') + ' | ' + (company.email || ''), margin, y);
+                    y += 4;
+                    doc.text('NUIT: ' + (company.nuit || 'N/A') + ' | ' + (company.address || ''), margin, y);
+
+                    doc.save('factura_' + (invoiceData.invoiceNo || Date.now()) + '.pdf');
+                    resolve(true);
+                } catch (error) {
+                    console.error('Erro ao gerar PDF:', error);
+                    reject(error);
+                }
+            });
+        }
+
+        // ======== FUNÇÃO PARA GERAR PDF DE EXEMPLO ========
+        function generatePDFExample() {
+            const company = read('company', {});
+            const exampleData = {
+                invoiceNo: 'FT-0001',
+                date: new Date().toLocaleDateString('pt-PT'),
+                clientName: 'João Silva',
+                items: [
+                    { name: 'Corte + Barba', qty: 1, price: 450 },
+                    { name: 'Vestido Capulana', qty: 2, price: 350 },
+                    { name: 'Consultoria', qty: 1, price: 500 }
+                ],
+                subtotal: 1650,
+                discount: 50,
+                taxRate: company.taxRate || 16,
+                total: 1856
+            };
+
+            generateInvoicePDF(exampleData)
+                .then(() => toast('PDF gerado com sucesso! O logotipo está incluído.'))
+                .catch(() => toast('Erro ao gerar PDF. Verifique o logotipo.', 'error'));
+        }
+
+        // ======== SESSÃO ========
+        function requireSession() {
+            if (window._sessionChecking) return false;
+            window._sessionChecking = true;
+            try {
+                const oldSession = localStorage.getItem('sz_session');
+                if (oldSession) {
+                    const users = getAll('users');
+                    const user = users.find(u => u.id === oldSession);
+                    if (user) {
+                        const session = { userId: user.id, email: user.email, name: user.name, role: user.role || 'user' };
+                        sessionStorage.setItem(KEY + 'session', JSON.stringify(session));
+                        localStorage.removeItem('sz_session');
+                        window._sessionChecking = false;
+                        return true;
+                    } else { localStorage.removeItem('sz_session'); }
+                }
+                const sessionData = sessionStorage.getItem(KEY + 'session');
+                if (!sessionData) { window._sessionChecking = false; window.location.replace('./login.html'); return false; }
+                const session = JSON.parse(sessionData);
+                const users = getAll('users');
+                const user = users.find(u => u.id === session.userId);
+                if (!user || user.status === 'inativo') {
+                    sessionStorage.removeItem(KEY + 'session');
+                    window._sessionChecking = false;
+                    window.location.replace('./login.html');
+                    return false;
+                }
+                updateUIWithUser(user);
+                window._sessionChecking = false;
+                return true;
+            } catch (e) { window._sessionChecking = false; window.location.replace('./login.html'); return false; }
+        }
+
+        function updateUIWithUser(user) {
+            const userDisplay = document.getElementById('userDisplay');
+            if (userDisplay) userDisplay.textContent = user.name;
+            const avatar = document.getElementById('userAvatar');
+            if (avatar) avatar.textContent = user.name.charAt(0).toUpperCase();
+            const roleEl = document.getElementById('userRole');
+            if (roleEl) {
+                const roles = { 'admin': 'Administrador', 'user': 'Utilizador', 'superadmin': 'SuperAdmin' };
+                roleEl.textContent = roles[user.role] || 'Utilizador';
+            }
+            const footerName = document.getElementById('footerUserName');
+            if (footerName) footerName.textContent = user.name;
+            const footerEmail = document.getElementById('footerUserEmail');
+            if (footerEmail) footerEmail.textContent = user.email || 'sem-email@cadastrado.com';
+            const footerRole = document.getElementById('footerUserRole');
+            if (footerRole) {
+                const roles = { 'admin': 'Administrador', 'user': 'Utilizador', 'superadmin': 'SuperAdmin' };
+                footerRole.textContent = roles[user.role] || 'Utilizador';
+            }
+            const securityName = document.getElementById('securityName');
+            if (securityName) securityName.value = user.name || 'Utilizador';
+            const securityEmail = document.getElementById('securityEmail');
+            if (securityEmail) securityEmail.value = user.email || 'demo@email.com';
+
+            loadCompanyData(user);
+            loadPaymentMethods();
+            loadNotifications();
+            updateDataStats();
+            updatePDFPreview();
+        }
+
+        function loadCompanyData(user) {
+            const company = read('company', {});
+            if (!company.business && !company.name) {
+                const updated = {
+                    ...company,
+                    business: user.business || user.name || '',
+                    name: user.business || user.name || '',
+                    phone: user.phone || '',
+                    email: user.email || '',
+                    city: company.city || 'Maputo',
+                    invoicePrefix: company.invoicePrefix || 'FT',
+                    currency: company.currency || 'MZN',
+                    currencySymbol: company.currencySymbol || 'MT',
+                    taxRate: company.taxRate || 16,
+                    showTaxOnInvoice: company.showTaxOnInvoice !== undefined ? company.showTaxOnInvoice : true,
+                    footer: company.footer || 'Obrigado pela preferência!',
+                    paymentTerms: company.paymentTerms || 30,
+                    website: company.website || '',
+                    nuit: company.nuit || '',
+                    address: company.address || '',
+                    logo: company.logo || ''
+                };
+                write('company', updated);
+                populateCompanyFields(updated);
+            } else {
+                populateCompanyFields(company);
+            }
+            updateLogoPreview(company.logo || '');
+            updateLogoStatus(company.logo || '');
+            updatePDFPreview();
+        }
+
+        function populateCompanyFields(data) {
+            const fields = ['business', 'name', 'nuit', 'phone', 'email', 'website', 'address', 'city', 'invoicePrefix', 'currency', 'currencySymbol', 'footer', 'taxRate', 'paymentTerms'];
+            fields.forEach(k => {
+                const el = document.getElementById(k);
+                if (el) {
+                    el.value = data[k] !== undefined && data[k] !== '' ? data[k] : el.placeholder || '';
+                }
+            });
+            const showTax = document.getElementById('showTaxOnInvoice');
+            if (showTax) showTax.checked = data.showTaxOnInvoice !== undefined ? data.showTaxOnInvoice : true;
+        }
+
+        function loadPaymentMethods() {
+            const methods = read('paymentMethods', {});
+            const ids = ['payMpesa', 'payEMola', 'payCash', 'payTransfer', 'payCard', 'payPix'];
+            const keys = ['mpesa', 'emola', 'cash', 'transfer', 'card', 'pix'];
+            ids.forEach((id, i) => {
+                const el = document.getElementById(id);
+                if (el) el.checked = methods[keys[i]] !== undefined ? methods[keys[i]] : true;
+            });
+            const terms = document.getElementById('paymentTerms');
+            const company = read('company', {});
+            if (terms) terms.value = company.paymentTerms || 30;
+        }
+
+        function loadNotifications() {
+            const notif = read('notifications', {});
+            const ids = ['notifEmail', 'notifPush', 'notifSales', 'notifPayments', 'notifSecurity'];
+            const keys = ['email', 'push', 'sales', 'payments', 'security'];
+            ids.forEach((id, i) => {
+                const el = document.getElementById(id);
+                if (el) el.checked = notif[keys[i]] !== undefined ? notif[keys[i]] : true;
+            });
+        }
+
+        // ======== LOGO - CORRIGIDO ========
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validar tamanho (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                toast('A imagem é muito grande. Máximo 5MB.', 'error');
+                event.target.value = '';
+                return;
+            }
+            
+            // Validar tipo
+            if (!file.type.startsWith('image/')) {
+                toast('Por favor, selecione uma imagem válida.', 'error');
+                event.target.value = '';
+                return;
+            }
+            
+            // Mostrar loading
+            const status = document.getElementById('logoStatus');
+            status.innerHTML = `<span class="loading"><i class="bi bi-arrow-repeat me-1"></i> Processando imagem...</span>`;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const dataUrl = e.target.result;
+                    
+                    // Verificar se é uma imagem válida
+                    const img = new Image();
+                    img.onload = function() {
+                        // Salvar permanentemente no localStorage
+                        const company = read('company', {});
+                        company.logo = dataUrl;
+                        write('company', company);
+                        
+                        // Atualizar UI
+                        updateLogoPreview(dataUrl);
+                        updateLogoStatus(dataUrl);
+                        updatePDFPreview();
+                        
+                        toast('Logotipo carregado e salvo permanentemente! Aparecerá em todas as facturas PDF.', 'success');
+                    };
+                    img.onerror = function() {
+                        toast('Erro: O arquivo não é uma imagem válida.', 'error');
+                        updateLogoStatus('');
+                    };
+                    img.src = dataUrl;
+                } catch (err) {
+                    console.error('Erro ao processar imagem:', err);
+                    toast('Erro ao processar a imagem. Tente novamente.', 'error');
+                    updateLogoStatus('');
+                }
+            };
+            reader.onerror = function() {
+                toast('Erro ao ler o arquivo. Tente novamente.', 'error');
+                updateLogoStatus('');
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        function updateLogoPreview(dataUrl) {
+            const preview = document.getElementById('logoPreview');
+            if (dataUrl && dataUrl.length > 100) {
+                preview.innerHTML = `<img src="${dataUrl}" alt="Logo da empresa">`;
+                preview.classList.add('has-logo');
+            } else {
+                preview.innerHTML = `<i class="bi bi-image"></i>`;
+                preview.classList.remove('has-logo');
+            }
+        }
+
+        function updateLogoStatus(dataUrl) {
+            const status = document.getElementById('logoStatus');
+            if (dataUrl && dataUrl.length > 100) {
+                status.innerHTML = `<span class="saved"><i class="bi bi-check-circle-fill me-1"></i>Logotipo salvo permanentemente</span>`;
+            } else {
+                status.innerHTML = `<span class="not-saved"><i class="bi bi-circle me-1"></i>Nenhum logotipo carregado</span>`;
+            }
+        }
+
+        function removeLogo() {
+            confirmAction('Remover logotipo?', 'O logotipo será removido permanentemente. As facturas passarão a usar o nome da empresa.', 'Sim, remover')
+                .then(result => {
+                    if (result.isConfirmed) {
+                        const company = read('company', {});
+                        company.logo = '';
+                        write('company', company);
+                        
+                        updateLogoPreview('');
+                        updateLogoStatus('');
+                        updatePDFPreview();
+                        
+                        toast('Logotipo removido permanentemente!', 'info');
+                    }
+                });
+        }
+
+        // ======== PRÉ-VISUALIZAÇÃO PDF ========
+        function updatePDFPreview() {
+            const company = read('company', {});
+            const logo = company.logo || '';
+            const preview = document.getElementById('pdfLogoPreview');
+            const companyName = document.getElementById('pdfCompanyName');
+
+            if (logo && logo.length > 100) {
+                preview.innerHTML = `<img src="${logo}" alt="Logo da empresa">`;
+            } else {
+                preview.innerHTML = `<i class="bi bi-image"></i>`;
+            }
+
+            if (companyName) {
+                companyName.textContent = company.business || company.name || 'SumbanePay';
+            }
+        }
+
+        // ======== SALVAR ========
+        function saveAllSettings() {
+            const company = read('company', {});
+            const fields = ['business', 'name', 'nuit', 'phone', 'email', 'website', 'address', 'city', 'invoicePrefix', 'currency', 'currencySymbol', 'footer', 'taxRate', 'paymentTerms'];
+            fields.forEach(k => {
+                const el = document.getElementById(k);
+                if (el) {
+                    company[k] = el.value.trim() || el.placeholder || '';
+                }
+            });
+            const showTax = document.getElementById('showTaxOnInvoice');
+            company.showTaxOnInvoice = showTax ? showTax.checked : true;
+            
+            // IMPORTANTE: Manter o logotipo existente
+            // O logo já está no objeto company
+            write('company', company);
+
+            const methods = {
+                mpesa: document.getElementById('payMpesa')?.checked || false,
+                emola: document.getElementById('payEMola')?.checked || false,
+                cash: document.getElementById('payCash')?.checked || false,
+                transfer: document.getElementById('payTransfer')?.checked || false,
+                card: document.getElementById('payCard')?.checked || false,
+                pix: document.getElementById('payPix')?.checked || false
+            };
+            write('paymentMethods', methods);
+
+            const notif = {
+                email: document.getElementById('notifEmail')?.checked || false,
+                push: document.getElementById('notifPush')?.checked || false,
+                sales: document.getElementById('notifSales')?.checked || false,
+                payments: document.getElementById('notifPayments')?.checked || false,
+                security: document.getElementById('notifSecurity')?.checked || false
+            };
+            write('notifications', notif);
+
+            updatePDFPreview();
+            toast('Todas as configurações foram guardadas com sucesso!');
+            updateDataStats();
+        }
+
+        // ======== ALTERAR SENHA ========
+        function changePassword() {
+            const current = document.getElementById('currentPassword').value;
+            const newPw = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+
+            if (!current || !newPw || !confirm) {
+                toast('Preencha todos os campos da senha.', 'error');
+                return;
+            }
+            if (newPw.length < 6) {
+                toast('A nova senha deve ter pelo menos 6 caracteres.', 'error');
+                return;
+            }
+            if (newPw !== confirm) {
+                toast('As senhas não coincidem.', 'error');
+                return;
+            }
+
+            const sessionData = sessionStorage.getItem(KEY + 'session');
+            if (!sessionData) { toast('Sessão expirada.', 'error'); return; }
+            const session = JSON.parse(sessionData);
+            const users = getAll('users');
+            const user = users.find(u => u.id === session.userId);
+            if (!user) { toast('Utilizador não encontrado.', 'error'); return; }
+
+            if (user.password !== current) {
+                toast('Senha atual incorreta.', 'error');
+                return;
+            }
+
+            user.password = newPw;
+            const updatedUsers = users.map(u => u.id === user.id ? user : u);
+            write('users', updatedUsers);
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            toast('Senha alterada com sucesso!');
+        }
+
+        // ======== ELIMINAR CONTA ========
+        function deleteAccount() {
+            confirmAction('⚠️ Eliminar conta permanente!',
+                'Tem certeza que deseja eliminar a sua conta? Todos os dados serão perdidos.',
+                'Sim, eliminar minha conta'
+            ).then(result => {
+                if (result.isConfirmed) {
+                    const sessionData = sessionStorage.getItem(KEY + 'session');
+                    if (!sessionData) { toast('Sessão expirada.', 'error'); return; }
+                    const session = JSON.parse(sessionData);
+                    let users = getAll('users');
+                    users = users.filter(u => u.id !== session.userId);
+                    write('users', users);
+                    sessionStorage.removeItem(KEY + 'session');
+                    localStorage.removeItem('sz_session');
+                    const keys = ['clients', 'products', 'sales', 'invoices', 'payments', 'invoiceCounter', 'admin_notifications'];
+                    keys.forEach(k => localStorage.removeItem(KEY + k));
+                    toast('Conta eliminada com sucesso.', 'info');
+                    setTimeout(() => window.location.replace('./login.html'), 1000);
+                }
+            });
+        }
+
+        // ======== BACKUP ========
+        function exportBackup() {
+            const data = {};
+            const keys = ['users', 'company', 'settings', 'paymentMethods', 'notifications', 'clients', 'products', 'sales', 'invoices', 'payments', 'invoiceCounter'];
+            keys.forEach(k => { data[k] = read(k, {}); });
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sumbanepay_backup_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast('Backup exportado com sucesso!');
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    const keys = ['users', 'company', 'settings', 'paymentMethods', 'notifications', 'clients', 'products', 'sales', 'invoices', 'payments', 'invoiceCounter'];
+                    keys.forEach(k => {
+                        if (data[k] !== undefined) write(k, data[k]);
+                    });
+                    toast('Backup restaurado com sucesso!');
+                    setTimeout(() => window.location.reload(), 1000);
+                } catch (err) {
+                    toast('Erro ao restaurar backup. Arquivo inválido.', 'error');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ======== DADOS DE DEMONSTRAÇÃO ========
+        function demoData() {
+            const sales = getAll('sales');
+            if (sales.length > 0) {
+                confirmAction('⚠️ Já existem dados!', 'Deseja adicionar mais dados de demonstração?', 'Adicionar')
+                    .then(result => { if (result.isConfirmed) generateDemoData(false); });
+                return;
+            }
+            generateDemoData(true);
+        }
+
+        function generateDemoData(clearFirst = true) {
+            if (clearFirst) {
+                ['clients', 'products', 'sales', 'invoices', 'payments', 'invoiceCounter'].forEach(k => localStorage.removeItem(KEY + k));
+            }
+            const names = ['João Silva', 'Maria Luís', 'Carlos Nhantumbo', 'Ana Nhampossa', 'Paulo Mabote',
+                'Lúcia Sitoe', 'Mercado Central', 'Oficina Mavota', 'Florista Maputo', 'Dina Ernesto'
+            ];
+            const productNames = ['Corte + Barba', 'Vestido Capulana', 'Box Tranças', 'Consultoria', 'Camisa Social',
+                'Bolo Aniversário', 'Pacote Fotografia', 'Arranjo Floral', 'Manutenção', 'Sanduíche Especial'
+            ];
+            const methods = ['M-Pesa', 'e-Mola', 'Dinheiro', 'Transferência', 'M-Pesa', 'Dinheiro'];
+            const statuses = ['Pago', 'Pendente', 'Pago', 'Pago', 'Parcial', 'Cancelado', 'Pago', 'Pendente', 'Pago'];
+
+            const existingClients = getAll('clients');
+            names.forEach((n, i) => {
+                if (!existingClients.find(ec => ec.name === n)) {
+                    existingClients.push({
+                        id: generateId('c'),
+                        name: n,
+                        phone: '84 ' + String(100000 + i).padStart(3, '0') + ' ' + String(100 + i * 7).padStart(3, '0'),
+                        email: n.toLowerCase().replace(/\s/g, '.') + '@email.com',
+                        address: 'Maputo',
+                        city: 'Maputo',
+                        nuit: '400' + String(100000 + i * 3),
+                        notes: i % 3 === 0 ? 'Cliente VIP' : '',
+                        status: 'ativo',
+                        createdAt: new Date(Date.now() - i * 86400000 * 3).toISOString()
+                    });
+                }
+            });
+            write('clients', existingClients);
+
+            const existingProducts = getAll('products');
+            productNames.forEach((n, i) => {
+                if (!existingProducts.find(ep => ep.name === n)) {
+                    existingProducts.push({
+                        id: generateId('p'),
+                        name: n,
+                        code: 'PRD-' + String(1000 + i).padStart(4, '0'),
+                        category: i % 2 === 0 ? 'Serviços' : 'Produtos',
+                        description: 'Produto demo',
+                        price: 150 + (i * 125) + Math.floor(Math.random() * 50),
+                        unit: i % 2 === 0 ? 'serviço' : 'unidade',
+                        stock: 5 + i * 3 + Math.floor(Math.random() * 10),
+                        stock_min: 2,
+                        status: 'ativo',
+                        createdAt: new Date(Date.now() - i * 86400000 * 2).toISOString()
+                    });
+                }
+            });
+            write('products', existingProducts);
+
+            const clientList = getAll('clients');
+            const productList = getAll('products');
+            const sales = [];
+            const invoices = [];
+            const payments = [];
+
+            for (let i = 0; i < 25; i++) {
+                const date = new Date(Date.now() - i * 86400000 * (0.5 + Math.random() * 2));
+                const client = clientList[Math.floor(Math.random() * clientList.length)];
+                const numItems = 1 + Math.floor(Math.random() * 3);
+                const items = [];
+                let subtotal = 0;
+                for (let j = 0; j < numItems; j++) {
+                    const product = productList[Math.floor(Math.random() * productList.length)];
+                    const qty = 1 + Math.floor(Math.random() * 3);
+                    const price = product.price;
+                    items.push({ productId: product.id, name: product.name, qty: qty, price: price, category: product.category });
+                    subtotal += qty * price;
+                }
+                const discount = Math.random() > 0.7 ? Math.floor(Math.random() * 200) : 0;
+                const total = subtotal - discount;
+                const method = methods[Math.floor(Math.random() * methods.length)];
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                const sale = {
+                    id: generateId('s'),
+                    invoiceNo: 'FT-' + String(1000 + i).padStart(4, '0'),
+                    clientId: client.id,
+                    clientName: client.name,
+                    items: items,
+                    subtotal: subtotal,
+                    discount: discount,
+                    total: total,
+                    method: method,
+                    status: status,
+                    date: date.toISOString(),
+                    createdAt: date.toISOString()
+                };
+                sales.push(sale);
+                invoices.push({
+                    id: sale.id,
+                    saleId: sale.id,
+                    invoiceNo: sale.invoiceNo,
+                    clientName: sale.clientName,
+                    clientId: sale.clientId,
+                    items: sale.items,
+                    subtotal: sale.subtotal,
+                    discount: sale.discount,
+                    total: sale.total,
+                    method: sale.method,
+                    status: sale.status,
+                    date: sale.date,
+                    createdAt: sale.createdAt
+                });
+                if (status === 'Pago' || status === 'Parcial') {
+                    payments.push({
+                        id: generateId('pay'),
+                        saleId: sale.id,
+                        invoiceNo: sale.invoiceNo,
+                        clientName: sale.clientName,
+                        value: status === 'Pago' ? total : total * 0.5,
+                        method: method,
+                        status: status,
+                        date: sale.date,
+                        createdAt: sale.createdAt
+                    });
+                }
+            }
+
+            const existingSales = getAll('sales');
+            sales.forEach(s => { if (!existingSales.find(es => es.invoiceNo === s.invoiceNo)) existingSales.push(s); });
+            write('sales', existingSales);
+
+            const existingInvoices = getAll('invoices');
+            invoices.forEach(i => { if (!existingInvoices.find(ei => ei.invoiceNo === i.invoiceNo)) existingInvoices.push(i); });
+            write('invoices', existingInvoices);
+
+            const existingPayments = getAll('payments');
+            payments.forEach(p => { if (!existingPayments.find(ep => ep.invoiceNo === p.invoiceNo)) existingPayments.push(p); });
+            write('payments', existingPayments);
+
+            write('invoiceCounter', existingInvoices.length);
+
+            toast('Dados de demonstração carregados com sucesso!');
+            updateDataStats();
+            setTimeout(() => window.location.reload(), 1000);
+        }
+
+        function clearAllData() {
+            confirmAction('⚠️ Atenção!', 'Tem certeza que deseja eliminar TODOS os dados do sistema?', 'Sim, eliminar todos')
+                .then(result => {
+                    if (result.isConfirmed) {
+                        const keys = ['clients', 'products', 'sales', 'invoices', 'payments', 'invoiceCounter', 'admin_notifications'];
+                        keys.forEach(k => localStorage.removeItem(KEY + k));
+                        toast('Todos os dados foram eliminados!', 'success');
+                        setTimeout(() => window.location.reload(), 500);
+                    }
+                });
+        }
+
+        // ======== ESTATÍSTICAS ========
+        function updateDataStats() {
+            const clients = getAll('clients');
+            const products = getAll('products');
+            const sales = getAll('sales');
+            const invoices = getAll('invoices');
+            const payments = getAll('payments');
+            const stats = document.getElementById('dataStats');
+            if (stats) {
+                stats.textContent = `${clients.length} clientes · ${products.length} produtos · ${sales.length} vendas · ${invoices.length} facturas · ${payments.length} pagamentos`;
+            }
+            const size = document.getElementById('dataSize');
+            if (size) {
+                let totalSize = 0;
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith(KEY)) totalSize += localStorage.getItem(key).length * 2;
+                });
+                if (totalSize > 1024 * 1024) size.textContent = (totalSize / (1024 * 1024)).toFixed(1) + ' MB';
+                else if (totalSize > 1024) size.textContent = (totalSize / 1024).toFixed(1) + ' KB';
+                else size.textContent = totalSize + ' bytes';
+            }
+        }
+
+        // ======== TEMA ========
+        function toggleTheme() {
+            const settings = read('settings', {});
+            const newTheme = (settings.theme || 'light') === 'dark' ? 'light' : 'dark';
+            settings.theme = newTheme;
+            write('settings', settings);
+            applyTheme(newTheme);
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function loadTheme() {
+            const settings = read('settings', {});
+            applyTheme(settings.theme || 'light');
+        }
+
+        function showSettingsTab(tab) {
+            document.querySelectorAll('.settings-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.settings-nav .nav-link').forEach(el => el.classList.remove('active'));
+            const section = document.getElementById('section-' + tab);
+            if (section) section.classList.add('active');
+            document.querySelector(`.settings-nav .nav-link[onclick*="${tab}"]`)?.classList.add('active');
+        }
+
+        function logout() {
+            confirmAction('Sair da sua conta?', 'Terá que fazer login novamente.', 'Sair')
+                .then(result => {
+                    if (result.isConfirmed) {
+                        sessionStorage.removeItem(KEY + 'session');
+                        localStorage.removeItem('sz_session');
+                        window.location.replace('./login.html');
+                    }
+                });
+        }
+
+        // ======== INICIALIZAÇÃO ========
+        function boot() {
+            Object.entries(seed).forEach(([key, value]) => {
+                if (localStorage.getItem(KEY + key) === null) write(key, value);
+            });
+            loadTheme();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            boot();
+            if (requireSession()) {
+                setTimeout(() => {
+                    const session = sessionStorage.getItem(KEY + 'session');
+                    if (session) {
+                        const user = getAll('users').find(u => u.id === JSON.parse(session).userId);
+                        if (user) loadCompanyData(user);
+                    }
+                    updateDataStats();
+                }, 100);
+            }
+        });
+
+        // Exports
+        window.logout = logout;
+        window.toggleTheme = toggleTheme;
+        window.showSettingsTab = showSettingsTab;
+        window.saveAllSettings = saveAllSettings;
+        window.demoData = demoData;
+        window.clearAllData = clearAllData;
+        window.handleLogoUpload = handleLogoUpload;
+        window.removeLogo = removeLogo;
+        window.changePassword = changePassword;
+        window.deleteAccount = deleteAccount;
+        window.exportBackup = exportBackup;
+        window.importBackup = importBackup;
+        window.updateDataStats = updateDataStats;
+        window.generatePDFExample = generatePDFExample;
+        window.generateInvoicePDF = generateInvoicePDF;
+        window.getCompanyLogo = getCompanyLogo;
+        window.read = read;
+        window.write = write;
+        window.getAll = getAll;
+        window.generateId = generateId;
+        window.money = money;
+        window.toast = toast;
+        window.confirmAction = confirmAction;
+        window.KEY = KEY;
+    </script>
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

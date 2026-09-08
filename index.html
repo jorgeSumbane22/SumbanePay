@@ -1,0 +1,2049 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+    <title>SumbanePay — Fature. Venda. Cresça.</title>
+    <meta name="description" content="SumbanePay - Plataforma de faturação e gestão de vendas para pequenos negócios em Moçambique.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================================
+           ROOT VARIABLES - PREMIUM
+           ============================================================ */
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-green-dark: #0f4a3e;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-coral-light: #f28a71;
+            --sz-gold: #e8b35b;
+            --sz-gold-light: #f0c97a;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 24px rgba(16, 63, 55, 0.08);
+            --sz-shadow-hover: 0 8px 40px rgba(16, 63, 55, 0.15);
+            --sz-shadow-premium: 0 20px 60px rgba(16, 63, 55, 0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-display: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+        }
+
+        /* ============================================================
+           DARK MODE
+           ============================================================ */
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-green-dark: #1a7a6b;
+            --sz-coral: #f28a71;
+            --sz-coral-light: #f5a58f;
+            --sz-gold: #f0c97a;
+            --sz-gold-light: #f5d99a;
+            --sz-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            --sz-shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.6);
+            --sz-shadow-premium: 0 20px 60px rgba(0, 0, 0, 0.4);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+        }
+
+        /* ============================================================
+           BASE
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: var(--font-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        .font-display {
+            font-family: var(--font-display);
+        }
+
+        .text-muted {
+            color: var(--sz-muted) !important;
+        }
+
+        a {
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        /* ============================================================
+           SCROLLBAR
+           ============================================================ */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--sz-paper);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--sz-green);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--sz-green-dark);
+        }
+
+        /* ============================================================
+           BRAND
+           ============================================================ */
+        .brand {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.4rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .brand:hover {
+            color: var(--sz-green);
+            transform: translateY(-1px);
+        }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 16px rgba(23, 107, 91, 0.4);
+        }
+
+        .brand b {
+            color: var(--sz-coral);
+        }
+
+        .brand-tagline {
+            font-size: 0.6rem;
+            color: var(--sz-muted);
+            font-weight: 400;
+            font-family: var(--font-primary);
+            letter-spacing: 0.3px;
+            display: block;
+            margin-top: -2px;
+        }
+
+        /* ============================================================
+           HEADER - RESPONSIVO
+           ============================================================ */
+        .header {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+            backdrop-filter: blur(12px);
+            background: rgba(var(--sz-white-rgb, 255, 255, 255), 0.92);
+            transition: background 0.4s ease, border-color 0.4s ease;
+            box-shadow: 0 1px 0 var(--sz-line);
+        }
+
+        [data-theme="dark"] .header {
+            background: rgba(22, 47, 39, 0.92);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            flex-wrap: wrap;
+        }
+
+        .header-nav .nav-link {
+            color: var(--sz-ink);
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: var(--transition);
+            position: relative;
+            text-decoration: none;
+            font-family: var(--font-primary);
+        }
+
+        .header-nav .nav-link:hover {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+        }
+
+        [data-theme="dark"] .header-nav .nav-link:hover {
+            background: rgba(42, 157, 143, 0.15);
+            color: var(--sz-green-light);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .header-actions .btn-link {
+            color: var(--sz-ink);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-family: var(--font-primary);
+            font-size: 0.85rem;
+        }
+
+        .header-actions .btn-link:hover {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+        }
+
+        [data-theme="dark"] .header-actions .btn-link:hover {
+            background: rgba(42, 157, 143, 0.15);
+            color: var(--sz-green-light);
+        }
+
+        /* MENU MOBILE */
+        .menu-toggle-btn {
+            border: none;
+            background: transparent;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .menu-toggle-btn:hover {
+            background: rgba(23, 107, 91, 0.08);
+        }
+
+        .menu-toggle-btn span {
+            display: block;
+            width: 24px;
+            height: 2.5px;
+            background: var(--sz-ink);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        [data-theme="dark"] .menu-toggle-btn:hover {
+            background: rgba(42, 157, 143, 0.15);
+        }
+
+        [data-theme="dark"] .menu-toggle-btn span {
+            background: #f0efe8;
+        }
+
+        /* ============================================================
+           BOTÕES - RESPONSIVOS
+           ============================================================ */
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-dark));
+            color: #ffffff;
+            border: 0;
+            padding: 9px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: var(--font-primary);
+            white-space: nowrap;
+        }
+
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(23, 107, 91, 0.35);
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--sz-green-dark), var(--sz-green));
+        }
+
+        [data-theme="dark"] .btn-sz {
+            box-shadow: 0 4px 14px rgba(42, 157, 143, 0.3);
+        }
+
+        [data-theme="dark"] .btn-sz:hover {
+            box-shadow: 0 6px 28px rgba(42, 157, 143, 0.4);
+        }
+
+        .btn-sz.btn-lg {
+            padding: 12px 28px;
+            font-size: 1rem;
+            border-radius: 12px;
+        }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 7px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: var(--font-primary);
+            white-space: nowrap;
+        }
+
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+
+        [data-theme="dark"] .btn-outline-sz {
+            border-color: var(--sz-green-light);
+            color: var(--sz-green-light);
+        }
+
+        [data-theme="dark"] .btn-outline-sz:hover {
+            background: var(--sz-green-light);
+            color: var(--sz-paper);
+        }
+
+        .btn-outline-sz.btn-lg {
+            padding: 10px 24px;
+            font-size: 1rem;
+        }
+
+        /* ============================================================
+           THEME TOGGLE
+           ============================================================ */
+        .theme-toggle {
+            border: none;
+            background: transparent;
+            color: var(--sz-ink);
+            font-size: 1.1rem;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+        }
+
+        [data-theme="dark"] .theme-toggle:hover {
+            background: rgba(42, 157, 143, 0.15);
+            color: var(--sz-green-light);
+        }
+
+        /* ============================================================
+           HERO - RESPONSIVO
+           ============================================================ */
+        .hero {
+            padding: 4rem 0 3rem;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--sz-gold) 0%, transparent 70%);
+            opacity: 0.04;
+            pointer-events: none;
+            border-radius: 50%;
+        }
+
+        [data-theme="dark"] .hero::before {
+            opacity: 0.06;
+        }
+
+        .hero h1 {
+            font: 700 clamp(2rem, 5vw, 4.5rem)/1.1 var(--font-display);
+            letter-spacing: -0.04em;
+            color: var(--sz-ink);
+            transition: color 0.3s ease;
+        }
+
+        .hero h1 em {
+            color: var(--sz-coral);
+            font-style: normal;
+        }
+
+        .hero .lead {
+            font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+            color: var(--sz-muted) !important;
+            max-width: 500px;
+        }
+
+        .hero .text-muted {
+            color: var(--sz-muted) !important;
+        }
+
+        .hero .text-success {
+            color: var(--sz-green) !important;
+        }
+
+        .hero-art {
+            background: linear-gradient(145deg, var(--sz-gold), var(--sz-gold-light));
+            min-height: 280px;
+            border-radius: 16px 60px 16px 16px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--sz-line);
+            box-shadow: var(--sz-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        [data-theme="dark"] .hero-art {
+            background: linear-gradient(145deg, #2a4a3e, #1d3a30);
+            border-color: var(--sz-line);
+        }
+
+        .hero-art img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+            display: block;
+        }
+
+        .hero-art img:hover {
+            transform: scale(1.02);
+        }
+
+        .hero-art::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.08));
+            pointer-events: none;
+        }
+
+        .hero-art .fallback-content {
+            font-size: 3rem;
+            color: var(--sz-ink);
+            opacity: 0.15;
+            font-family: var(--font-display);
+            font-weight: 700;
+            text-align: center;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        [data-theme="dark"] .hero-art .fallback-content {
+            color: #f0efe8;
+            opacity: 0.1;
+        }
+
+        .hero-art .fallback-content small {
+            display: block;
+            font-size: 0.9rem;
+            opacity: 0.6;
+            font-weight: 400;
+            color: var(--sz-muted);
+        }
+
+        [data-theme="dark"] .hero-art .fallback-content small {
+            color: var(--sz-muted-light);
+        }
+
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           SEÇÕES - RESPONSIVAS
+           ============================================================ */
+        .section {
+            padding: 4rem 0;
+            transition: background 0.3s ease;
+        }
+
+        .section.bg-white {
+            background: var(--sz-white);
+            transition: background 0.3s ease;
+        }
+
+        .section-how {
+            background: var(--sz-white);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        [data-theme="dark"] .section-how {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+
+        .section-how .step {
+            border-top: 3px solid var(--sz-coral);
+            padding: 1.25rem;
+            background: var(--sz-white);
+            border-radius: 0 0 12px 12px;
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .section-how .step:hover {
+            box-shadow: var(--sz-shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        [data-theme="dark"] .section-how .step {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+
+        [data-theme="dark"] .section-how .step .text-muted {
+            color: var(--sz-muted-light) !important;
+        }
+
+        [data-theme="dark"] .section-how .step h4 {
+            color: #f0efe8 !important;
+        }
+
+        [data-theme="dark"] .section-how .step p {
+            color: var(--sz-muted-light) !important;
+        }
+
+        [data-theme="dark"] .section-how .eyebrow {
+            color: #f28a71 !important;
+        }
+
+        [data-theme="dark"] .section-how h2 {
+            color: #f0efe8 !important;
+        }
+
+        [data-theme="dark"] .section-how h2 em {
+            color: #f28a71 !important;
+        }
+
+        .section h2 {
+            color: var(--sz-ink);
+            transition: color 0.3s ease;
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+        }
+
+        .section h2 em {
+            color: var(--sz-coral);
+            font-style: normal;
+        }
+
+        .section .text-muted {
+            color: var(--sz-muted) !important;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            display: grid;
+            place-items: center;
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            transition: background 0.3s ease, color 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        [data-theme="dark"] .feature-icon {
+            background: rgba(42, 157, 143, 0.15);
+            color: var(--sz-green-light);
+        }
+
+        .feature-card {
+            background: var(--sz-white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--sz-line);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--sz-shadow-hover);
+        }
+
+        .feature-card h5 {
+            color: var(--sz-ink);
+            font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+        }
+
+        .feature-card .text-muted {
+            color: var(--sz-muted) !important;
+            font-size: clamp(0.8rem, 0.9vw, 0.85rem);
+        }
+
+        [data-theme="dark"] .feature-card {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+
+        [data-theme="dark"] .feature-card h5 {
+            color: #f0efe8 !important;
+        }
+
+        .pricing-section {
+            background: var(--sz-gold);
+            transition: background 0.3s ease;
+        }
+
+        [data-theme="dark"] .pricing-section {
+            background: #2a4a3e;
+        }
+
+        .pricing-section .eyebrow {
+            color: var(--sz-dark);
+        }
+
+        [data-theme="dark"] .pricing-section .eyebrow {
+            color: var(--sz-gold-light);
+        }
+
+        .pricing-section h2 {
+            color: var(--sz-dark);
+        }
+
+        [data-theme="dark"] .pricing-section h2 {
+            color: var(--sz-ink);
+        }
+
+        .pricing-section p {
+            color: var(--sz-dark);
+        }
+
+        [data-theme="dark"] .pricing-section p {
+            color: var(--sz-muted-light);
+        }
+
+        .pricing-section .feature-card {
+            background: var(--sz-white);
+        }
+
+        [data-theme="dark"] .pricing-section .feature-card {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+
+        .pricing-section .feature-card h3 {
+            color: var(--sz-ink);
+            font-size: clamp(1.3rem, 2vw, 1.8rem);
+        }
+
+        .pricing-section .feature-card .text-muted {
+            color: var(--sz-muted) !important;
+        }
+
+        .cta-section {
+            background: var(--sz-dark);
+            color: #ffffff;
+            transition: background 0.3s ease;
+            padding: 3rem 0;
+        }
+
+        [data-theme="dark"] .cta-section {
+            background: #0a1a14;
+        }
+
+        .cta-section h2 {
+            color: #ffffff;
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+        }
+
+        .cta-section h2 em {
+            color: var(--sz-gold);
+            font-style: normal;
+        }
+
+        .cta-section .btn-sz {
+            background: var(--sz-gold);
+            color: var(--sz-dark);
+            box-shadow: 0 4px 14px rgba(232, 179, 91, 0.3);
+        }
+
+        .cta-section .btn-sz:hover {
+            background: var(--sz-gold-light);
+            color: var(--sz-dark);
+            box-shadow: 0 6px 28px rgba(232, 179, 91, 0.4);
+        }
+
+        [data-theme="dark"] .cta-section .btn-sz {
+            background: var(--sz-gold);
+            color: var(--sz-dark);
+        }
+
+        [data-theme="dark"] .cta-section .btn-sz:hover {
+            background: var(--sz-gold-light);
+            color: var(--sz-dark);
+        }
+
+        /* ============================================================
+           ACCORDION
+           ============================================================ */
+        .accordion-item {
+            border-color: var(--sz-line);
+            background: var(--sz-white);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .accordion-button {
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            transition: background 0.3s ease, color 0.3s ease;
+            font-weight: 500;
+            font-size: clamp(0.9rem, 1vw, 1rem);
+            padding: 1rem 1.25rem;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background: var(--sz-green);
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .accordion-button:not(.collapsed) {
+            background: var(--sz-green-dark);
+            color: #ffffff;
+        }
+
+        .accordion-button:focus {
+            box-shadow: 0 0 0 0.25rem rgba(23, 107, 91, 0.25);
+        }
+
+        .accordion-button:not(.collapsed)::after {
+            filter: brightness(10);
+        }
+
+        .accordion-body {
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            transition: background 0.3s ease, color 0.3s ease;
+            font-size: clamp(0.85rem, 0.95vw, 0.95rem);
+        }
+
+        [data-theme="dark"] .accordion-body {
+            color: #f0efe8 !important;
+        }
+
+        /* ============================================================
+           FOOTER - RESPONSIVO
+           ============================================================ */
+        .footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 3rem 0 1.5rem;
+            margin-top: auto;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        [data-theme="dark"] .footer {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+
+        .footer-brand {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.2rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-brand:hover {
+            color: var(--sz-green);
+        }
+
+        .footer-brand .logo-mark {
+            width: 30px;
+            height: 30px;
+            font-size: 0.6rem;
+        }
+
+        [data-theme="dark"] .footer-brand {
+            color: #f0efe8;
+        }
+
+        [data-theme="dark"] .footer-brand:hover {
+            color: var(--sz-green-light);
+        }
+
+        .footer-heading {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--sz-muted);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .footer-links a:hover {
+            color: var(--sz-green);
+            transform: translateX(4px);
+        }
+
+        [data-theme="dark"] .footer-links a:hover {
+            color: var(--sz-green-light);
+        }
+
+        .footer-links a i {
+            font-size: 0.8rem;
+        }
+
+        .footer-contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .footer-contact-info a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            word-break: break-all;
+        }
+
+        .footer-contact-info a:hover {
+            color: var(--sz-green);
+        }
+
+        [data-theme="dark"] .footer-contact-info a:hover {
+            color: var(--sz-green-light);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .footer-social a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--sz-paper);
+            color: var(--sz-muted);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .footer-social a:hover {
+            background: var(--sz-green);
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+
+        [data-theme="dark"] .footer-social a {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--sz-muted-light);
+        }
+
+        [data-theme="dark"] .footer-social a:hover {
+            background: var(--sz-green-light);
+            color: var(--sz-paper);
+        }
+
+        .footer-divider {
+            border-color: var(--sz-line);
+            opacity: 0.5;
+            transition: border-color 0.3s ease;
+        }
+
+        .footer-bottom {
+            font-size: 0.75rem;
+            color: var(--sz-muted);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-bottom a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-bottom a:hover {
+            color: var(--sz-green);
+        }
+
+        [data-theme="dark"] .footer-bottom a:hover {
+            color: var(--sz-green-light);
+        }
+
+        .footer-bottom .developer {
+            color: var(--sz-coral);
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] .footer-bottom .developer {
+            color: var(--sz-coral-light);
+        }
+
+        .footer-payments {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-payments span {
+            font-size: 1.1rem;
+            color: var(--sz-muted);
+            opacity: 0.6;
+            transition: color 0.3s ease;
+        }
+
+        .footer p.text-muted {
+            color: var(--sz-muted) !important;
+            font-size: clamp(0.8rem, 0.9vw, 0.85rem);
+        }
+
+        /* ============================================================
+           RESPONSIVE - MOBILE FIRST
+           ============================================================ */
+        
+        /* TABLET E DESKTOP PEQUENO */
+        @media (max-width: 992px) {
+            .header-inner {
+                padding: 8px 0;
+            }
+            
+            .header-nav {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0.5rem 0;
+                gap: 2px;
+                width: 100%;
+            }
+
+            .header-nav .nav-link {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            .header-nav .nav-link::after {
+                display: none;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+                gap: 6px;
+            }
+
+            .header-actions .btn-link {
+                text-align: center;
+                padding: 8px 12px;
+                width: 100%;
+            }
+
+            .header-actions .btn-sz,
+            .header-actions .btn-outline-sz {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .header-inner {
+                flex-wrap: wrap;
+            }
+
+            .footer .row {
+                gap: 1.5rem;
+            }
+
+            .section {
+                padding: 3rem 0;
+            }
+
+            .hero-art {
+                min-height: 240px;
+                border-radius: 12px 40px 12px 12px;
+            }
+
+            .btn-sz.btn-lg,
+            .btn-outline-sz.btn-lg {
+                padding: 10px 22px;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 2.5rem 0 2rem;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero .lead {
+                font-size: 0.95rem;
+            }
+
+            .hero-art {
+                margin-top: 1.5rem;
+                min-height: 200px;
+                border-radius: 12px 32px 12px 12px;
+            }
+
+            .footer {
+                padding: 2rem 0 1rem;
+            }
+
+            .footer .row {
+                gap: 1rem;
+            }
+
+            .section {
+                padding: 2rem 0;
+            }
+
+            .section h2 {
+                font-size: 1.6rem;
+            }
+
+            .feature-card {
+                padding: 1.25rem;
+            }
+
+            .feature-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+
+            .cta-section {
+                padding: 2rem 0;
+            }
+
+            .cta-section h2 {
+                font-size: 1.6rem;
+            }
+
+            .hero-art .fallback-content {
+                font-size: 2.5rem;
+            }
+
+            .hero-art .fallback-content small {
+                font-size: 0.8rem;
+            }
+
+            .btn-sz {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+
+            .btn-outline-sz {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+            }
+
+            .btn-sz.btn-lg {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .btn-outline-sz.btn-lg {
+                padding: 8px 18px;
+                font-size: 0.9rem;
+            }
+
+            .brand {
+                font-size: 1.2rem;
+            }
+
+            .brand-tagline {
+                font-size: 0.5rem;
+            }
+
+            .logo-mark {
+                width: 30px;
+                height: 30px;
+                font-size: 0.6rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .footer-payments {
+                justify-content: center;
+            }
+
+            .footer-social {
+                justify-content: center;
+            }
+
+            .footer-contact-info a {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* MOBILE PEQUENO */
+        @media (max-width: 425px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero .lead {
+                font-size: 0.85rem;
+            }
+
+            .hero-art {
+                min-height: 160px;
+                border-radius: 12px 24px 12px 12px;
+            }
+
+            .hero-art .fallback-content {
+                font-size: 2rem;
+            }
+
+            .hero-art .fallback-content small {
+                font-size: 0.7rem;
+            }
+
+            .section {
+                padding: 1.5rem 0;
+            }
+
+            .section h2 {
+                font-size: 1.4rem;
+            }
+
+            .eyebrow {
+                font-size: 0.6rem;
+            }
+
+            .feature-card {
+                padding: 1rem;
+            }
+
+            .feature-card h5 {
+                font-size: 0.85rem;
+            }
+
+            .feature-card .text-muted {
+                font-size: 0.75rem;
+            }
+
+            .section-how .step {
+                padding: 1rem;
+            }
+
+            .section-how .step h4 {
+                font-size: 1rem;
+            }
+
+            .pricing-section .feature-card h3 {
+                font-size: 1.3rem;
+            }
+
+            .cta-section h2 {
+                font-size: 1.4rem;
+            }
+
+            .cta-section .btn-sz {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .brand {
+                font-size: 1rem;
+            }
+
+            .brand-tagline {
+                font-size: 0.45rem;
+            }
+
+            .logo-mark {
+                width: 26px;
+                height: 26px;
+                font-size: 0.5rem;
+            }
+
+            .footer-brand {
+                font-size: 1rem;
+            }
+
+            .footer-brand .logo-mark {
+                width: 26px;
+                height: 26px;
+                font-size: 0.5rem;
+            }
+
+            .footer-heading {
+                font-size: 0.6rem;
+            }
+
+            .footer-links a {
+                font-size: 0.75rem;
+            }
+
+            .footer-bottom {
+                font-size: 0.65rem;
+            }
+
+            .footer-social a {
+                width: 34px;
+                height: 34px;
+                font-size: 0.85rem;
+            }
+
+            .btn-sz {
+                padding: 6px 14px;
+                font-size: 0.75rem;
+            }
+
+            .btn-outline-sz {
+                padding: 5px 12px;
+                font-size: 0.75rem;
+            }
+
+            .btn-sz.btn-lg {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+
+            .btn-outline-sz.btn-lg {
+                padding: 6px 14px;
+                font-size: 0.85rem;
+            }
+
+            .header-nav .nav-link {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+
+            .header-actions .btn-link {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+
+            .theme-toggle {
+                font-size: 0.95rem;
+                padding: 4px 8px;
+            }
+        }
+
+        /* EXTRA PEQUENO */
+        @media (max-width: 320px) {
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero-art {
+                min-height: 140px;
+            }
+
+            .hero .lead {
+                font-size: 0.8rem;
+            }
+
+            .hero .d-flex.flex-wrap {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .hero .d-flex.flex-wrap .btn-sz,
+            .hero .d-flex.flex-wrap .btn-outline-sz {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .section h2 {
+                font-size: 1.2rem;
+            }
+
+            .feature-card {
+                padding: 0.75rem;
+            }
+
+            .feature-card h5 {
+                font-size: 0.8rem;
+            }
+
+            .brand {
+                font-size: 0.9rem;
+            }
+
+            .brand-tagline {
+                font-size: 0.4rem;
+            }
+
+            .logo-mark {
+                width: 22px;
+                height: 22px;
+                font-size: 0.45rem;
+            }
+
+            .cta-section h2 {
+                font-size: 1.2rem;
+            }
+
+            .footer-bottom {
+                font-size: 0.6rem;
+            }
+
+            .footer-social a {
+                width: 30px;
+                height: 30px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* ============================================================
+           UTILITÁRIOS RESPONSIVOS
+           ============================================================ */
+        .text-center-mobile {
+            text-align: left;
+        }
+
+        @media (max-width: 768px) {
+            .text-center-mobile {
+                text-align: center !important;
+            }
+        }
+
+        .w-100-mobile {
+            width: auto;
+        }
+
+        @media (max-width: 425px) {
+            .w-100-mobile {
+                width: 100% !important;
+            }
+        }
+
+        .gap-mobile {
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 425px) {
+            .gap-mobile {
+                gap: 0.25rem !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="./responsive.css">
+    <link rel="stylesheet" href="./darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <!-- ============================================================
+    HEADER - RESPONSIVO
+    ============================================================ -->
+    <header class="header" role="banner">
+        <div class="container">
+            <div class="header-inner">
+                <!-- LOGO -->
+                <a class="brand" href="index.html" aria-label="SumbanePay - Início">
+                    <span class="logo-mark" aria-hidden="true">Pay</span>
+                    <span>
+                        Sumbane<b>Pay</b>
+                        <span class="brand-tagline">Fature. Venda. Cresça.</span>
+                    </span>
+                </a>
+
+                <!-- TOGGLER MOBILE -->
+                <button class="menu-toggle-btn d-lg-none" type="button" 
+                        data-bs-toggle="collapse" data-bs-target="#mainNav" 
+                        aria-expanded="false" aria-label="Alternar menu de navegação">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </button>
+
+                <!-- NAVEGAÇÃO -->
+                <div class="collapse d-lg-block" id="mainNav" role="navigation" aria-label="Navegação principal">
+                    <div class="d-lg-flex align-items-center gap-2" style="flex:1;justify-content:flex-end;">
+                        <nav class="header-nav" aria-label="Menu principal">
+                            <a class="nav-link" href="#funcionalidades">Funcionalidades</a>
+                            <a class="nav-link" href="#como">Como funciona</a>
+                            <a class="nav-link" href="#precos">Preços</a>
+                            <a class="nav-link" href="#faq">FAQ</a>
+                            <!-- Toggle Dark Mode -->
+                            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema escuro/claro">
+                                <i class="bi bi-moon-fill" id="themeIcon" aria-hidden="true"></i>
+                            </button>
+                        </nav>
+
+                        <div class="header-actions">
+                            <a class="btn-link" href="pages/login.html" onclick="openLogin(event)" aria-label="Entrar na sua conta">Entrar</a>
+                            <a class="btn-sz" href="pages/cadastro.html" aria-label="Criar conta gratuita">
+                                Começar grátis <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    HERO - RESPONSIVO
+    ============================================================ -->
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="container">
+            <div class="row align-items-center g-4 g-lg-5">
+                <div class="col-lg-6">
+                    <div class="eyebrow mb-2 mb-md-3" aria-hidden="true">FEITO PARA QUEM FAZ ACONTECER</div>
+                    <h1 id="hero-title">Fature pelo WhatsApp.<br><em>Venda mais.</em><br>Organize melhor.</h1>
+                    <p class="lead my-3 my-md-4">
+                        Uma solução simples e profissional para pequenos negócios gerenciarem vendas, clientes e faturas.
+                    </p>
+                    <div class="d-flex flex-wrap gap-2 gap-md-3">
+                        <a class="btn-sz btn-lg w-100-mobile" href="pages/cadastro.html">
+                            Começar gratuitamente <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        </a>
+                        <a class="btn-outline-sz btn-lg w-100-mobile" href="#como">
+                            Ver demonstração
+                        </a>
+                    </div>
+                    <div class="mt-3 mt-md-4 d-flex flex-wrap gap-3 gap-md-4 text-muted small">
+                        <span><i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i> Sem cartão</span>
+                        <span><i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i> Dados locais</span>
+                        <span><i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i> Grátis para testar</span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-art" aria-hidden="true">
+                        <img
+                            src="img/whatsapp.jpg"
+                            alt="SumbanePay - Dashboard de faturação"
+                            loading="lazy"
+                            decoding="async"
+                            onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\'fallback-content\'>SumbanePay<small>Dashboard Preview</small></div>';"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FUNCIONALIDADES - RESPONSIVO
+    ============================================================ -->
+    <section id="funcionalidades" class="section" aria-labelledby="features-title">
+        <div class="container">
+            <div class="eyebrow" aria-hidden="true">TUDO NO SEU LUGAR</div>
+            <h2 id="features-title" class="font-display mt-2">O seu negócio, <em>mais leve.</em></h2>
+            <div class="row g-2 g-md-3 mt-3 mt-md-4">
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true"><i class="bi bi-receipt"></i></div>
+                        <h5>Criar facturas</h5>
+                        <p class="text-muted small">Emita documentos profissionais em poucos passos.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true"><i class="bi bi-people"></i></div>
+                        <h5>Gerir clientes</h5>
+                        <p class="text-muted small">Tenha histórico e contactos sempre acessíveis.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true"><i class="bi bi-box-seam"></i></div>
+                        <h5>Gerir produtos</h5>
+                        <p class="text-muted small">Catalogue produtos, serviços e stock.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true"><i class="bi bi-bag-check"></i></div>
+                        <h5>Registar vendas</h5>
+                        <p class="text-muted small">Transforme conversas em vendas organizadas.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true"><i class="bi bi-wallet2"></i></div>
+                        <h5>Controlar pagamentos</h5>
+                        <p class="text-muted small">M-Pesa, e-Mola, dinheiro e transferências.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true"><i class="bi bi-bar-chart"></i></div>
+                        <h5>Relatórios</h5>
+                        <p class="text-muted small">Decida com base no que realmente vende.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true"><i class="bi bi-file-pdf"></i></div>
+                        <h5>PDF</h5>
+                        <p class="text-muted small">Descarregue facturas prontas a enviar.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true"><i class="bi bi-whatsapp"></i></div>
+                        <h5>WhatsApp</h5>
+                        <p class="text-muted small">Abra uma mensagem já preparada.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    COMO FUNCIONA - RESPONSIVO
+    ============================================================ -->
+    <section id="como" class="section section-how" aria-labelledby="how-title">
+        <div class="container">
+            <div class="eyebrow" aria-hidden="true">COMO FUNCIONA</div>
+            <h2 id="how-title" class="font-display mt-2">Da conversa ao pagamento, <em>sem complicar.</em></h2>
+            <div class="row g-2 g-md-3 mt-3 mt-md-4">
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="step">
+                        <div class="text-muted" aria-hidden="true">01</div>
+                        <h4 class="font-display mt-3 mt-md-4">Cadastre</h4>
+                        <p class="text-muted small">Cadastre seus clientes e produtos.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="step">
+                        <div class="text-muted" aria-hidden="true">02</div>
+                        <h4 class="font-display mt-3 mt-md-4">Venda</h4>
+                        <p class="text-muted small">Registre rapidamente uma venda.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="step">
+                        <div class="text-muted" aria-hidden="true">03</div>
+                        <h4 class="font-display mt-3 mt-md-4">Fature</h4>
+                        <p class="text-muted small">Gere uma fatura profissional.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-6">
+                    <div class="step">
+                        <div class="text-muted" aria-hidden="true">04</div>
+                        <h4 class="font-display mt-3 mt-md-4">Partilhe</h4>
+                        <p class="text-muted small">Envie a informação pelo WhatsApp.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    PREÇOS - RESPONSIVO
+    ============================================================ -->
+    <section id="precos" class="section pricing-section" aria-labelledby="pricing-title">
+        <div class="container">
+            <div class="row align-items-center g-3 g-md-4">
+                <div class="col-md-7">
+                    <div class="eyebrow" aria-hidden="true">COMECE SEM RISCO</div>
+                    <h2 id="pricing-title" class="font-display mt-2">SumbanePay para crescer.</h2>
+                    <p class="mb-0">Faturas, clientes, produtos, relatórios, PDF, WhatsApp e dashboard num só lugar.</p>
+                </div>
+                <div class="col-md-5">
+                    <div class="feature-card" style="background:var(--sz-white);">
+                        <h3 class="font-display">100–200 MT <small style="font-size:0.65rem;">/ mês</small></h3>
+                        <p class="text-muted mb-3">Comece gratuitamente durante a demonstração.</p>
+                        <a class="btn-sz w-100" href="pages/cadastro.html" style="text-align:center;justify-content:center;">
+                            Começar agora
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FAQ - RESPONSIVO
+    ============================================================ -->
+    <section id="faq" class="section" aria-labelledby="faq-title">
+        <div class="container">
+            <div class="eyebrow" aria-hidden="true">PERGUNTAS FREQUENTES</div>
+            <h2 id="faq-title" class="font-display mt-2">Dúvidas? <em>Nós respondemos.</em></h2>
+            <div class="accordion mt-3" id="faqx">
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="true">
+                            Funciona sem servidor?
+                        </button>
+                    </h3>
+                    <div id="a1" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            Sim. Esta versão funciona no navegador e guarda os dados no localStorage.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false">
+                            Posso enviar a factura pelo WhatsApp?
+                        </button>
+                    </h3>
+                    <div id="a2" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            Sim. O sistema abre o WhatsApp com uma mensagem pré-preenchida com os dados da fatura.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false">
+                            Os dados são seguros?
+                        </button>
+                    </h3>
+                    <div id="a3" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            Os dados são armazenados apenas no seu navegador. Para produção, recomendamos uma versão com backend.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#a4" aria-expanded="false">
+                            Preciso de internet para usar?
+                        </button>
+                    </h3>
+                    <div id="a4" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            Apenas para carregar a página inicial e as bibliotecas CDN. Depois de carregado, funciona offline.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    CTA FINAL - RESPONSIVO
+    ============================================================ -->
+    <section class="cta-section" aria-labelledby="cta-title">
+        <div class="container py-3 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <h2 id="cta-title" class="font-display">Pronto para vender<br><em>com mais confiança?</em></h2>
+            <a class="btn-sz btn-lg w-100-mobile" href="pages/cadastro.html" style="text-align:center;justify-content:center;">
+                Criar a minha conta <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FOOTER - RESPONSIVO
+    ============================================================ -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="row g-3 g-md-4">
+                <div class="col-lg-4 col-md-6">
+                    <a class="footer-brand" href="index.html" aria-label="SumbanePay - Início">
+                        <span class="logo-mark" aria-hidden="true">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <p class="text-muted small mt-2 mt-md-3" style="max-width:280px;">
+                        Plataforma de faturação e gestão de vendas para pequenos negócios em Moçambique.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Facebook"><i class="bi bi-facebook" aria-hidden="true"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="bi bi-instagram" aria-hidden="true"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="bi bi-whatsapp" aria-hidden="true"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="bi bi-youtube" aria-hidden="true"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="footer-heading">Produto</h6>
+                    <ul class="footer-links">
+                        <li><a href="#funcionalidades">Funcionalidades</a></li>
+                        <li><a href="#precos">Preços</a></li>
+                        <li><a href="#como">Como funciona</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="footer-heading">Empresa</h6>
+                    <ul class="footer-links">
+                        <li><a href="#">Sobre nós</a></li>
+                        <li><a href="#">Carreiras</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="pages/suporte.html">Suporte</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <h6 class="footer-heading">Contacto</h6>
+                    <div class="footer-contact-info">
+                        <a href="mailto:jsumbane22@gmail.com">
+                            <i class="bi bi-envelope" aria-hidden="true"></i>
+                            jsumbane22@gmail.com
+                        </a>
+                        <a href="tel:+258845872347">
+                            <i class="bi bi-phone" aria-hidden="true"></i>
+                            +258 84 587 2347
+                        </a>
+                        <a href="#">
+                            <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                            Maputo, Moçambique
+                        </a>
+                    </div>
+                    <div class="footer-payments mt-3">
+                        <span aria-hidden="true"><i class="bi bi-credit-card"></i></span>
+                        <span aria-hidden="true"><i class="bi bi-bank"></i></span>
+                        <span aria-hidden="true"><i class="bi bi-phone"></i></span>
+                        <span class="text-muted small">M-Pesa · e-Mola</span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="footer-divider my-3 my-md-4">
+
+            <div class="footer-bottom">
+                <span>
+                    © 2026 <a href="index.html">SumbanePay</a>. Todos os direitos reservados.
+                </span>
+                <span>
+                    <a href="#">Política de Privacidade</a>
+                    <span class="mx-1 mx-md-2" aria-hidden="true">·</span>
+                    <a href="#">Termos de Serviço</a>
+                    <span class="mx-1 mx-md-2" aria-hidden="true">·</span>
+                    <span>Desenvolvido por <span class="developer">Jorge Sumbane</span></span>
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        /* ============================================================
+           SUMBANEPAY - LANDING PAGE RESPONSIVA
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+
+        // =============================================================
+        // DADOS PADRÃO
+        // =============================================================
+        const seed = {
+            users: [{ 
+                id: 'u1', 
+                name: 'António Matola', 
+                business: 'SumbanePay Demo', 
+                email: 'demo@sumbanepay.co.mz',
+                phone: '84 000 0000', 
+                password: 'demo123',
+                role: 'admin',
+                status: 'ativo',
+                createdAt: new Date().toISOString()
+            }],
+            company: {
+                name: 'SumbanePay Demo',
+                nuit: '400123456',
+                phone: '84 000 0000',
+                email: 'demo@sumbanepay.co.mz',
+                address: 'Av. Julius Nyerere, 123',
+                city: 'Maputo',
+                logo: '',
+                invoicePrefix: 'FT',
+                currency: 'MZN',
+                currencySymbol: 'MT',
+                footer: 'Obrigado pela preferência!'
+            },
+            settings: { theme: 'light' },
+            clients: [],
+            products: [],
+            sales: [],
+            invoices: [],
+            payments: [],
+            invoiceCounter: 0,
+            notifications: []
+        };
+
+        // =============================================================
+        // FUNÇÕES CORE
+        // =============================================================
+
+        function getData(key) {
+            try {
+                const data = localStorage.getItem(KEY + key);
+                return data ? JSON.parse(data) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function saveData(key, data) {
+            localStorage.setItem(KEY + key, JSON.stringify(data));
+            return data;
+        }
+
+        function getAll(key) {
+            return getData(key) || [];
+        }
+
+        function generateId(prefix = '') {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).slice(2, 6);
+            return prefix + timestamp + random;
+        }
+
+        // =============================================================
+        // TEMA (DARK MODE)
+        // =============================================================
+
+        function toggleTheme() {
+            const settings = getData('settings') || {};
+            const currentTheme = settings.theme || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            settings.theme = newTheme;
+            saveData('settings', settings);
+            applyTheme(newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            }
+        }
+
+        function loadTheme() {
+            const settings = getData('settings') || {};
+            const theme = settings.theme || 'light';
+            applyTheme(theme);
+            updateThemeIcon(theme);
+        }
+
+        // =============================================================
+        // VERIFICAR SESSÃO E REDIRECIONAR
+        // =============================================================
+        function checkAndRedirect() {
+            const sessionData = localStorage.getItem(KEY + 'session') || sessionStorage.getItem(KEY + 'session');
+            
+            if (sessionData) {
+                try {
+                    const session = JSON.parse(sessionData);
+                    if (session.userId) {
+                        const users = getAll('users');
+                        const user = users.find(u => u.id === session.userId);
+                        if (user && user.status !== 'inativo') {
+                            window.location.replace('pages/dashboard.html');
+                            return true;
+                        } else {
+                            localStorage.removeItem(KEY + 'session');
+                            sessionStorage.removeItem(KEY + 'session');
+                            localStorage.removeItem('sz_session');
+                        }
+                    }
+                } catch (e) {
+                    localStorage.removeItem(KEY + 'session');
+                    sessionStorage.removeItem(KEY + 'session');
+                    localStorage.removeItem('sz_session');
+                }
+            }
+            
+            if (localStorage.getItem('sz_session')) {
+                const users = getAll('users');
+                const user = users.find(u => u.id === localStorage.getItem('sz_session'));
+                if (user && user.status !== 'inativo') {
+                    const session = {
+                        userId: user.id,
+                        email: user.email,
+                        name: user.name,
+                        role: user.role || 'user',
+                        loggedInAt: new Date().toISOString()
+                    };
+                    localStorage.setItem(KEY + 'session', JSON.stringify(session));
+                    sessionStorage.setItem(KEY + 'session', JSON.stringify(session));
+                    window.location.replace('pages/dashboard.html');
+                    return true;
+                } else {
+                    localStorage.removeItem('sz_session');
+                }
+            }
+            
+            return false;
+        }
+
+        // =============================================================
+        // ENTRAR
+        // =============================================================
+        function openLogin(event) {
+            if (event) event.preventDefault();
+            window.location.replace('pages/login.html');
+        }
+
+        // =============================================================
+        // INICIALIZAÇÃO
+        // =============================================================
+
+        function boot() {
+            Object.entries(seed).forEach(([key, value]) => {
+                if (localStorage.getItem(KEY + key) === null) {
+                    saveData(key, value);
+                }
+            });
+
+            loadTheme();
+            checkAndRedirect();
+        }
+
+        // EXPORTA FUNÇÕES GLOBAIS
+        window.openLogin = openLogin;
+        window.toggleTheme = toggleTheme;
+        window.getData = getData;
+        window.saveData = saveData;
+        window.getAll = getAll;
+        window.generateId = generateId;
+
+        // INICIAR
+        document.addEventListener('DOMContentLoaded', boot);
+    </script>
+
+    <script src="./mobile.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,2194 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard — SumbanePay</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <!-- IMPEDIR BFCACHE COMPLETAMENTE -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, private">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <style>
+        /* ============================================================
+           ROOT VARIABLES - PREMIUM
+           ============================================================ */
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 24px rgba(16, 63, 55, 0.06);
+            --sz-shadow-hover: 0 12px 48px rgba(16, 63, 55, 0.12);
+            --sz-shadow-premium: 0 20px 60px rgba(16, 63, 55, 0.08);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-info: #0dcaf0;
+            --sz-purple: #9b59b6;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --sz-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+            --sz-shadow-premium: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+            --sz-info: #7cbdda;
+            --sz-purple: #b07cc6;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        .font-display { font-family: 'Playfair Display', 'Georgia', serif; }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sz-paper); }
+        ::-webkit-scrollbar-thumb { background: var(--sz-green); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sz-green-light); }
+
+        .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+        .app-row { display: flex; flex: 1; }
+        .app-main { display: flex; flex-direction: column; flex: 1; min-height: 100vh; }
+        .app-content { flex: 1; padding-bottom: 1rem; }
+        .app-footer { flex-shrink: 0; width: 100%; }
+
+        /* ============================================================
+           BRAND
+           ============================================================ */
+        .brand {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); transform: translateY(-1px); }
+        .brand b { color: var(--sz-coral); }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+        }
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(23, 107, 91, 0.4);
+        }
+
+        /* ============================================================
+           BOTÕES
+           ============================================================ */
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-sz::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .btn-sz:hover::after { opacity: 1; }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz i { transition: var(--transition); }
+        .btn-sz:hover i { transform: translateX(4px); }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+
+        .btn-outline-danger-sz {
+            border: 2px solid var(--sz-danger);
+            color: var(--sz-danger);
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-danger-sz:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-sm-sz {
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            color: var(--sz-muted);
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm-sz:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+        }
+        .btn-sm-sz.active {
+            background: var(--sz-green);
+            color: #fff;
+            border-color: var(--sz-green);
+        }
+
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           SIDEBAR
+           ============================================================ */
+        .sidebar {
+            background: var(--sz-white);
+            border-right: 1px solid var(--sz-line);
+            padding: 1.5rem 1rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            width: 260px;
+            flex-shrink: 0;
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar .nav-link {
+            color: var(--sz-muted);
+            border-radius: 8px;
+            margin: 0.15rem 0;
+            padding: 10px 14px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            position: relative;
+        }
+        .sidebar .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 0;
+            background: var(--sz-green);
+            border-radius: 0 4px 4px 0;
+            transition: var(--transition);
+        }
+        .sidebar .nav-link:hover::before,
+        .sidebar .nav-link.active::before {
+            height: 60%;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(23, 107, 91, 0.06);
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i {
+            width: 22px;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+
+        /* ============================================================
+           TOP NAV
+           ============================================================ */
+        .top-nav {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 12px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.3;
+        }
+
+        .top-nav .breadcrumb-premium {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--sz-muted);
+            font-size: 0.85rem;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item .separator {
+            color: var(--sz-muted-light);
+            font-size: 0.6rem;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item.current {
+            color: var(--sz-ink);
+            font-weight: 600;
+            padding: 4px 8px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item .home-icon {
+            color: var(--sz-green);
+            font-size: 1.1rem;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            padding: 3px 12px 3px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(23, 107, 91, 0.15);
+        }
+        .live-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .top-nav .user-info-premium {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .top-nav .user-info-premium .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 2px 12px rgba(23, 107, 91, 0.25);
+            transition: var(--transition);
+            cursor: pointer;
+            user-select: none;
+        }
+        .top-nav .user-info-premium .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(23, 107, 91, 0.35);
+        }
+        .top-nav .user-info-premium .user-details .user-name {
+            font-weight: 600;
+            color: var(--sz-ink);
+            font-size: 0.9rem;
+        }
+        .top-nav .user-info-premium .user-details .user-role {
+            font-size: 0.65rem;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .top-nav .user-info-premium .btn-icon-premium {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-muted);
+            cursor: pointer;
+            position: relative;
+            font-size: 1.1rem;
+        }
+        .top-nav .user-info-premium .btn-icon-premium:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+            transform: translateY(-1px);
+        }
+
+        /* ============================================================
+           STAT CARDS
+           ============================================================ */
+        .stat-card {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            padding: 1.25rem 1.5rem;
+            transition: var(--transition);
+            box-shadow: var(--sz-shadow);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-green-light));
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--sz-shadow-premium);
+        }
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .stat-card .stat-icon.green { background: rgba(23, 107, 91, 0.1); color: var(--sz-green); }
+        .stat-card .stat-icon.gold { background: rgba(232, 179, 91, 0.1); color: var(--sz-gold); }
+        .stat-card .stat-icon.coral { background: rgba(239, 109, 78, 0.1); color: var(--sz-coral); }
+        .stat-card .stat-icon.blue { background: rgba(13, 202, 240, 0.1); color: var(--sz-info); }
+        .stat-card .stat-icon.purple { background: rgba(155, 89, 182, 0.1); color: var(--sz-purple); }
+        .stat-card .stat-icon.red { background: rgba(220, 53, 69, 0.1); color: var(--sz-danger); }
+        .stat-card .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--sz-ink);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        .stat-card .stat-label {
+            font-size: 0.7rem;
+            color: var(--sz-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .stat-card .stat-change {
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 6px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-card .stat-change.up { background: rgba(25, 135, 84, 0.1); color: var(--sz-success); }
+        .stat-card .stat-change.down { background: rgba(220, 53, 69, 0.1); color: var(--sz-danger); }
+        .stat-card .stat-change.neutral { background: rgba(90, 106, 98, 0.06); color: var(--sz-muted); }
+
+        [data-theme="dark"] .stat-card {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .stat-card .stat-number { color: #f0efe8; }
+        [data-theme="dark"] .stat-card .stat-icon.green { background: rgba(42, 157, 143, 0.15); color: var(--sz-green-light); }
+        [data-theme="dark"] .stat-card .stat-icon.gold { background: rgba(240, 201, 122, 0.15); color: var(--sz-gold); }
+        [data-theme="dark"] .stat-card .stat-icon.coral { background: rgba(242, 138, 113, 0.15); color: var(--sz-coral); }
+        [data-theme="dark"] .stat-card .stat-icon.blue { background: rgba(124, 189, 218, 0.15); color: #7cbdda; }
+        [data-theme="dark"] .stat-card .stat-icon.purple { background: rgba(176, 124, 198, 0.15); color: #b07cc6; }
+        [data-theme="dark"] .stat-card .stat-icon.red { background: rgba(240, 106, 122, 0.15); color: var(--sz-danger); }
+
+        /* ============================================================
+           CHART CARDS
+           ============================================================ */
+        .chart-card {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            transition: var(--transition);
+            overflow: hidden;
+            box-shadow: var(--sz-shadow);
+        }
+        .chart-card:hover {
+            box-shadow: var(--sz-shadow-premium);
+        }
+        .chart-card .chart-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: rgba(23, 107, 91, 0.02);
+        }
+        .chart-card .chart-header h5 {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1rem;
+            color: var(--sz-ink);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-card .chart-body {
+            padding: 1.25rem 1.5rem;
+            min-height: 200px;
+            position: relative;
+        }
+
+        [data-theme="dark"] .chart-card {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .chart-card .chart-header {
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .chart-card .chart-header h5 {
+            color: #f0efe8 !important;
+        }
+
+        /* ============================================================
+           TABELA - CORRIGIDA PARA REGISTAR VENDAS
+           ============================================================ */
+        .table-premium {
+            font-size: 0.85rem;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-premium thead th {
+            font-weight: 600;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            border-bottom: 2px solid var(--sz-line);
+            padding: 0.75rem 0.5rem;
+            background: var(--sz-paper);
+        }
+        .table-premium tbody td {
+            border-bottom: 1px solid var(--sz-line);
+            padding: 0.65rem 0.5rem;
+            color: var(--sz-ink);
+            background: var(--sz-white);
+            transition: var(--transition);
+        }
+        .table-premium tbody tr {
+            transition: var(--transition);
+        }
+        .table-premium tbody tr:hover td {
+            background: rgba(23, 107, 91, 0.04);
+        }
+
+        [data-theme="dark"] .table-premium thead th {
+            background: #0a1a14 !important;
+            color: #a0b0a8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .table-premium tbody td {
+            background: var(--sz-white) !important;
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .table-premium tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.03) !important;
+        }
+        [data-theme="dark"] .table-premium tbody td strong {
+            color: #f0efe8 !important;
+        }
+
+        .badge-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .badge-status.pago { background: rgba(25, 135, 84, 0.12); color: var(--sz-success); }
+        .badge-status.pendente { background: rgba(255, 193, 7, 0.12); color: var(--sz-warning); }
+        .badge-status.parcial { background: rgba(13, 202, 240, 0.12); color: var(--sz-info); }
+        .badge-status.cancelado { background: rgba(220, 53, 69, 0.12); color: var(--sz-danger); }
+
+        [data-theme="dark"] .badge-status.pago { background: rgba(78, 205, 196, 0.2); color: #4ecdc4; }
+        [data-theme="dark"] .badge-status.pendente { background: rgba(245, 215, 110, 0.2); color: #f5d76e; }
+        [data-theme="dark"] .badge-status.parcial { background: rgba(124, 189, 218, 0.2); color: #7cbdda; }
+        [data-theme="dark"] .badge-status.cancelado { background: rgba(240, 106, 122, 0.2); color: #f06a7a; }
+
+        .badge-method {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+        }
+        [data-theme="dark"] .badge-method {
+            background: rgba(42, 157, 143, 0.2);
+            color: var(--sz-green-light);
+        }
+
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: var(--sz-muted);
+        }
+        .empty-state .empty-icon {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 0.75rem;
+            opacity: 0.2;
+        }
+        .empty-state h5 {
+            color: var(--sz-ink);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .empty-state p {
+            font-size: 0.85rem;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        [data-theme="dark"] .empty-state h5 {
+            color: #f0efe8;
+        }
+
+        .card-table {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            overflow: hidden;
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+        }
+        .card-table:hover {
+            box-shadow: var(--sz-shadow-premium);
+        }
+        .card-table .card-header-custom {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: rgba(23, 107, 91, 0.02);
+        }
+        .card-table .card-header-custom h5 {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1rem;
+            color: var(--sz-ink);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-table .card-body-custom {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .card-table {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .card-table .card-header-custom {
+            border-color: var(--sz-line);
+            background: rgba(42, 157, 143, 0.05);
+        }
+        [data-theme="dark"] .card-table .card-header-custom h5 {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .card-table .card-header-custom a {
+            color: #2a9d8f !important;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .app-footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 0.75rem 2rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        .app-footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .app-footer .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-footer .footer-brand .footer-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+        }
+        .app-footer .footer-brand .footer-company {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .app-footer .footer-brand .footer-company b {
+            color: var(--sz-coral);
+        }
+        .app-footer .footer-brand .footer-version {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            background: var(--sz-paper);
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+        .app-footer .footer-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .app-footer .footer-user-info .user-data-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-data-item i {
+            color: var(--sz-green);
+            font-size: 0.85rem;
+            width: 16px;
+            text-align: center;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value {
+            color: var(--sz-ink);
+            font-weight: 500;
+        }
+        .app-footer .footer-user-info .user-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        .app-footer .footer-user-info .user-status .status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        [data-theme="dark"] .app-footer {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .app-footer .footer-brand .footer-company {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status {
+            background: rgba(42, 157, 143, 0.12);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.15);
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status .status-dot {
+            background: var(--sz-green-light);
+        }
+
+        /* ============================================================
+           DARK MODE
+           ============================================================ */
+        [data-theme="dark"] .sidebar {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .sidebar .brand {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .sidebar .brand b {
+            color: #f28a71 !important;
+        }
+        [data-theme="dark"] .sidebar .nav-link {
+            color: #b8c5bf !important;
+        }
+        [data-theme="dark"] .sidebar .nav-link:hover,
+        [data-theme="dark"] .sidebar .nav-link.active {
+            background: rgba(42, 157, 143, 0.12) !important;
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .sidebar .small.text-muted {
+            color: #b8c5bf !important;
+        }
+
+        [data-theme="dark"] .top-nav {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item.current {
+            color: #f0efe8 !important;
+            background: rgba(42, 157, 143, 0.12) !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-name {
+            color: #f0efe8 !important;
+        }
+
+        [data-theme="dark"] .text-muted {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .eyebrow {
+            color: #f28a71 !important;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in {
+            animation: fadeUp 0.6s ease forwards;
+        }
+        .animate-in-delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .animate-in-delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .animate-in-delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .animate-in-delay-4 { animation-delay: 0.4s; opacity: 0; }
+        .animate-in-delay-5 { animation-delay: 0.5s; opacity: 0; }
+        .animate-in-delay-6 { animation-delay: 0.6s; opacity: 0; }
+
+        @media (max-width: 992px) {
+            .sidebar { width: 100%; min-height: auto; position: relative; padding: 1rem; max-height: none; }
+            .stat-card .stat-number { font-size: 1.5rem; }
+            .top-nav { padding: 12px 16px; }
+            .app-footer .footer-content { flex-direction: column; text-align: center; }
+            .app-footer .footer-user-info { justify-content: center; }
+        }
+        @media (max-width: 768px) {
+            .top-nav { padding: 10px 14px; }
+            .top-nav .breadcrumb-premium { font-size: 0.75rem; }
+            .top-nav .user-info-premium .user-details .user-name { font-size: 0.8rem; }
+            .top-nav .user-info-premium .user-details .user-role { display: none; }
+            .top-nav .user-info-premium .user-avatar { width: 32px; height: 32px; font-size: 0.8rem; }
+            .stat-card .stat-number { font-size: 1.3rem; }
+            .stat-card { padding: 1rem; }
+            .chart-card .chart-body { padding: 1rem; }
+            .app-footer { padding: 0.5rem 1rem; }
+            .table-premium { font-size: 0.75rem; }
+            .table-premium thead th, .table-premium tbody td { padding: 0.5rem 0.35rem; }
+        }
+        @media (max-width: 425px) {
+            .brand { font-size: 1rem; }
+            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
+            .top-nav .breadcrumb-premium { font-size: 0.65rem; }
+            .top-nav .breadcrumb-premium .breadcrumb-item .separator { display: none; }
+            .top-nav .user-info-premium .user-avatar { width: 28px; height: 28px; font-size: 0.7rem; }
+            .stat-card .stat-number { font-size: 1.1rem; }
+            .stat-card { padding: 0.75rem; }
+            .chart-card .chart-body { padding: 0.75rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.55rem; }
+            .table-premium thead th, .table-premium tbody td { padding: 0.35rem 0.25rem; font-size: 0.6rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <div class="app-wrapper">
+
+        <div class="app-row">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" role="navigation">
+                <div class="mb-4">
+                    <a class="brand" href="../index.html">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <div class="small text-muted mt-2" style="font-size:0.6rem;letter-spacing:0.06em;text-transform:uppercase;">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> Balcão Digital
+                    </div>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="./dashboard.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="./vendas.html"><i class="bi bi-bag me-2"></i>Vendas</a>
+                    <a class="nav-link" href="./nova-venda.html"><i class="bi bi-plus-circle me-2"></i>Nova venda</a>
+                    <a class="nav-link" href="./faturas.html"><i class="bi bi-receipt me-2"></i>Facturas</a>
+                    <a class="nav-link" href="./clientes.html"><i class="bi bi-people me-2"></i>Clientes</a>
+                    <a class="nav-link" href="./produtos.html"><i class="bi bi-box-seam me-2"></i>Produtos</a>
+                    <a class="nav-link" href="./pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos</a>
+                    <a class="nav-link" href="./relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link" href="./configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                    <a class="nav-link" href="./perfil.html"><i class="bi bi-person me-2"></i>Perfil</a>
+                </nav>
+                <div class="mt-4 d-flex flex-column gap-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
+                        <i class="bi bi-circle-half me-2"></i>Tema
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger-sz w-100" onclick="logout()">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sair
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="app-main">
+
+                <!-- TOP NAV -->
+                <div class="top-nav">
+                    <div class="breadcrumb-premium">
+                        <span class="breadcrumb-item">
+                            <i class="bi bi-house-fill home-icon"></i>
+                            <a href="./dashboard.html">Dashboard</a>
+                        </span>
+                        <span class="separator">›</span>
+                        <span class="breadcrumb-item current">
+                            <i class="bi bi-grid-1x2 me-1"></i> Visão Geral
+                        </span>
+                        <span class="live-badge ms-2">
+                            <span class="dot"></span>
+                            AO VIVO
+                        </span>
+                    </div>
+
+                    <div class="user-info-premium">
+                        <div class="user-details text-end">
+                            <span class="user-name" id="userDisplay">
+                                <i class="bi bi-person-circle me-1"></i> Carregando...
+                            </span>
+                            <span class="user-role" id="userRole">Administrador</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">S</div>
+                        <button class="btn-icon-premium" onclick="toggleTheme()" title="Alternar tema">
+                            <i class="bi bi-circle-half"></i>
+                        </button>
+                        <!-- Botão de Sair no topo -->
+                        <button class="btn-icon-premium" onclick="logout()" title="Sair da conta" style="color:var(--sz-danger);border-color:var(--sz-danger);">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CONTEÚDO -->
+                <div class="app-content container-fluid p-3 p-lg-4">
+
+                    <!-- HEADER -->
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+                        <div>
+                            <div class="eyebrow"><i class="bi bi-graph-up-arrow me-1"></i> PULSO DO NEGÓCIO</div>
+                            <h1 class="font-display" id="welcomeMessage" style="font-size:clamp(1.8rem,3vw,2.5rem);margin:0;">
+                                Carregando... <em style="color:var(--sz-coral);font-style:normal;">✦</em>
+                            </h1>
+                            <p class="text-muted mt-1" style="font-size:0.85rem;">
+                                Visão geral do desempenho do seu negócio
+                                <span class="badge bg-success ms-2" style="font-size:0.55rem;font-weight:500;">
+                                    <i class="bi bi-circle-fill me-1" style="font-size:0.3rem;"></i> Dados reais
+                                </span>
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn-outline-sz btn-sm" onclick="refreshDashboard()">
+                                <i class="bi bi-arrow-clockwise"></i> Actualizar
+                            </button>
+                            <a class="btn-sz" href="./nova-venda.html">
+                                <i class="bi bi-plus-lg"></i> Nova venda
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- QUICK ACTIONS -->
+                    <div class="row g-2 mb-4">
+                        <div class="col">
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="./nova-venda.html" class="btn-outline-sz btn-sm">
+                                    <i class="bi bi-plus-circle"></i> Nova Venda
+                                </a>
+                                <a href="./clientes.html" class="btn-outline-sz btn-sm">
+                                    <i class="bi bi-person-plus"></i> Novo Cliente
+                                </a>
+                                <a href="./produtos.html" class="btn-outline-sz btn-sm">
+                                    <i class="bi bi-box-plus"></i> Novo Produto
+                                </a>
+                                <a href="./faturas.html" class="btn-outline-sz btn-sm">
+                                    <i class="bi bi-receipt"></i> Facturas
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STATS CARDS -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-xl-2 col-lg-4 col-md-4 col-6 animate-in animate-in-delay-1">
+                            <div class="stat-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="stat-number" id="statTotalSales">0</div>
+                                        <div class="stat-label">Vendas</div>
+                                    </div>
+                                    <div class="stat-icon green"><i class="bi bi-cash-stack"></i></div>
+                                </div>
+                                <div class="stat-change up" id="statTotalChange">—</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-4 col-md-4 col-6 animate-in animate-in-delay-2">
+                            <div class="stat-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="stat-number" id="statRevenue">0 MT</div>
+                                        <div class="stat-label">Receita Total</div>
+                                    </div>
+                                    <div class="stat-icon gold"><i class="bi bi-wallet2"></i></div>
+                                </div>
+                                <div class="stat-change up" id="statRevenueChange">—</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-4 col-md-4 col-6 animate-in animate-in-delay-3">
+                            <div class="stat-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="stat-number" id="statClients">0</div>
+                                        <div class="stat-label">Clientes</div>
+                                    </div>
+                                    <div class="stat-icon blue"><i class="bi bi-people"></i></div>
+                                </div>
+                                <div class="stat-change neutral" id="statClientsChange">—</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-4 col-md-4 col-6 animate-in animate-in-delay-4">
+                            <div class="stat-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="stat-number" id="statInvoices">0</div>
+                                        <div class="stat-label">Facturas</div>
+                                    </div>
+                                    <div class="stat-icon purple"><i class="bi bi-receipt"></i></div>
+                                </div>
+                                <div class="stat-change neutral" id="statInvoicesChange">—</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-4 col-md-4 col-6 animate-in animate-in-delay-5">
+                            <div class="stat-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="stat-number" id="statPending">0</div>
+                                        <div class="stat-label">Pendentes</div>
+                                    </div>
+                                    <div class="stat-icon red"><i class="bi bi-clock"></i></div>
+                                </div>
+                                <div class="stat-change down" id="statPendingChange">—</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-4 col-md-4 col-6 animate-in animate-in-delay-6">
+                            <div class="stat-card">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="stat-number" id="statAvgTicket">0 MT</div>
+                                        <div class="stat-label">Ticket Médio</div>
+                                    </div>
+                                    <div class="stat-icon coral"><i class="bi bi-ticket-perforated"></i></div>
+                                </div>
+                                <div class="stat-change neutral" id="statAvgChange">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GRÁFICOS -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-lg-8 animate-in animate-in-delay-1">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h5>
+                                        <i class="bi bi-graph-up me-2" style="color:var(--sz-green);"></i>
+                                        Vendas
+                                        <span class="badge-period" id="chartPeriodLabel" style="font-size:0.6rem;font-weight:600;padding:2px 10px;border-radius:12px;background:rgba(23,107,91,0.08);color:var(--sz-muted);">Últimos 7 dias</span>
+                                    </h5>
+                                    <div class="d-flex gap-1">
+                                        <button class="btn-sm-sz active" data-period="7" onclick="changeChartPeriod(7)">7d</button>
+                                        <button class="btn-sm-sz" data-period="15" onclick="changeChartPeriod(15)">15d</button>
+                                        <button class="btn-sm-sz" data-period="30" onclick="changeChartPeriod(30)">30d</button>
+                                        <button class="btn-sm-sz" data-period="90" onclick="changeChartPeriod(90)">90d</button>
+                                    </div>
+                                </div>
+                                <div class="chart-body">
+                                    <canvas id="salesChart" height="180"></canvas>
+                                    <div id="salesEmpty" class="empty-state" style="display:none;">
+                                        <span class="empty-icon">📊</span>
+                                        <h5>Sem dados de vendas</h5>
+                                        <p>Crie a sua primeira venda para ver o gráfico</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 animate-in animate-in-delay-2">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h5>
+                                        <i class="bi bi-pie-chart me-2" style="color:var(--sz-gold);"></i>
+                                        Métodos de Pagamento
+                                    </h5>
+                                </div>
+                                <div class="chart-body">
+                                    <canvas id="methodChart" height="180"></canvas>
+                                    <div id="methodEmpty" class="empty-state" style="display:none;">
+                                        <span class="empty-icon">💳</span>
+                                        <h5>Sem pagamentos</h5>
+                                        <p>Registe pagamentos para ver a distribuição</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-lg-4 animate-in animate-in-delay-3">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h5>
+                                        <i class="bi bi-bar-chart me-2" style="color:var(--sz-coral);"></i>
+                                        Status das Facturas
+                                    </h5>
+                                </div>
+                                <div class="chart-body">
+                                    <canvas id="statusChart" height="160"></canvas>
+                                    <div id="statusEmpty" class="empty-state" style="display:none;">
+                                        <span class="empty-icon">📋</span>
+                                        <h5>Sem facturas</h5>
+                                        <p>Crie facturas para ver o status</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 animate-in animate-in-delay-4">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h5>
+                                        <i class="bi bi-trophy me-2" style="color:var(--sz-gold);"></i>
+                                        Produtos mais vendidos
+                                        <span class="badge-period" style="font-size:0.6rem;font-weight:600;padding:2px 10px;border-radius:12px;background:rgba(232,179,91,0.1);color:var(--sz-gold);">Top 5</span>
+                                    </h5>
+                                </div>
+                                <div class="chart-body">
+                                    <canvas id="productsChart" height="160"></canvas>
+                                    <div id="productsEmpty" class="empty-state" style="display:none;">
+                                        <span class="empty-icon">📦</span>
+                                        <h5>Sem produtos vendidos</h5>
+                                        <p>Venda produtos para ver o ranking</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ÚLTIMAS VENDAS - TABELA CORRIGIDA -->
+                    <div class="card-table animate-in animate-in-delay-5">
+                        <div class="card-header-custom">
+                            <h5>
+                                <i class="bi bi-clock-history me-2" style="color:var(--sz-muted);"></i>
+                                Últimas Vendas
+                                <span class="badge-period" id="salesCountBadge" style="font-size:0.6rem;font-weight:600;padding:2px 10px;border-radius:12px;background:rgba(23,107,91,0.08);color:var(--sz-muted);">0 vendas</span>
+                            </h5>
+                            <a href="./vendas.html" class="text-decoration-none small" style="color:var(--sz-green);font-weight:600;">
+                                Ver todas <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <div class="table-responsive">
+                                <table class="table-premium mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Factura</th>
+                                            <th>Cliente</th>
+                                            <th>Total</th>
+                                            <th>Método</th>
+                                            <th>Status</th>
+                                            <th>Data</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentSales">
+                                        <tr>
+                                            <td colspan="6" class="empty-state" style="padding:2rem;">
+                                                <span class="empty-icon" style="font-size:2.5rem;">📭</span>
+                                                <h5 style="font-size:1rem;">Nenhuma venda registada</h5>
+                                                <p style="font-size:0.8rem;">Comece a vender!</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FOOTER TOOLS -->
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <button class="btn-outline-danger-sz btn-sm" onclick="clearAllData()">
+                            <i class="bi bi-trash me-1"></i> Limpar todos os dados
+                        </button>
+                        <span class="text-muted small ms-auto" style="font-size:0.7rem;">
+                            <i class="bi bi-database"></i> Dados locais · 
+                            <span id="lastUpdate">agora</span>
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">Pay</div>
+                            <span class="footer-company">Sumbane<b>Pay</b></span>
+                            <span class="footer-version">v2.0.0</span>
+                        </div>
+                        <div class="footer-user-info" id="footerUserInfo">
+                            <span class="user-data-item">
+                                <i class="bi bi-person"></i>
+                                <span class="data-value" id="footerUserName">Carregando...</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-envelope"></i>
+                                <span class="data-value email-value" id="footerUserEmail">carregando@email.com</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-shield-check"></i>
+                                <span class="data-value" id="footerUserRole">Utilizador</span>
+                            </span>
+                            <span class="user-status">
+                                <span class="status-dot"></span>
+                                Online
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Guarda antecipada: páginas protegidas devem carregar auth-guard.js a partir da raiz. -->
+    <script src="../auth-guard.js"></script>
+    <script>
+        /* ============================================================
+           DASHBOARD PREMIUM - SUMBANEPAY
+           Versão: 20.2.0 - LOGOUT OBRIGATÓRIO (VOLTAR E SAIR)
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+        let chartInstances = {};
+        let refreshInterval = null;
+        let currentPeriod = 7;
+        let isLoggingOut = false;
+        let navigationControlInitialized = false;
+        let navigationHandlersInitialized = false;
+
+        // ======== DADOS PADRÃO ========
+        const seed = {
+            users: [],
+            company: {
+                name: 'SumbanePay',
+                business: '',
+                nuit: '',
+                phone: '',
+                email: '',
+                website: '',
+                address: '',
+                city: 'Maputo',
+                logo: '',
+                invoicePrefix: 'FT',
+                currency: 'MZN',
+                currencySymbol: 'MT',
+                taxRate: 16,
+                showTaxOnInvoice: true,
+                footer: 'Obrigado pela preferência!',
+                paymentTerms: 30
+            },
+            settings: { theme: 'light' },
+            clients: [],
+            products: [],
+            sales: [],
+            invoices: [],
+            payments: [],
+            invoiceCounter: 0,
+            notifications: []
+        };
+
+        // ======== FUNÇÕES CORE ========
+        function read(k, f) {
+            try { const data = localStorage.getItem(KEY + k); return data ? JSON.parse(data) : f; } catch (e) { return f; }
+        }
+
+        function write(k, v) {
+            localStorage.setItem(KEY + k, JSON.stringify(v));
+        }
+
+        function getAll(key) { return read(key, []); }
+
+        function generateId(prefix) {
+            return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        }
+
+        function money(n) {
+            return new Intl.NumberFormat('pt-PT', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(Number(n) || 0) + ' MT';
+        }
+
+        function formatDate(d) {
+            if (!d) return '-';
+            return new Date(d).toLocaleDateString('pt-PT', {
+                day: '2-digit', month: '2-digit', year: 'numeric'
+            });
+        }
+
+        function formatDateTime(d) {
+            if (!d) return '-';
+            return new Date(d).toLocaleString('pt-PT', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function toast(msg, icon = 'success') {
+            Swal.fire({ toast: true, position: 'top-end', timer: 3000, showConfirmButton: false, icon: icon, title: msg });
+        }
+
+        function confirmAction(title, text, confirmText = 'Sim, confirmar') {
+            return Swal.fire({
+                title, text, icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#176b5b',
+                cancelButtonColor: '#dc3545',
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Cancelar',
+                background: getComputedStyle(document.documentElement).getPropertyValue('--sz-white') || '#ffffff',
+                color: getComputedStyle(document.documentElement).getPropertyValue('--sz-ink') || '#19362e'
+            });
+        }
+
+        // ======== LOGOUT CENTRALIZADO E OBRIGATÓRIO ========
+        // O botão "Sair" e o botão "Voltar" do navegador usam exatamente este fluxo.
+        function clearAuthentication() {
+            const authKeys = [
+                KEY + 'session',
+                KEY + 'admin_session',
+                'sz_session',
+                'sz_admin_session',
+                'sumbanepay_session',
+                'sumbanepay_admin_session'
+            ];
+
+            authKeys.forEach(key => {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+            });
+
+            // Limpar tokens/sessões criados por versões anteriores do sistema.
+            Object.keys(localStorage).forEach(key => {
+                if (/(session|auth|login|token)/i.test(key)) localStorage.removeItem(key);
+            });
+            Object.keys(sessionStorage).forEach(key => {
+                if (/(session|auth|login|token)/i.test(key)) sessionStorage.removeItem(key);
+            });
+        }
+
+        function performLogout() {
+            if (isLoggingOut) return;
+            isLoggingOut = true;
+            clearAuthentication();
+
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+            }
+
+            // replace remove esta página do caminho de retorno e obriga novo login.
+            // O destino é sempre a página de login, independentemente da origem.
+            window.location.replace('./login.html?logout=' + Date.now());
+        }
+
+        // ======== FUNÇÃO SAIR (BOTÃO) ========
+        function logout() {
+            if (isLoggingOut) return;
+            // Logout imediato: clicar em "Sair" sempre encerra a sessão.
+            performLogout();
+        }
+
+        // ======== VOLTAR DO NAVEGADOR = LOGOUT ========
+        function setupNavigationControl() {
+            if (navigationHandlersInitialized) return;
+            navigationHandlersInitialized = true;
+
+            // Estado sentinela: o primeiro Voltar gera popstate nesta página.
+            window.history.pushState(
+                { sumbanePayLogoutGuard: true, timestamp: Date.now() },
+                '',
+                window.location.href
+            );
+
+            window.addEventListener('popstate', performLogout, { once: true });
+
+            // Caso a página seja restaurada pelo bfcache, a sessão também deve morrer.
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted) performLogout();
+            }, { once: true });
+
+            // Atalhos equivalentes ao botão Voltar.
+            document.addEventListener('keydown', function (event) {
+                const tag = event.target?.tagName;
+                const isEditable = ['INPUT', 'TEXTAREA', 'SELECT'].includes(tag);
+                if (!isEditable && event.key === 'Backspace') {
+                    event.preventDefault();
+                    performLogout();
+                } else if (event.altKey && event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    performLogout();
+                }
+            });
+
+            window.addEventListener('mouseup', function (event) {
+                if (event.button === 3) {
+                    event.preventDefault();
+                    performLogout();
+                }
+            });
+        }
+
+        // ======== AUTENTICAÇÃO ========
+        function requireSession() {
+            if (isLoggingOut) return false;
+            if (window._sessionChecking) return false;
+            window._sessionChecking = true;
+
+            try {
+                const sessionData = sessionStorage.getItem(KEY + 'session');
+                if (!sessionData) {
+                    window._sessionChecking = false;
+                    performLogout();
+                    return false;
+                }
+
+                const session = JSON.parse(sessionData);
+                const users = getAll('users');
+                const user = users.find(u => u.id === session.userId);
+
+                if (!user || user.status === 'inativo') {
+                    window._sessionChecking = false;
+                    performLogout();
+                    return false;
+                }
+
+                // Atualizar informações do usuário
+                const userDisplay = document.getElementById('userDisplay');
+                if (userDisplay) {
+                    userDisplay.textContent = user.name;
+                }
+
+                const avatar = document.getElementById('userAvatar');
+                if (avatar) {
+                    avatar.textContent = user.name.charAt(0).toUpperCase();
+                }
+
+                const roleEl = document.getElementById('userRole');
+                if (roleEl) {
+                    const roles = { 'admin': 'Administrador', 'user': 'Utilizador', 'superadmin': 'SuperAdmin' };
+                    roleEl.textContent = roles[user.role] || 'Utilizador';
+                }
+
+                const footerName = document.getElementById('footerUserName');
+                if (footerName) {
+                    footerName.textContent = user.name;
+                }
+
+                const footerEmail = document.getElementById('footerUserEmail');
+                if (footerEmail) {
+                    footerEmail.textContent = user.email || 'sem-email@cadastrado.com';
+                }
+
+                const footerRole = document.getElementById('footerUserRole');
+                if (footerRole) {
+                    const roles = { 'admin': 'Administrador', 'user': 'Utilizador', 'superadmin': 'SuperAdmin' };
+                    footerRole.textContent = roles[user.role] || 'Utilizador';
+                }
+
+                const welcome = document.getElementById('welcomeMessage');
+                if (welcome) {
+                    const hour = new Date().getHours();
+                    let greeting = 'Bom dia';
+                    if (hour >= 12 && hour < 18) greeting = 'Boa tarde';
+                    else if (hour >= 18) greeting = 'Boa noite';
+                    welcome.innerHTML = `${greeting}, ${user.name} <em style="color:var(--sz-coral);font-style:normal;">✦</em>`;
+                }
+
+                // Configurar controle de navegação
+                setupNavigationControl();
+
+                window._sessionChecking = false;
+                return true;
+            } catch (e) {
+                window._sessionChecking = false;
+                performLogout();
+                return false;
+            }
+        }
+
+        // ======== FUNÇÕES AUXILIARES ========
+        function getSaleDate(sale) {
+            return sale.createdAt || sale.date || new Date().toISOString();
+        }
+
+        function calculateTotalByDate(sales, dateStr) {
+            return sales.filter(s => getSaleDate(s).slice(0, 10) === dateStr)
+                .reduce((sum, s) => sum + (s.total || 0), 0);
+        }
+
+        function calculateAvgTicket(sales) {
+            if (!sales || sales.length === 0) return 0;
+            return sales.reduce((s, x) => s + (x.total || 0), 0) / sales.length;
+        }
+
+        function destroyCharts() {
+            Object.keys(chartInstances).forEach(key => {
+                if (chartInstances[key]) {
+                    try { chartInstances[key].destroy(); } catch (e) {}
+                    chartInstances[key] = null;
+                }
+            });
+            chartInstances = {};
+        }
+
+        // ======== RENDER CHARTS ========
+        function renderCharts() {
+            const sales = getAll('sales');
+            const payments = getAll('payments');
+            const invoices = getAll('invoices');
+
+            destroyCharts();
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#a0b0a8' : '#5a6a62';
+            const gridColor = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
+            const borderColor = isDark ? '#2a4a3e' : '#e5e3da';
+
+            // 1. Sales Chart
+            const salesCtx = document.getElementById('salesChart');
+            const salesEmpty = document.getElementById('salesEmpty');
+            if (salesCtx) {
+                if (sales.length === 0) {
+                    salesCtx.style.display = 'none';
+                    salesEmpty.style.display = 'block';
+                } else {
+                    salesCtx.style.display = 'block';
+                    salesEmpty.style.display = 'none';
+
+                    const labels = [];
+                    const data = [];
+                    const today = new Date();
+                    const days = currentPeriod;
+
+                    for (let i = days - 1; i >= 0; i--) {
+                        const d = new Date(today);
+                        d.setDate(d.getDate() - i);
+                        const dateStr = d.toISOString().slice(0, 10);
+                        if (i === 0) {
+                            labels.push('Hoje');
+                        } else if (i <= 6) {
+                            labels.push(d.toLocaleDateString('pt-PT', { weekday: 'short' }));
+                        } else {
+                            labels.push(d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit' }));
+                        }
+                        data.push(calculateTotalByDate(sales, dateStr));
+                    }
+
+                    const gradient = salesCtx.getContext('2d').createLinearGradient(0, 0, 0, 200);
+                    const color1 = isDark ? 'rgba(42,157,143,0.25)' : 'rgba(23,107,91,0.2)';
+                    const color2 = isDark ? 'rgba(42,157,143,0.01)' : 'rgba(23,107,91,0.01)';
+                    gradient.addColorStop(0, color1);
+                    gradient.addColorStop(1, color2);
+
+                    chartInstances.sales = new Chart(salesCtx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Vendas (MT)',
+                                data: data,
+                                borderColor: isDark ? '#2a9d8f' : '#176b5b',
+                                backgroundColor: gradient,
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: isDark ? '#2a9d8f' : '#176b5b',
+                                pointBorderColor: isDark ? '#162f27' : '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 7,
+                                borderWidth: 3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: isDark ? '#162f27' : '#fff',
+                                    titleColor: isDark ? '#f0efe8' : '#19362e',
+                                    bodyColor: isDark ? '#a0b0a8' : '#5a6a62',
+                                    borderColor: borderColor,
+                                    borderWidth: 1,
+                                    cornerRadius: 8,
+                                    padding: 12,
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.parsed.y + ' MT';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: v => v + ' MT',
+                                        color: textColor,
+                                        font: { size: 10 }
+                                    },
+                                    grid: { color: gridColor }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: {
+                                        color: textColor,
+                                        font: { size: 10 }
+                                    }
+                                }
+                            },
+                            interaction: {
+                                intersect: false,
+                                mode: 'index'
+                            }
+                        }
+                    });
+                }
+            }
+
+            // 2. Method Chart
+            const methodCtx = document.getElementById('methodChart');
+            const methodEmpty = document.getElementById('methodEmpty');
+            if (methodCtx) {
+                if (payments.length === 0) {
+                    methodCtx.style.display = 'none';
+                    methodEmpty.style.display = 'block';
+                } else {
+                    methodCtx.style.display = 'block';
+                    methodEmpty.style.display = 'none';
+
+                    const methods = ['M-Pesa', 'e-Mola', 'Dinheiro', 'Transferência'];
+                    const methodData = methods.map(m =>
+                        payments.filter(p => p.method === m).reduce((sum, p) => sum + (p.value || 0), 0)
+                    );
+                    const colors = isDark ? ['#2a9d8f', '#f28a71', '#f0c97a', '#7cbdda'] : ['#176b5b', '#ef6d4e', '#e8b35b', '#7c9db5'];
+
+                    chartInstances.method = new Chart(methodCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: methods,
+                            datasets: [{
+                                data: methodData,
+                                backgroundColor: colors,
+                                borderWidth: 2,
+                                borderColor: isDark ? '#162f27' : '#ffffff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        font: { size: 10, weight: '600' },
+                                        padding: 12,
+                                        usePointStyle: true,
+                                        pointStyle: 'circle',
+                                        color: textColor
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: isDark ? '#162f27' : '#fff',
+                                    titleColor: isDark ? '#f0efe8' : '#19362e',
+                                    bodyColor: isDark ? '#a0b0a8' : '#5a6a62',
+                                    borderColor: borderColor,
+                                    borderWidth: 1,
+                                    cornerRadius: 8,
+                                    padding: 12,
+                                    callbacks: {
+                                        label: function(context) {
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const pct = total > 0 ? (context.parsed / total * 100).toFixed(1) : 0;
+                                            return context.label + ': ' + context.parsed + ' MT (' + pct + '%)';
+                                        }
+                                    }
+                                }
+                            },
+                            cutout: '65%'
+                        }
+                    });
+                }
+            }
+
+            // 3. Status Chart
+            const statusCtx = document.getElementById('statusChart');
+            const statusEmpty = document.getElementById('statusEmpty');
+            if (statusCtx) {
+                if (invoices.length === 0) {
+                    statusCtx.style.display = 'none';
+                    statusEmpty.style.display = 'block';
+                } else {
+                    statusCtx.style.display = 'block';
+                    statusEmpty.style.display = 'none';
+
+                    const statuses = ['Pago', 'Pendente', 'Parcial', 'Cancelado'];
+                    const statusData = statuses.map(s => invoices.filter(x => x.status === s).length);
+                    const colors = isDark ? ['#2a9d8f', '#f0c97a', '#7cbdda', '#f06a7a'] : ['#176b5b', '#e8b35b', '#7c9db5', '#dc3545'];
+
+                    chartInstances.status = new Chart(statusCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: statuses,
+                            datasets: [{
+                                label: 'Faturas',
+                                data: statusData,
+                                backgroundColor: colors,
+                                borderRadius: 6,
+                                barThickness: 40
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: isDark ? '#162f27' : '#fff',
+                                    titleColor: isDark ? '#f0efe8' : '#19362e',
+                                    bodyColor: isDark ? '#a0b0a8' : '#5a6a62',
+                                    borderColor: borderColor,
+                                    borderWidth: 1,
+                                    cornerRadius: 8,
+                                    padding: 12,
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.parsed.y + ' faturas';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1,
+                                        color: textColor,
+                                        font: { size: 10 }
+                                    },
+                                    grid: { color: gridColor }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: {
+                                        color: textColor,
+                                        font: { size: 10 }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            // 4. Products Chart
+            const productsCtx = document.getElementById('productsChart');
+            const productsEmpty = document.getElementById('productsEmpty');
+            if (productsCtx) {
+                const productCount = {};
+                sales.forEach(sale => {
+                    if (sale.items && sale.items.length) {
+                        sale.items.forEach(item => {
+                            const name = item.name || 'Produto';
+                            productCount[name] = (productCount[name] || 0) + (item.qty || 1);
+                        });
+                    }
+                });
+
+                const hasData = Object.keys(productCount).length > 0;
+                if (!hasData) {
+                    productsCtx.style.display = 'none';
+                    productsEmpty.style.display = 'block';
+                } else {
+                    productsCtx.style.display = 'block';
+                    productsEmpty.style.display = 'none';
+
+                    const sorted = Object.entries(productCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+                    const names = sorted.map(x => x[0]);
+                    const qtys = sorted.map(x => x[1]);
+                    const colors = isDark ? 
+                        ['#2a9d8f', '#f28a71', '#f0c97a', '#7cbdda', '#b07cc6'] :
+                        ['#176b5b', '#ef6d4e', '#e8b35b', '#7c9db5', '#9b59b6'];
+
+                    chartInstances.products = new Chart(productsCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: names,
+                            datasets: [{
+                                label: 'Unidades',
+                                data: qtys,
+                                backgroundColor: colors.slice(0, names.length),
+                                borderRadius: 6,
+                                barThickness: 35
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: isDark ? '#162f27' : '#fff',
+                                    titleColor: isDark ? '#f0efe8' : '#19362e',
+                                    bodyColor: isDark ? '#a0b0a8' : '#5a6a62',
+                                    borderColor: borderColor,
+                                    borderWidth: 1,
+                                    cornerRadius: 8,
+                                    padding: 12,
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.parsed.y + ' unidades';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1,
+                                        color: textColor,
+                                        font: { size: 10 }
+                                    },
+                                    grid: { color: gridColor }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: {
+                                        color: textColor,
+                                        font: { size: 10 },
+                                        maxRotation: 45,
+                                        minRotation: 20
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        // ======== ATUALIZAR STATS ========
+        function updateStats() {
+            const sales = getAll('sales');
+            const clients = getAll('clients');
+            const invoices = getAll('invoices');
+
+            const totalRevenue = sales.reduce((sum, s) => sum + (s.total || 0), 0);
+            const pending = invoices.filter(x => x.status !== 'Pago').length;
+            const avgTicket = calculateAvgTicket(sales);
+
+            const today = new Date();
+            const todayStr = today.toISOString().slice(0, 10);
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().slice(0, 10);
+
+            const todayTotal = calculateTotalByDate(sales, todayStr);
+            const yesterdayTotal = calculateTotalByDate(sales, yesterdayStr);
+
+            let changeText = '—';
+            let changeClass = 'neutral';
+            if (yesterdayTotal > 0) {
+                const pct = ((todayTotal - yesterdayTotal) / yesterdayTotal * 100);
+                if (pct > 0) {
+                    changeText = '+' + pct.toFixed(1) + '%';
+                    changeClass = 'up';
+                } else if (pct < 0) {
+                    changeText = pct.toFixed(1) + '%';
+                    changeClass = 'down';
+                } else {
+                    changeText = '0%';
+                    changeClass = 'neutral';
+                }
+            } else if (todayTotal > 0) {
+                changeText = '+100%';
+                changeClass = 'up';
+            }
+
+            document.getElementById('statTotalSales').textContent = sales.length;
+            document.getElementById('statRevenue').textContent = money(totalRevenue);
+            document.getElementById('statClients').textContent = clients.length;
+            document.getElementById('statInvoices').textContent = invoices.length;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statAvgTicket').textContent = money(avgTicket);
+
+            const badge = document.getElementById('salesCountBadge');
+            if (badge) {
+                badge.textContent = sales.length + ' venda' + (sales.length !== 1 ? 's' : '');
+            }
+
+            const changes = [
+                { el: 'statTotalChange', text: changeText, cls: changeClass },
+                { el: 'statRevenueChange', text: changeText, cls: changeClass },
+                { el: 'statClientsChange', text: clients.length > 0 ? '+' + clients.length : '—', cls: clients.length > 0 ? 'up' : 'neutral' },
+                { el: 'statInvoicesChange', text: invoices.length > 0 ? '+' + invoices.length : '—', cls: invoices.length > 0 ? 'up' : 'neutral' },
+                { el: 'statPendingChange', text: pending > 0 ? pending + ' pendentes' : '0', cls: pending > 0 ? 'down' : 'neutral' },
+                { el: 'statAvgChange', text: avgTicket > 0 ? money(avgTicket) : '—', cls: 'neutral' }
+            ];
+
+            changes.forEach(({ el, text, cls }) => {
+                const elem = document.getElementById(el);
+                if (elem) {
+                    elem.textContent = text;
+                    elem.className = 'stat-change ' + cls;
+                }
+            });
+
+            const label = document.getElementById('chartPeriodLabel');
+            if (label) {
+                const periods = { 7: 'Últimos 7 dias', 15: 'Últimos 15 dias', 30: 'Últimos 30 dias', 90: 'Últimos 90 dias' };
+                label.textContent = periods[currentPeriod] || 'Últimos 7 dias';
+            }
+        }
+
+        // ======== ATUALIZAR ÚLTIMAS VENDAS ========
+        function updateRecentSales() {
+            const sales = getAll('sales');
+            const tbody = document.getElementById('recentSales');
+
+            if (!sales || sales.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state" style="padding:2rem;">
+                            <span class="empty-icon" style="font-size:2.5rem;">📭</span>
+                            <h5 style="font-size:1rem;">Nenhuma venda registada</h5>
+                            <p style="font-size:0.8rem;">Comece a vender!</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const sorted = [...sales].sort((a, b) => {
+                const dateA = new Date(getSaleDate(a));
+                const dateB = new Date(getSaleDate(b));
+                return dateB - dateA;
+            });
+
+            const recent = sorted.slice(0, 8);
+
+            tbody.innerHTML = recent.map(s => {
+                const statusBadge = {
+                    'Pago': 'pago',
+                    'Pendente': 'pendente',
+                    'Parcial': 'parcial',
+                    'Cancelado': 'cancelado'
+                }[s.status] || 'pendente';
+
+                return `
+                    <tr>
+                        <td><strong>${s.invoiceNo || 'N/A'}</strong></td>
+                        <td>${s.clientName || 'N/A'}</td>
+                        <td><strong>${money(s.total || 0)}</strong></td>
+                        <td><span class="badge-method">${s.method || 'N/A'}</span></td>
+                        <td><span class="badge-status ${statusBadge}">${s.status || 'Pendente'}</span></td>
+                        <td class="text-muted">${formatDate(getSaleDate(s))}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ======== LIMPAR TODOS OS DADOS ========
+        function clearAllData() {
+            confirmAction(
+                '⚠️ Atenção!',
+                'Tem certeza que deseja eliminar TODOS os dados do sistema? Esta acção não pode ser desfeita.',
+                'Sim, eliminar todos os dados'
+            ).then(result => {
+                if (result.isConfirmed) {
+                    const keys = ['clients', 'products', 'sales', 'invoices', 'payments', 'invoiceCounter', 'notifications'];
+                    keys.forEach(k => localStorage.removeItem(KEY + k));
+                    toast('Todos os dados foram eliminados!', 'success');
+                    setTimeout(() => window.location.reload(), 500);
+                }
+            });
+        }
+
+        // ======== ATUALIZAR DASHBOARD ========
+        function refreshDashboard() {
+            if (isLoggingOut) return;
+            if (!requireSession()) return;
+            updateStats();
+            renderCharts();
+            updateRecentSales();
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('pt-PT');
+        }
+
+        function changeChartPeriod(days) {
+            currentPeriod = days;
+            document.querySelectorAll('.chart-header .btn-sm-sz').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.chart-header .btn-sm-sz[data-period="${days}"]`)?.classList.add('active');
+            renderCharts();
+            updateStats();
+        }
+
+        // ======== TEMA ========
+        function toggleTheme() {
+            const settings = read('settings', {});
+            const currentTheme = settings.theme || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            settings.theme = newTheme;
+            write('settings', settings);
+            applyTheme(newTheme);
+            setTimeout(refreshDashboard, 300);
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function loadTheme() {
+            const settings = read('settings', {});
+            const theme = settings.theme || 'light';
+            applyTheme(theme);
+        }
+
+        // ======== INICIALIZAÇÃO ========
+        function boot() {
+            Object.entries(seed).forEach(([k, v]) => {
+                if (localStorage.getItem(KEY + k) === null) {
+                    write(k, v);
+                }
+            });
+            loadTheme();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            boot();
+            
+            // Verificar sessão antes de carregar
+            if (!requireSession()) {
+                return;
+            }
+
+            refreshDashboard();
+
+            if (refreshInterval) clearInterval(refreshInterval);
+            refreshInterval = setInterval(refreshDashboard, 30000);
+
+            window.addEventListener('pageshow', function(event) {
+                if (!event.persisted && !isLoggingOut) requireSession();
+            });
+
+            window.addEventListener('storage', function(e) {
+                if (e.key && e.key.startsWith(KEY)) {
+                    refreshDashboard();
+                }
+            });
+        });
+
+        // ======== EXPORTA ========
+        window.logout = logout;
+        window.toggleTheme = toggleTheme;
+        window.refreshDashboard = refreshDashboard;
+        window.changeChartPeriod = changeChartPeriod;
+        window.clearAllData = clearAllData;
+        window.read = read;
+        window.write = write;
+        window.getAll = getAll;
+        window.money = money;
+        window.toast = toast;
+        window.confirmAction = confirmAction;
+        window.KEY = KEY;
+        window.performLogout = performLogout;
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

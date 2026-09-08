@@ -1,0 +1,89 @@
+/* SumbanePay — responsive foundation
+   Shared by every page. Existing page styles remain the source of truth on desktop. */
+:root { --sp-mobile-gutter: clamp(12px, 4vw, 24px); }
+html, body { max-width: 100%; overflow-x: hidden; }
+img, svg, video, canvas { max-width: 100%; height: auto; }
+button, input, select, textarea { max-width: 100%; }
+.table-responsive, .table-wrap, .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { max-width: 100%; }
+.card-sz, .card-premium, .section-card, .chart-card, .stat-card, .report-card, .campaign-card, .profile-card, .auth-card { min-width: 0; }
+.text-break, .text-wrap { overflow-wrap: anywhere; }
+
+/* Accessible mobile drawer for the application sidebar. */
+.sp-menu-toggle { display: none; }
+.sp-sidebar-backdrop { display: none; }
+
+@media (max-width: 991.98px) {
+  .app-row { display: block !important; min-height: 100vh; }
+  .app-main { width: 100% !important; min-width: 0 !important; }
+  .sidebar {
+    position: fixed !important; z-index: 1050; inset: 0 auto 0 0;
+    width: min(86vw, 300px) !important; max-width: 300px;
+    min-height: 100vh !important; height: 100vh; overflow-y: auto;
+    transform: translateX(-105%); transition: transform .25s ease, box-shadow .25s ease;
+    box-shadow: none; padding: 20px !important;
+  }
+  body.sp-sidebar-open .sidebar { transform: translateX(0); box-shadow: 12px 0 40px rgba(0,0,0,.22); }
+  .sp-sidebar-backdrop { display: block; position: fixed; z-index: 1040; inset: 0; background: rgba(12,31,25,.48); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+  body.sp-sidebar-open .sp-sidebar-backdrop { opacity: 1; pointer-events: auto; }
+  .sp-menu-toggle {
+    display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto;
+    width: 40px; height: 40px; padding: 0; border: 1px solid var(--sz-line, #d9e2dd);
+    border-radius: 10px; background: var(--sz-white, #fff); color: var(--sz-green, #176b5b);
+    font-size: 1.2rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  }
+  .top-nav { padding: 10px var(--sp-mobile-gutter) !important; gap: 8px !important; flex-wrap: nowrap !important; }
+  .top-nav > * { min-width: 0; }
+  .top-nav .breadcrumb-premium { flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .top-nav .breadcrumb-premium .breadcrumb-item:not(.current):not(:first-child), .top-nav .breadcrumb-premium .separator { display: none; }
+  .top-nav .user-info-premium { flex: 0 0 auto; gap: 6px !important; }
+  .top-nav .user-info-premium .user-details { display: none !important; }
+  .top-nav .user-info-premium .btn-icon-premium { width: 36px; height: 36px; }
+  .app-content { padding: var(--sp-mobile-gutter) !important; }
+  .app-content > .d-flex.justify-content-between { align-items: flex-start !important; }
+  .app-content h1 { line-height: 1.1; }
+  .container, .container-fluid { --bs-gutter-x: 1.25rem; }
+  .row { --bs-gutter-x: 1rem; }
+  .filter-bar, .header-actions, .invoice-actions, .form-footer { gap: 8px !important; }
+  .filter-bar > *, .header-actions > * { flex: 1 1 140px; min-width: 0; }
+  .filter-bar .form-control, .filter-bar .form-select { min-width: 0 !important; width: 100%; }
+  .quick-actions { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .chart-container { min-height: 220px !important; }
+  .modal-dialog { margin: .75rem; }
+  .modal-content { max-height: calc(100vh - 1.5rem); overflow-y: auto; }
+  .pagination { flex-wrap: wrap; gap: 2px; }
+  .pagination .page-link { padding: .4rem .65rem; }
+}
+
+@media (max-width: 575.98px) {
+  .brand { font-size: 1.15rem !important; gap: 7px !important; }
+  .brand .logo-mark { width: 30px !important; height: 30px !important; font-size: .6rem !important; }
+  .top-nav .live-badge, .top-nav .user-info-premium .btn-icon-premium:first-of-type { display: none !important; }
+  .top-nav .user-info-premium .user-avatar { width: 32px !important; height: 32px !important; font-size: .78rem !important; }
+  .app-content .row > [class*="col-"] { min-width: 0; }
+  .stat-card { padding: 14px !important; }
+  .stat-value { font-size: clamp(1.35rem, 7vw, 1.9rem) !important; }
+  .stat-label { font-size: .68rem !important; }
+  .card-sz, .card-premium, .section-card, .chart-card, .profile-card { border-radius: 12px !important; }
+  .card-sz .card-body, .card-premium .card-body { padding: 14px !important; }
+  .btn { white-space: normal; }
+  .btn-group { flex-wrap: wrap; }
+  .quick-actions { gap: 8px !important; }
+  .quick-action-item { min-height: 74px; padding: 10px !important; }
+  .table-responsive, .table-wrap, .table-container { margin-left: -2px; margin-right: -2px; width: calc(100% + 4px); }
+  .table-responsive > table, .table-wrap > table, .table-container > table { min-width: 620px; }
+  .table-premium { font-size: .78rem; }
+  .table-premium th, .table-premium td { padding: .6rem .55rem !important; white-space: nowrap; }
+  .form-control, .form-select { font-size: 16px !important; } /* prevents iOS zoom */
+  .form-label { font-size: .82rem; }
+  .auth-container, .error-container, .profile-container { padding: var(--sp-mobile-gutter) !important; }
+  .auth-card { padding: 20px !important; }
+  .invoice-container { padding: 14px !important; }
+  .invoice-header, .invoice-footer { flex-direction: column !important; align-items: flex-start !important; gap: 14px; }
+  .footer-content, .footer-bottom { flex-direction: column !important; align-items: flex-start !important; gap: 12px; }
+  .toast-container-custom { left: 12px !important; right: 12px !important; width: auto !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}

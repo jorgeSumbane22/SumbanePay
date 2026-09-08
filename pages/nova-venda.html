@@ -1,0 +1,3429 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nova venda — SumbanePay</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        /* ============================================================
+           ROOT VARIABLES - LIGHT MODE
+           ============================================================ */
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 20px rgba(16, 63, 55, 0.06);
+            --sz-shadow-hover: 0 12px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-info: #0dcaf0;
+            --sz-purple: #9b59b6;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+
+        /* ============================================================
+           DARK MODE - TODAS AS CORES AJUSTADAS
+           ============================================================ */
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --sz-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+            --sz-info: #7cbdda;
+            --sz-purple: #b07cc6;
+        }
+
+        /* ============================================================
+           BASE
+           ============================================================ */
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .font-display { font-family: 'Playfair Display', 'Georgia', serif; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sz-paper); }
+        ::-webkit-scrollbar-thumb { background: var(--sz-green); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sz-green-light); }
+
+        /* ============================================================
+           LAYOUT
+           ============================================================ */
+        .app-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .app-row {
+            display: flex;
+            flex: 1;
+        }
+
+        .app-main {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 100vh;
+        }
+
+        .app-content {
+            flex: 1;
+            padding-bottom: 1rem;
+        }
+
+        .app-footer {
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        /* ============================================================
+           BRAND
+           ============================================================ */
+        .brand {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); transform: translateY(-1px); }
+        .brand b { color: var(--sz-coral); }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+        }
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(23, 107, 91, 0.4);
+        }
+
+        /* ============================================================
+           BOTÕES
+           ============================================================ */
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz i { transition: var(--transition); }
+        .btn-sz:hover i { transform: translateX(4px); }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+
+        .btn-outline-danger-sz {
+            border: 2px solid var(--sz-danger);
+            color: var(--sz-danger);
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-danger-sz:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-outline-warning-sz {
+            border: 2px solid var(--sz-warning);
+            color: var(--sz-warning);
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-warning-sz:hover {
+            background: var(--sz-warning);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-sm-sz {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            color: var(--sz-muted);
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm-sz:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+        }
+        .btn-sm-sz.active {
+            background: var(--sz-green);
+            color: #fff;
+            border-color: var(--sz-green);
+        }
+
+        /* ============================================================
+           EYEBROW
+           ============================================================ */
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           SIDEBAR
+           ============================================================ */
+        .sidebar {
+            background: var(--sz-white);
+            border-right: 1px solid var(--sz-line);
+            padding: 1.5rem 1rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            width: 260px;
+            flex-shrink: 0;
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar .nav-link {
+            color: var(--sz-muted);
+            border-radius: 8px;
+            margin: 0.15rem 0;
+            padding: 10px 14px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i {
+            width: 22px;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+
+        /* ============================================================
+           TOP NAV - HEADER PREMIUM
+           ============================================================ */
+        .top-nav {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 12px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.3;
+        }
+
+        .top-nav .breadcrumb-premium {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--sz-muted);
+            font-size: 0.85rem;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item .separator {
+            color: var(--sz-muted-light);
+            font-size: 0.6rem;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item.current {
+            color: var(--sz-ink);
+            font-weight: 600;
+            padding: 4px 8px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: 6px;
+        }
+        .top-nav .breadcrumb-premium .breadcrumb-item .home-icon {
+            color: var(--sz-green);
+            font-size: 1.1rem;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            padding: 3px 12px 3px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(23, 107, 91, 0.15);
+        }
+        .live-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        [data-theme="dark"] .live-badge {
+            background: rgba(42, 157, 143, 0.15);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.2);
+        }
+        [data-theme="dark"] .live-badge .dot {
+            background: var(--sz-green-light);
+        }
+
+        .top-nav .user-info-premium {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .top-nav .user-info-premium .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 2px 12px rgba(23, 107, 91, 0.25);
+            transition: var(--transition);
+            cursor: pointer;
+            user-select: none;
+        }
+        .top-nav .user-info-premium .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(23, 107, 91, 0.35);
+        }
+        .top-nav .user-info-premium .user-details {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .top-nav .user-info-premium .user-details .user-name {
+            font-weight: 600;
+            color: var(--sz-ink);
+            font-size: 0.9rem;
+        }
+        .top-nav .user-info-premium .user-details .user-role {
+            font-size: 0.65rem;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .top-nav .user-info-premium .btn-icon-premium {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-muted);
+            cursor: pointer;
+            position: relative;
+            font-size: 1.1rem;
+        }
+        .top-nav .user-info-premium .btn-icon-premium:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+            transform: translateY(-1px);
+        }
+        .top-nav .user-info-premium .btn-icon-premium .notif-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: var(--sz-danger);
+            border-radius: 50%;
+            border: 2px solid var(--sz-white);
+            display: none;
+        }
+        .top-nav .user-info-premium .btn-icon-premium .notif-dot.show {
+            display: block;
+        }
+
+        /* ============================================================
+           NOTIFICAÇÕES / LEMBRETES
+           ============================================================ */
+        .notif-dropdown {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            box-shadow: var(--sz-shadow-hover);
+            width: 380px;
+            max-height: 450px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            padding: 0.5rem 0;
+        }
+        .notif-dropdown.show {
+            display: block;
+        }
+        .notif-dropdown .notif-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--sz-line);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .notif-dropdown .notif-item:hover {
+            background: var(--sz-paper);
+        }
+        .notif-dropdown .notif-item:last-child {
+            border-bottom: none;
+        }
+        .notif-dropdown .notif-item .notif-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--sz-ink);
+        }
+        .notif-dropdown .notif-item .notif-text {
+            font-size: 0.75rem;
+            color: var(--sz-muted);
+        }
+        .notif-dropdown .notif-item .notif-time {
+            font-size: 0.6rem;
+            color: var(--sz-muted);
+        }
+        .notif-dropdown .notif-item .notif-icon {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+        .notif-dropdown .notif-item.unread {
+            border-left: 3px solid var(--sz-green);
+        }
+        .notif-dropdown .notif-item.reminder {
+            background: rgba(23, 107, 91, 0.04);
+        }
+        .notif-dropdown .notif-item.alert {
+            border-left: 3px solid var(--sz-danger);
+        }
+        .notif-dropdown .notif-empty {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--sz-muted);
+        }
+        .notif-dropdown .notif-empty i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            opacity: 0.3;
+        }
+        .notif-dropdown .notif-header {
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid var(--sz-line);
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--sz-muted);
+        }
+
+        [data-theme="dark"] .notif-dropdown {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .notif-dropdown .notif-item {
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .notif-dropdown .notif-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+        [data-theme="dark"] .notif-dropdown .notif-item .notif-title {
+            color: #f0efe8;
+        }
+        [data-theme="dark"] .notif-dropdown .notif-item .notif-text {
+            color: #a0b0a8;
+        }
+        [data-theme="dark"] .notif-dropdown .notif-item.reminder {
+            background: rgba(42, 157, 143, 0.08);
+        }
+        [data-theme="dark"] .notif-dropdown .notif-empty {
+            color: #a0b0a8;
+        }
+        [data-theme="dark"] .notif-dropdown .notif-header {
+            border-color: #2a4a3e;
+            color: #a0b0a8;
+        }
+
+        /* ============================================================
+           QUICK ACTIONS
+           ============================================================ */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .quick-action-item {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            padding: 1.2rem 0.75rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--sz-muted);
+            box-shadow: var(--sz-shadow);
+        }
+        .quick-action-item:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-green);
+            color: var(--sz-ink);
+        }
+        .quick-action-item i {
+            font-size: 1.6rem;
+            color: var(--sz-green);
+            display: block;
+            margin-bottom: 6px;
+            transition: var(--transition);
+        }
+        .quick-action-item:hover i {
+            transform: scale(1.1);
+            color: var(--sz-coral);
+        }
+        .quick-action-item span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        /* ============================================================
+           CARD PREMIUM
+           ============================================================ */
+        .card-premium {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            border: 1px solid var(--sz-line);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        .card-premium:hover {
+            box-shadow: var(--sz-shadow-hover);
+        }
+        .card-premium .card-body-premium {
+            padding: 1.5rem;
+        }
+
+        .card-premium .form-label {
+            color: var(--sz-ink);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .card-premium .form-label .required {
+            color: var(--sz-danger);
+            margin-left: 2px;
+        }
+        .card-premium .form-label small {
+            color: var(--sz-muted);
+            font-weight: 400;
+            font-size: 0.75rem;
+        }
+        .card-premium .form-control,
+        .card-premium .form-select {
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            padding: 8px 14px;
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            transition: var(--transition);
+        }
+        .card-premium .form-control:focus,
+        .card-premium .form-select:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
+            outline: none;
+        }
+        .card-premium .form-control::placeholder {
+            color: var(--sz-muted-light);
+        }
+        .card-premium .form-control.is-invalid {
+            border-color: var(--sz-danger);
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        .card-premium .form-control[list]::-webkit-calendar-picker-indicator {
+            opacity: 0.6;
+            cursor: pointer;
+        }
+        .card-premium .form-control[list]:hover::-webkit-calendar-picker-indicator {
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .card-premium {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .card-premium .form-label {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .card-premium .form-label small {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .card-premium .form-control,
+        [data-theme="dark"] .card-premium .form-select {
+            background: #162f27 !important;
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .card-premium .form-control:focus,
+        [data-theme="dark"] .card-premium .form-select:focus {
+            border-color: #f0c97a !important;
+            box-shadow: 0 0 0 3px rgba(240, 201, 122, 0.15) !important;
+        }
+        [data-theme="dark"] .card-premium .form-control::placeholder {
+            color: #6a8a7a !important;
+        }
+        [data-theme="dark"] .card-premium .form-control.is-invalid {
+            border-color: #f06a7a !important;
+            box-shadow: 0 0 0 3px rgba(240, 106, 122, 0.15) !important;
+        }
+
+        /* ============================================================
+           ITEMS LIST
+           ============================================================ */
+        .items-list {
+            border: 2px solid var(--sz-line);
+            border-radius: var(--sz-radius-sm);
+            padding: 0.5rem;
+            min-height: 80px;
+            background: var(--sz-paper);
+            transition: var(--transition);
+        }
+        .items-list.has-items {
+            border-color: var(--sz-green);
+            background: var(--sz-white);
+        }
+
+        .sale-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.25rem;
+            border-bottom: 1px solid var(--sz-line);
+            color: var(--sz-ink);
+        }
+        .sale-item:last-child { border-bottom: none; }
+        .sale-item .item-name {
+            font-weight: 500;
+            color: var(--sz-ink);
+        }
+        .sale-item .item-name small {
+            display: block;
+            font-weight: 400;
+            color: var(--sz-muted);
+            font-size: 0.75rem;
+        }
+        .sale-item .item-total {
+            font-weight: 700;
+            color: var(--sz-ink);
+        }
+
+        .empty-items {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--sz-muted);
+        }
+        .empty-items i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            opacity: 0.3;
+        }
+        .empty-items strong {
+            color: var(--sz-ink);
+        }
+
+        [data-theme="dark"] .items-list {
+            border-color: #2a4a3e;
+            background: #162f27;
+        }
+        [data-theme="dark"] .items-list.has-items {
+            border-color: #2a9d8f;
+            background: var(--sz-white);
+        }
+        [data-theme="dark"] .sale-item {
+            border-color: #2a4a3e;
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .sale-item .item-name {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .sale-item .item-name small {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .sale-item .item-total {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .empty-items {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .empty-items i {
+            color: #6a8a7a !important;
+        }
+        [data-theme="dark"] .empty-items strong {
+            color: #f0efe8 !important;
+        }
+
+        /* ============================================================
+           TOTALS
+           ============================================================ */
+        .totals-box {
+            background: var(--sz-paper);
+            border-radius: var(--sz-radius-sm);
+            padding: 1rem;
+            border: 2px solid var(--sz-line);
+            transition: var(--transition);
+        }
+        .totals-box .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            color: var(--sz-muted);
+        }
+        .totals-box .total-row strong {
+            color: var(--sz-ink);
+        }
+        .totals-box .total-row.final {
+            border-top: 2px solid var(--sz-green);
+            padding-top: 0.75rem;
+            margin-top: 0.25rem;
+            font-size: 1.2rem;
+        }
+        .totals-box .total-row.final span:last-child {
+            color: var(--sz-green);
+            font-weight: 700;
+        }
+
+        [data-theme="dark"] .totals-box {
+            background: #162f27;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .totals-box .total-row {
+            color: #a0b0a8;
+        }
+        [data-theme="dark"] .totals-box .total-row strong {
+            color: #f0efe8;
+        }
+
+        /* ============================================================
+           CODE EXAMPLE
+           ============================================================ */
+        .code-example {
+            background: var(--sz-paper);
+            border: 1px solid var(--sz-line);
+            padding: 0.75rem 1rem;
+            border-radius: var(--sz-radius-sm);
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: var(--sz-ink);
+        }
+        .code-example div {
+            padding: 2px 0;
+        }
+
+        [data-theme="dark"] .code-example {
+            background: #162f27;
+            border-color: #2a4a3e;
+            color: #f0efe8;
+        }
+
+        /* ============================================================
+           ALERTAS
+           ============================================================ */
+        .alert-custom {
+            border-radius: var(--sz-radius-sm);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-custom.success {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.15);
+        }
+        .alert-custom.info {
+            background: rgba(13, 202, 240, 0.08);
+            color: var(--sz-info);
+            border: 1px solid rgba(13, 202, 240, 0.15);
+        }
+
+        [data-theme="dark"] .alert-custom.success {
+            background: rgba(42, 157, 143, 0.12);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.2);
+        }
+        [data-theme="dark"] .alert-custom.info {
+            background: rgba(124, 189, 218, 0.12);
+            color: #7cbdda;
+            border-color: rgba(124, 189, 218, 0.2);
+        }
+
+        /* ============================================================
+           STAT CARDS PEQUENOS
+           ============================================================ */
+        .stat-mini {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            background: var(--sz-paper);
+            border-radius: var(--sz-radius-sm);
+            border: 1px solid var(--sz-line);
+            transition: var(--transition);
+        }
+        .stat-mini:hover {
+            border-color: var(--sz-green);
+        }
+        .stat-mini .stat-mini-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .stat-mini .stat-mini-icon.green { background: rgba(23, 107, 91, 0.12); color: var(--sz-green); }
+        .stat-mini .stat-mini-icon.coral { background: rgba(239, 109, 78, 0.12); color: var(--sz-coral); }
+        .stat-mini .stat-mini-icon.gold { background: rgba(232, 179, 91, 0.12); color: var(--sz-gold); }
+        .stat-mini .stat-mini-icon.blue { background: rgba(124, 157, 181, 0.12); color: #7c9db5; }
+
+        [data-theme="dark"] .stat-mini {
+            background: #162f27;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .stat-mini .stat-mini-icon.green { background: rgba(42, 157, 143, 0.15); color: var(--sz-green-light); }
+        [data-theme="dark"] .stat-mini .stat-mini-icon.coral { background: rgba(242, 138, 113, 0.15); color: var(--sz-coral); }
+        [data-theme="dark"] .stat-mini .stat-mini-icon.gold { background: rgba(240, 201, 122, 0.15); color: var(--sz-gold); }
+        [data-theme="dark"] .stat-mini .stat-mini-icon.blue { background: rgba(124, 189, 218, 0.15); color: #7cbdda; }
+
+        /* ============================================================
+           TOAST
+           ============================================================ */
+        .toast-container-custom {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            width: 100%;
+        }
+        .toast-custom {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            padding: 14px 18px;
+            box-shadow: var(--sz-shadow-hover);
+            border-left: 4px solid var(--sz-green);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.4s ease;
+            transition: var(--transition);
+            border: 1px solid var(--sz-line);
+            color: var(--sz-ink);
+        }
+        .toast-custom .toast-close {
+            background: none;
+            border: none;
+            color: var(--sz-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        .toast-custom .toast-close:hover { color: var(--sz-ink); }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideOutRight {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(40px); }
+        }
+
+        [data-theme="dark"] .toast-custom {
+            background: var(--sz-white);
+            border-color: var(--sz-line);
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .toast-custom .toast-close {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .toast-custom .toast-close:hover {
+            color: #f0efe8 !important;
+        }
+
+        /* ============================================================
+           FOOTER PREMIUM
+           ============================================================ */
+        .app-footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 0.75rem 2rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        .app-footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .app-footer .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-footer .footer-brand .footer-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+        }
+        .app-footer .footer-brand .footer-company {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .app-footer .footer-brand .footer-company b {
+            color: var(--sz-coral);
+        }
+        .app-footer .footer-brand .footer-version {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            background: var(--sz-paper);
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+        .app-footer .footer-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .app-footer .footer-user-info .user-data-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-data-item i {
+            color: var(--sz-green);
+            font-size: 0.85rem;
+            width: 16px;
+            text-align: center;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value {
+            color: var(--sz-ink);
+            font-weight: 500;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value.email-value {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        .app-footer .footer-user-info .user-status .status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        [data-theme="dark"] .app-footer {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .app-footer .footer-brand .footer-company {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-brand .footer-version {
+            background: #162f27 !important;
+            color: #6a8a7a !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item i {
+            color: #2a9d8f !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value.email-value {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status {
+            background: rgba(42, 157, 143, 0.12);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.15);
+        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status .status-dot {
+            background: var(--sz-green-light);
+        }
+
+        /* ============================================================
+           DARK MODE - CORREÇÕES
+           ============================================================ */
+        [data-theme="dark"] .sidebar {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .sidebar .small.text-muted {
+            color: #b8c5bf !important;
+        }
+        [data-theme="dark"] .sidebar .brand {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .sidebar .brand b {
+            color: #f28a71 !important;
+        }
+        [data-theme="dark"] .sidebar .brand .logo-mark {
+            background: linear-gradient(135deg, #2a9d8f, #1a6b5e) !important;
+        }
+        [data-theme="dark"] .sidebar .nav-link {
+            color: #b8c5bf !important;
+        }
+        [data-theme="dark"] .sidebar .nav-link i {
+            color: #8a9a92 !important;
+        }
+        [data-theme="dark"] .sidebar .nav-link:hover,
+        [data-theme="dark"] .sidebar .nav-link.active {
+            background: rgba(42, 157, 143, 0.15) !important;
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .sidebar .nav-link:hover i,
+        [data-theme="dark"] .sidebar .nav-link.active i {
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-secondary {
+            color: #b8c5bf !important;
+            border-color: #42675b !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-secondary:hover {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-danger-sz {
+            color: #f06a7a !important;
+            border-color: #f06a7a !important;
+        }
+        [data-theme="dark"] .sidebar .btn-outline-danger-sz:hover {
+            background: #f06a7a !important;
+            color: #0d1c17 !important;
+        }
+
+        [data-theme="dark"] .top-nav {
+            background: #0a1a14;
+            border-color: #2a4a3e;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a {
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
+            color: #f0c97a !important;
+            background: rgba(42, 157, 143, 0.15) !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item.current {
+            color: #f0efe8 !important;
+            background: rgba(42, 157, 143, 0.15) !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item .separator {
+            color: #6a8a7a !important;
+        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item .home-icon {
+            color: #2a9d8f !important;
+        }
+
+        [data-theme="dark"] .text-muted {
+            color: #a0b0a8 !important;
+        }
+
+        [data-theme="dark"] .quick-action-item {
+            background: var(--sz-white);
+            border-color: #2a4a3e;
+            color: #b8c5bf;
+        }
+        [data-theme="dark"] .quick-action-item:hover {
+            border-color: #f0c97a;
+            color: #f0efe8;
+        }
+        [data-theme="dark"] .quick-action-item i {
+            color: #2a9d8f;
+        }
+        [data-theme="dark"] .quick-action-item:hover i {
+            color: #f28a71;
+        }
+
+        [data-theme="dark"] .eyebrow {
+            color: #f28a71 !important;
+        }
+        [data-theme="dark"] .font-display {
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .font-display em {
+            color: #f28a71 !important;
+        }
+
+        [data-theme="dark"] .btn-sz {
+            background: linear-gradient(135deg, #2a9d8f, #1a7a6b) !important;
+        }
+        [data-theme="dark"] .btn-sz:hover {
+            background: linear-gradient(135deg, #1a7a6b, #2a9d8f) !important;
+        }
+        [data-theme="dark"] .btn-outline-sz {
+            border-color: #2a9d8f !important;
+            color: #2a9d8f !important;
+        }
+        [data-theme="dark"] .btn-outline-sz:hover {
+            background: #2a9d8f !important;
+            color: #fff !important;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .sidebar { width: 100%; min-height: auto; position: relative; padding: 1rem; max-height: none; }
+            .quick-actions { grid-template-columns: repeat(3, 1fr); }
+            .notif-dropdown { width: 300px; right: -60px; }
+            .top-nav { padding: 12px 16px; }
+            .app-footer .footer-content { flex-direction: column; text-align: center; }
+            .app-footer .footer-user-info { justify-content: center; }
+        }
+        @media (max-width: 768px) {
+            .top-nav { padding: 10px 14px; }
+            .top-nav .breadcrumb-premium { font-size: 0.75rem; }
+            .top-nav .user-info-premium .user-details .user-name { font-size: 0.8rem; }
+            .top-nav .user-info-premium .user-details .user-role { display: none; }
+            .top-nav .user-info-premium .user-avatar { width: 32px; height: 32px; font-size: 0.8rem; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+            .card-premium .card-body-premium { padding: 1rem; }
+            .toast-container-custom { top: 70px; right: 12px; max-width: 340px; }
+            .notif-dropdown { width: 280px; right: -80px; }
+            .app-footer { padding: 0.5rem 1rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.65rem; }
+            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.6rem; }
+        }
+        @media (max-width: 425px) {
+            .brand { font-size: 1rem; }
+            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
+            .top-nav .breadcrumb-premium { font-size: 0.65rem; }
+            .top-nav .breadcrumb-premium .breadcrumb-item .separator { display: none; }
+            .top-nav .user-info-premium .user-avatar { width: 28px; height: 28px; font-size: 0.7rem; }
+            .top-nav .user-info-premium .btn-icon-premium { width: 32px; height: 32px; font-size: 0.9rem; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .quick-action-item { padding: 0.8rem 0.5rem; }
+            .quick-action-item i { font-size: 1.2rem; }
+            .toast-container-custom { top: 60px; right: 8px; max-width: 300px; }
+            .notif-dropdown { width: 260px; right: -100px; }
+            .stat-mini { flex-direction: column; text-align: center; }
+            .app-footer .footer-user-info { gap: 0.4rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.55rem; }
+            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.5rem; }
+            .app-footer .footer-user-info .user-status { font-size: 0.5rem; padding: 2px 8px; }
+            .app-footer .footer-brand .footer-company { font-size: 0.8rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container-custom" id="toastContainer"></div>
+
+    <!-- ============================================================
+    APP WRAPPER
+    ============================================================ -->
+    <div class="app-wrapper">
+
+        <!-- APP ROW (SIDEBAR + MAIN) -->
+        <div class="app-row">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" role="navigation">
+                <div class="mb-4">
+                    <a class="brand" href="../index.html">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <div class="small text-muted mt-2" style="font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> Balcão Digital
+                    </div>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="./dashboard.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="./vendas.html"><i class="bi bi-bag me-2"></i>Vendas</a>
+                    <a class="nav-link active" href="./nova-venda.html"><i class="bi bi-plus-circle me-2"></i>Nova venda</a>
+                    <a class="nav-link" href="./faturas.html"><i class="bi bi-receipt me-2"></i>Facturas</a>
+                    <a class="nav-link" href="./clientes.html"><i class="bi bi-people me-2"></i>Clientes</a>
+                    <a class="nav-link" href="./produtos.html"><i class="bi bi-box-seam me-2"></i>Produtos</a>
+                    <a class="nav-link" href="./pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos</a>
+                    <a class="nav-link" href="./relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link" href="./configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                    <a class="nav-link" href="./perfil.html"><i class="bi bi-person me-2"></i>Perfil</a>
+                </nav>
+                <div class="mt-4 d-flex flex-column gap-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
+                        <i class="bi bi-circle-half me-2"></i>Tema
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger-sz w-100" onclick="logout()">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sair
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="app-main">
+
+                <!-- TOP NAV - HEADER PREMIUM -->
+                <div class="top-nav">
+                    <div class="breadcrumb-premium">
+                        <span class="breadcrumb-item">
+                            <i class="bi bi-house-fill home-icon"></i>
+                            <a href="./dashboard.html">Dashboard</a>
+                        </span>
+                        <span class="separator">›</span>
+                        <span class="breadcrumb-item current">
+                            <i class="bi bi-plus-circle me-1"></i> Nova venda
+                        </span>
+                        <span class="live-badge ms-2">
+                            <span class="dot"></span>
+                            AO VIVO
+                        </span>
+                    </div>
+
+                    <div class="user-info-premium">
+                        <div class="user-details text-end">
+                            <span class="user-name" id="userDisplay">
+                                <i class="bi bi-person-circle me-1"></i> Carregando...
+                            </span>
+                            <span class="user-role" id="userRole">Administrador</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">S</div>
+                        <button class="btn-icon-premium" onclick="toggleNotifDropdown()" title="Lembretes" id="notifBtn">
+                            <i class="bi bi-bell"></i>
+                            <span class="notif-dot" id="notifDot"></span>
+                        </button>
+                        <button class="btn-icon-premium" onclick="toggleTheme()" title="Alternar tema">
+                            <i class="bi bi-circle-half"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- NOTIFICAÇÕES / LEMBRETES DROPDOWN -->
+                <div class="notif-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <i class="bi bi-clock-history me-1"></i> LEMBRETES
+                    </div>
+                    <div id="notifList">
+                        <div class="notif-empty" id="notifEmpty">
+                            <i class="bi bi-inbox"></i>
+                            Nenhum lembrete no momento
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTEÚDO -->
+                <div class="app-content container-fluid p-3 p-lg-4">
+
+                    <!-- HEADER -->
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+                        <div>
+                            <div class="eyebrow"><i class="bi bi-plus-circle me-1"></i> FLUXO DE VENDA</div>
+                            <h1 class="font-display" style="font-size:clamp(1.8rem,3vw,2.5rem);margin:0;">
+                                Nova venda <em style="color:var(--sz-coral);font-style:normal;">✦</em>
+                            </h1>
+                            <p class="text-muted mt-1" style="font-size:0.9rem;">
+                                Registe uma venda de forma rápida e intuitiva
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn-outline-sz btn-sm" onclick="window.location.reload()">
+                                <i class="bi bi-arrow-clockwise"></i> Actualizar
+                            </button>
+                            <a class="btn-sz" href="./vendas.html">
+                                <i class="bi bi-list"></i> Ver vendas
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- QUICK ACTIONS -->
+                    <div class="quick-actions">
+                        <a href="./nova-venda.html" class="quick-action-item">
+                            <i class="bi bi-plus-circle"></i>
+                            <span>Nova Venda</span>
+                        </a>
+                        <a href="./clientes.html" class="quick-action-item">
+                            <i class="bi bi-person-plus"></i>
+                            <span>Novo Cliente</span>
+                        </a>
+                        <a href="./produtos.html" class="quick-action-item">
+                            <i class="bi bi-box-plus"></i>
+                            <span>Novo Produto</span>
+                        </a>
+                        <a href="./faturas.html" class="quick-action-item">
+                            <i class="bi bi-receipt"></i>
+                            <span>Nova Factura</span>
+                        </a>
+                        <a href="./relatorios.html" class="quick-action-item">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span>Relatórios</span>
+                        </a>
+                        <a href="./configuracoes.html" class="quick-action-item">
+                            <i class="bi bi-gear"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </div>
+
+                    <!-- STATS MINI -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-3 col-6">
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon green"><i class="bi bi-box"></i></div>
+                                <div>
+                                    <div class="text-muted small">Produtos disponíveis</div>
+                                    <div class="fw-bold" id="productCount">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon blue"><i class="bi bi-people"></i></div>
+                                <div>
+                                    <div class="text-muted small">Clientes cadastrados</div>
+                                    <div class="fw-bold" id="clientCount">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon gold"><i class="bi bi-receipt"></i></div>
+                                <div>
+                                    <div class="text-muted small">Vendas hoje</div>
+                                    <div class="fw-bold" id="salesToday">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon coral"><i class="bi bi-cash"></i></div>
+                                <div>
+                                    <div class="text-muted small">Receita hoje</div>
+                                    <div class="fw-bold" id="revenueToday">0 MT</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORM PRINCIPAL -->
+                    <div class="row g-3">
+                        <div class="col-lg-7">
+                            <div class="card-premium">
+                                <div class="card-body-premium">
+
+                                    <!-- ========================================== -->
+                                    <!-- DADOS DO CLIENTE - COM AUTO COMPLETE     -->
+                                    <!-- ========================================== -->
+                                    <div class="mb-3">
+                                        <h6 class="text-muted mb-2" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">
+                                            <i class="bi bi-person me-1"></i> Dados do Cliente
+                                            <span class="badge bg-success ms-2" style="font-size:0.55rem;">auto-complete</span>
+                                        </h6>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label">
+                                                <i class="bi bi-person me-1"></i> Nome <span class="required">*</span>
+                                                <small class="text-muted">(digite para pesquisar clientes)</small>
+                                            </label>
+                                            <input type="text" id="clientName" class="form-control" 
+                                                list="clientList" 
+                                                placeholder="Digite o nome do cliente..."
+                                                autocomplete="off"
+                                                style="font-weight:500;"
+                                                oninput="fillClientFields()"
+                                                onchange="fillClientFields()">
+                                            <datalist id="clientList"></datalist>
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle me-1"></i>
+                                                Clientes cadastrados aparecem automaticamente. Se for novo, será cadastrado ao criar a venda.
+                                            </small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label"><i class="bi bi-phone me-1"></i> Telefone</label>
+                                            <input type="text" id="clientPhone" class="form-control" placeholder="84 123 4567">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label"><i class="bi bi-envelope me-1"></i> Email</label>
+                                            <input type="email" id="clientEmail" class="form-control" placeholder="cliente@email.com">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label"><i class="bi bi-geo-alt me-1"></i> Cidade</label>
+                                            <input type="text" id="clientCity" class="form-control" placeholder="Maputo">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label"><i class="bi bi-house me-1"></i> Endereço</label>
+                                            <input type="text" id="clientAddress" class="form-control" placeholder="Rua, número, bairro">
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-3" style="border-color:var(--sz-line);">
+
+                                    <!-- ========================================== -->
+                                    <!-- ITENS DA VENDA                           -->
+                                    <!-- ========================================== -->
+                                    <div class="mb-3">
+                                        <h6 class="text-muted mb-2" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">
+                                            <i class="bi bi-receipt me-1"></i> Itens da Venda
+                                        </h6>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="bi bi-pencil me-1"></i> Itens da venda <span class="required">*</span>
+                                            <small class="d-block fw-normal">Uma linha por item: quantidade descrição preço</small>
+                                        </label>
+                                        <textarea id="saleText" class="form-control" rows="4" 
+                                            placeholder="2 cortes 500
+1 barba 300
+3 cervejas 150" oninput="parseText()" style="font-family:'Courier New',monospace;font-size:0.9rem;"></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label"><i class="bi bi-list-check me-1"></i> Itens interpretados</label>
+                                        <div class="items-list" id="itemsContainer">
+                                            <div class="empty-items">
+                                                <i class="bi bi-receipt"></i>
+                                                Escreva linhas como: <strong>2 cortes 500</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ========================================== -->
+                                    <!-- PAGAMENTO                               -->
+                                    <!-- ========================================== -->
+                                    <div class="mb-3 mt-3">
+                                        <h6 class="text-muted mb-2" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">
+                                            <i class="bi bi-wallet2 me-1"></i> Pagamento
+                                        </h6>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label"><i class="bi bi-tag me-1"></i> Desconto (MT)</label>
+                                            <input id="discount" class="form-control" type="number" min="0" step="0.01" value="0" oninput="updateTotals()">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label"><i class="bi bi-wallet2 me-1"></i> Método de pagamento</label>
+                                            <select id="method" class="form-select">
+                                                <option value="M-Pesa">M-Pesa</option>
+                                                <option value="e-Mola">e-Mola</option>
+                                                <option value="Dinheiro">Dinheiro</option>
+                                                <option value="Transferência">Transferência</option>
+                                                <option value="Outro">Outro</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label"><i class="bi bi-tag me-1"></i> Estado</label>
+                                            <select id="saleStatus" class="form-select">
+                                                <option value="Pendente">Pendente</option>
+                                                <option value="Pago">Pago</option>
+                                                <option value="Parcial">Parcial</option>
+                                                <option value="Cancelado">Cancelado</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label"><i class="bi bi-cash me-1"></i> Valor Pago (MT)</label>
+                                            <input id="paidAmount" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" value="0" oninput="updateTotals()">
+                                            <small class="text-muted">Deixe 0 para venda pendente</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- ========================================== -->
+                                    <!-- DATA E HORA                             -->
+                                    <!-- ========================================== -->
+                                    <div class="mb-3 mt-3">
+                                        <h6 class="text-muted mb-2" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">
+                                            <i class="bi bi-calendar me-1"></i> Data e Hora
+                                        </h6>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label"><i class="bi bi-calendar me-1"></i> Data</label>
+                                            <input type="date" id="saleDate" class="form-control">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label"><i class="bi bi-clock me-1"></i> Hora</label>
+                                            <input type="time" id="saleTime" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <!-- ========================================== -->
+                                    <!-- OBSERVAÇÕES                              -->
+                                    <!-- ========================================== -->
+                                    <div class="mb-3 mt-3">
+                                        <h6 class="text-muted mb-2" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">
+                                            <i class="bi bi-chat me-1"></i> Observações
+                                        </h6>
+                                        <textarea id="saleNotes" class="form-control" rows="2" placeholder="Notas adicionais sobre esta venda..."></textarea>
+                                    </div>
+
+                                    <!-- ========================================== -->
+                                    <!-- BOTÃO                                   -->
+                                    <!-- ========================================== -->
+                                    <button class="btn-sz w-100 mt-2" onclick="createSale()">
+                                        <i class="bi bi-check-lg"></i> Criar venda e factura
+                                        <i class="bi bi-file-pdf ms-1"></i>
+                                    </button>
+
+                                    <div class="text-center mt-2">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            A factura será baixada automaticamente em PDF com o logotipo da empresa
+                                        </small>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RESUMO / DICA / TOTAIS -->
+                        <div class="col-lg-5">
+                            <div class="card-premium">
+                                <div class="card-body-premium">
+
+                                    <div class="eyebrow"><i class="bi bi-lightbulb me-1"></i> DICA</div>
+                                    <h4 class="font-display mt-1">Venda rápida.</h4>
+                                    <p class="text-muted" style="font-size:0.9rem;">Use uma linha por item. O sistema interpreta quantidade, descrição e preço automaticamente.</p>
+
+                                    <div class="code-example">
+                                        <div>2 cortes 500</div>
+                                        <div>1 barba 300</div>
+                                        <div>3 cervejas 150</div>
+                                    </div>
+
+                                    <div class="alert-custom success mt-3">
+                                        <i class="bi bi-calculator"></i>
+                                        <span>Total calculado automaticamente após interpretar o texto.</span>
+                                    </div>
+
+                                    <div class="alert-custom info mt-2">
+                                        <i class="bi bi-info-circle"></i>
+                                        <span>Formato: <strong>quantidade descrição preço</strong></span>
+                                    </div>
+
+                                    <!-- PREVISÃO DA FACTURA -->
+                                    <div class="mt-3 p-2" style="background:var(--sz-paper);border-radius:var(--sz-radius-sm);border:1px solid var(--sz-line);">
+                                        <span class="text-muted small"><i class="bi bi-receipt me-1"></i> Próxima factura:</span>
+                                        <span id="previewInvoice" class="fw-bold" style="color:var(--sz-green);font-size:0.9rem;">FT-0001</span>
+                                    </div>
+
+                                    <!-- TOTAIS -->
+                                    <div class="totals-box mt-3">
+                                        <div class="total-row">
+                                            <span>Subtotal</span>
+                                            <span id="subtotalDisplay">0 MT</span>
+                                        </div>
+                                        <div class="total-row">
+                                            <span>Desconto</span>
+                                            <span id="discountDisplay" style="color:var(--sz-danger);">0 MT</span>
+                                        </div>
+                                        <div class="total-row">
+                                            <span>Valor Pago</span>
+                                            <span id="paidDisplay" style="color:var(--sz-success);">0 MT</span>
+                                        </div>
+                                        <div class="total-row">
+                                            <span>Saldo Restante</span>
+                                            <span id="balanceDisplay" style="color:var(--sz-coral);">0 MT</span>
+                                        </div>
+                                        <div class="total-row final">
+                                            <span><strong>Total</strong></span>
+                                            <span id="totalDisplay">0 MT</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Últimas vendas -->
+                                    <div class="mt-3 pt-3" style="border-top:1px solid var(--sz-line);">
+                                        <span class="text-muted small"><i class="bi bi-clock-history me-1"></i> Últimas vendas</span>
+                                        <div id="lastSales" class="mt-2"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOOLS -->
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <button class="btn-outline-sz btn-sm" onclick="window.location.reload()">
+                            <i class="bi bi-arrow-clockwise"></i> Actualizar
+                        </button>
+                        <span class="text-muted small ms-auto" style="font-size:0.7rem;">
+                            <i class="bi bi-database"></i> Dados locais · 
+                            <span id="lastUpdate">agora</span>
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- ============================================================
+                FOOTER PREMIUM
+                ============================================================ -->
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">Pay</div>
+                            <span class="footer-company">Sumbane<b>Pay</b></span>
+                            <span class="footer-version">v1.0.0</span>
+                        </div>
+                        <div class="footer-user-info" id="footerUserInfo">
+                            <span class="user-data-item">
+                                <i class="bi bi-person"></i>
+                                <span class="data-value" id="footerUserName">Carregando...</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-envelope"></i>
+                                <span class="data-value email-value" id="footerUserEmail">carregando@email.com</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-shield-check"></i>
+                                <span class="data-value" id="footerUserRole">Utilizador</span>
+                            </span>
+                            <span class="user-status">
+                                <span class="status-dot"></span>
+                                Online
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* ============================================================
+           NOVA VENDA PREMIUM - SUMBANEPAY
+           Versão: 17.0.0 - LOGOTIPO + NOME EMPRESA + AUTO COMPLETE
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+        let currentItems = [];
+        let autoRefreshInterval = null;
+        let notifDropdownOpen = false;
+
+        // ======== DADOS PADRÃO ========
+        const seed = {
+            users: [],
+            company: {
+                name: 'SumbanePay',
+                business: '',
+                nuit: '',
+                phone: '',
+                email: '',
+                website: '',
+                address: '',
+                city: 'Maputo',
+                logo: '',
+                invoicePrefix: 'FT',
+                currency: 'MZN',
+                currencySymbol: 'MT',
+                taxRate: 16,
+                showTaxOnInvoice: true,
+                footer: 'Obrigado pela preferência!',
+                paymentTerms: 30
+            },
+            settings: { theme: 'light' },
+            clients: [],
+            products: [],
+            sales: [],
+            invoices: [],
+            payments: [],
+            invoiceCounter: 0,
+            notifications: []
+        };
+
+        // ======== FUNÇÕES CORE ========
+        function read(k, f) {
+            try { const data = localStorage.getItem(KEY + k); return data ? JSON.parse(data) : f; } catch (e) { return f; }
+        }
+
+        function write(k, v) {
+            localStorage.setItem(KEY + k, JSON.stringify(v));
+        }
+
+        function getAll(key) { return read(key, []); }
+
+        function getById(key, id) {
+            const items = getAll(key);
+            return items.find(item => item.id === id) || null;
+        }
+
+        function updateItem(key, id, updates) {
+            const items = getAll(key);
+            const index = items.findIndex(item => item.id === id);
+            if (index === -1) return null;
+            items[index] = { ...items[index], ...updates };
+            write(key, items);
+            return items[index];
+        }
+
+        function addItem(key, item) {
+            const items = getAll(key);
+            if (!item.id) item.id = generateId(key.slice(0, 1));
+            if (!item.createdAt) item.createdAt = new Date().toISOString();
+            items.push(item);
+            write(key, items);
+            return item;
+        }
+
+        function generateId(prefix) {
+            return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        }
+
+        function money(n) {
+            return new Intl.NumberFormat('pt-PT', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(Number(n) || 0) + ' MT';
+        }
+
+        function formatDate(d) {
+            if (!d) return '-';
+            return new Date(d).toLocaleDateString('pt-PT', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function formatDateTime(d) {
+            if (!d) return '-';
+            return new Date(d).toLocaleString('pt-PT', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function formatDateShort(d) {
+            if (!d) return '-';
+            return new Date(d).toLocaleDateString('pt-PT', {
+                day: '2-digit', month: '2-digit', year: 'numeric'
+            });
+        }
+
+        function toast(msg, icon = 'success') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const colors = {
+                success: 'var(--sz-success)',
+                error: 'var(--sz-danger)',
+                warning: 'var(--sz-warning)',
+                info: 'var(--sz-info)'
+            };
+
+            const icons = {
+                success: 'bi-check-circle-fill',
+                error: 'bi-x-circle-fill',
+                warning: 'bi-exclamation-triangle-fill',
+                info: 'bi-info-circle-fill'
+            };
+
+            const toastEl = document.createElement('div');
+            toastEl.className = 'toast-custom';
+            toastEl.style.borderLeftColor = colors[icon] || colors.success;
+            toastEl.innerHTML = `
+                <span style="font-size:1.2rem;color:${colors[icon] || colors.success};">
+                    <i class="bi ${icons[icon] || icons.success}"></i>
+                </span>
+                <span style="flex:1;">${msg}</span>
+                <button class="toast-close" onclick="this.closest('.toast-custom').remove()">×</button>
+            `;
+            container.appendChild(toastEl);
+            setTimeout(() => {
+                if (toastEl.parentNode) {
+                    toastEl.style.animation = 'slideOutRight 0.3s ease forwards';
+                    setTimeout(() => toastEl.remove(), 300);
+                }
+            }, 4000);
+        }
+
+        function confirmAction(title, text, confirmText = 'Sim, confirmar') {
+            return Swal.fire({
+                title, text, icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#176b5b',
+                cancelButtonColor: '#dc3545',
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Cancelar',
+                background: getComputedStyle(document.documentElement).getPropertyValue('--sz-white') || '#ffffff',
+                color: getComputedStyle(document.documentElement).getPropertyValue('--sz-ink') || '#19362e'
+            });
+        }
+
+        // ======== FUNÇÃO PARA OBTER O LOGOTIPO ========
+        function getCompanyLogo() {
+            const company = read('company', {});
+            return company.logo || null;
+        }
+
+        // ======== GERAR PDF DA FACTURA COM LOGOTIPO E NOME DA EMPRESA ========
+        function generateInvoicePDF(sale) {
+    try {
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+            throw new Error('A biblioteca jsPDF não foi carregada.');
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        const company = read('company', {}) || {};
+        const logo = company.logo || '';
+
+        // =========================================================
+        // DADOS DA EMPRESA
+        // O nome mostrado no PDF fica SEMPRE acima do logotipo.
+        // =========================================================
+        const companyName = String(
+            company.business || company.name || 'SumbanePay'
+        ).trim();
+
+        const companyNuit = String(company.nuit || '').trim();
+        const companyPhone = String(company.phone || '').trim();
+        const companyEmail = String(company.email || '').trim();
+        const companyWebsite = String(company.website || '').trim();
+        const companyAddress = String(company.address || '').trim();
+        const companyCity = String(company.city || '').trim();
+        const currencySymbol = String(company.currencySymbol || 'MT').trim();
+
+        const green = [23, 107, 91];
+        const dark = [16, 63, 55];
+        const muted = [105, 118, 111];
+        const line = [225, 227, 218];
+        const light = [247, 246, 241];
+
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const left = 20;
+        const right = 190;
+        const contentWidth = right - left;
+
+        // =========================================================
+        // FUNÇÕES AUXILIARES
+        // =========================================================
+        const safeNumber = value => {
+            const n = Number(value);
+            return Number.isFinite(n) ? n : 0;
+        };
+
+        const formatMoneyPDF = value => {
+            const n = safeNumber(value);
+            return new Intl.NumberFormat('pt-PT', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(n) + ' ' + currencySymbol;
+        };
+
+        const formatText = value => {
+            if (value === null || value === undefined) return '';
+            return String(value).trim();
+        };
+
+        const sanitizeFileName = value => {
+            const result = formatText(value)
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-zA-Z0-9_-]+/g, '_')
+                .replace(/^_+|_+$/g, '');
+
+            return result || 'cliente';
+        };
+
+        const getImageFormat = data => {
+            if (!data || typeof data !== 'string') return null;
+
+            const value = data.toLowerCase();
+
+            if (value.startsWith('data:image/png')) return 'PNG';
+            if (value.startsWith('data:image/jpeg')) return 'JPEG';
+            if (value.startsWith('data:image/jpg')) return 'JPEG';
+            if (value.startsWith('data:image/webp')) return 'WEBP';
+            if (value.startsWith('data:image/gif')) return 'GIF';
+
+            return null;
+        };
+
+        const wrapText = (text, maxWidth) => {
+            const value = formatText(text);
+            if (!value) return [];
+
+            return doc.splitTextToSize(value, maxWidth);
+        };
+
+        const drawLabelValue = (label, value, x, y, maxWidth = 75) => {
+            const text = formatText(value);
+            if (!text) return y;
+
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(...dark);
+            doc.setFontSize(8.5);
+            doc.text(label, x, y);
+
+            const labelWidth = doc.getTextWidth(label) + 1.5;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(...muted);
+
+            const lines = wrapText(text, Math.max(20, maxWidth - labelWidth));
+
+            lines.forEach((lineText, index) => {
+                doc.text(
+                    lineText,
+                    x + (index === 0 ? labelWidth : labelWidth),
+                    y + (index * 4.2)
+                );
+            });
+
+            return y + Math.max(4.5, lines.length * 4.2);
+        };
+
+        // =========================================================
+        // CABEÇALHO
+        // =========================================================
+        let y = 16;
+
+        // NOME DA EMPRESA — PRIMEIRO
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(companyName.length > 32 ? 16 : 19);
+        doc.setTextColor(...green);
+
+        const companyNameLines = wrapText(companyName, 105);
+
+        companyNameLines.slice(0, 2).forEach((lineText, index) => {
+            doc.text(lineText, left, y + (index * 7));
+        });
+
+        y += Math.max(10, companyNameLines.slice(0, 2).length * 7 + 2);
+
+        // LOGOTIPO — DEPOIS DO NOME
+        let logoAdded = false;
+
+        if (logo && logo.length > 50) {
+            try {
+                const imageFormat = getImageFormat(logo) || 'PNG';
+
+                // Tamanho controlado para não empurrar o resto do PDF.
+                const logoX = left;
+                const logoY = y;
+                const logoW = 32;
+                const logoH = 32;
+
+                doc.addImage(
+                    logo,
+                    imageFormat,
+                    logoX,
+                    logoY,
+                    logoW,
+                    logoH,
+                    undefined,
+                    'FAST'
+                );
+
+                logoAdded = true;
+                y += 36;
+            } catch (logoError) {
+                console.warn('Não foi possível adicionar o logotipo:', logoError);
+            }
+        }
+
+        // Se não houver logo, mantém espaço compacto.
+        if (!logoAdded) {
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(...muted);
+            doc.text('Documento comercial', left, y);
+            y += 8;
+        }
+
+        // Informações da empresa no lado direito
+        const infoX = 122;
+        let infoY = 18;
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(...dark);
+        doc.text('DADOS DA EMPRESA', infoX, infoY);
+
+        infoY += 6;
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(...muted);
+
+        const companyInfo = [];
+
+        if (companyNuit) companyInfo.push(`NUIT: ${companyNuit}`);
+        if (companyPhone) companyInfo.push(`Telefone: ${companyPhone}`);
+        if (companyEmail) companyInfo.push(`Email: ${companyEmail}`);
+        if (companyAddress) companyInfo.push(`Endereço: ${companyAddress}`);
+        if (companyCity) companyInfo.push(`Cidade: ${companyCity}`);
+        if (companyWebsite) companyInfo.push(`Web: ${companyWebsite}`);
+
+        companyInfo.forEach(item => {
+            const lines = wrapText(item, 68).slice(0, 2);
+
+            lines.forEach(lineText => {
+                doc.text(lineText, infoX, infoY);
+                infoY += 4.5;
+            });
+        });
+
+        // =========================================================
+        // TÍTULO DA FACTURA
+        // =========================================================
+        const invoiceTitleY = Math.max(y + 2, infoY + 4);
+
+        doc.setFillColor(...green);
+        doc.roundedRect(122, invoiceTitleY - 7, 68, 14, 3, 3, 'F');
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.setTextColor(255, 255, 255);
+        doc.text('FACTURA', 126, invoiceTitleY + 1);
+
+        doc.setFontSize(8.5);
+        doc.text(
+            formatText(sale.invoiceNo || 'FT-0000'),
+            186,
+            invoiceTitleY + 1,
+            { align: 'right' }
+        );
+
+        doc.setDrawColor(...green);
+        doc.setLineWidth(0.5);
+        doc.line(left, invoiceTitleY + 10, right, invoiceTitleY + 10);
+
+        // =========================================================
+        // DATA DA FACTURA
+        // =========================================================
+        const invoiceDate = sale.date || sale.createdAt || new Date().toISOString();
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(...muted);
+        doc.text(
+            `Data: ${formatDateShort(invoiceDate)}`,
+            right,
+            invoiceTitleY + 16,
+            { align: 'right' }
+        );
+
+        // =========================================================
+        // DADOS DO CLIENTE
+        // =========================================================
+        let sectionY = invoiceTitleY + 25;
+
+        doc.setFillColor(...light);
+        doc.setDrawColor(...line);
+        doc.roundedRect(left, sectionY - 5, contentWidth, 31, 3, 3, 'FD');
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9.5);
+        doc.setTextColor(...dark);
+        doc.text('DADOS DO CLIENTE', left + 5, sectionY + 1);
+
+        let clientLeftY = sectionY + 8;
+        let clientRightY = sectionY + 8;
+
+        clientLeftY = drawLabelValue(
+            'Nome:',
+            sale.clientName || 'Cliente não informado',
+            left + 5,
+            clientLeftY,
+            75
+        );
+
+        if (sale.clientPhone) {
+            clientLeftY = drawLabelValue(
+                'Telefone:',
+                sale.clientPhone,
+                left + 5,
+                clientLeftY,
+                75
+            );
+        }
+
+        if (sale.clientEmail) {
+            clientRightY = drawLabelValue(
+                'Email:',
+                sale.clientEmail,
+                105,
+                clientRightY,
+                80
+            );
+        }
+
+        if (sale.clientCity) {
+            clientRightY = drawLabelValue(
+                'Cidade:',
+                sale.clientCity,
+                105,
+                clientRightY,
+                80
+            );
+        }
+
+        if (sale.clientAddress) {
+            clientRightY = drawLabelValue(
+                'Endereço:',
+                sale.clientAddress,
+                105,
+                clientRightY,
+                80
+            );
+        }
+
+        sectionY += 36;
+
+        // =========================================================
+        // ITENS DA VENDA
+        // =========================================================
+        const items = Array.isArray(sale.items) ? sale.items : [];
+
+        const tableData = items.length
+            ? items.map(item => {
+                const qty = Math.max(0, safeNumber(item.qty || item.quantity || 1));
+                const price = Math.max(0, safeNumber(item.price || item.unitPrice || 0));
+                const total = qty * price;
+
+                return [
+                    formatText(item.name || item.description || 'Item'),
+                    String(qty),
+                    formatMoneyPDF(price),
+                    formatMoneyPDF(total)
+                ];
+            })
+            : [['Nenhum item', '-', '-', '-']];
+
+        // Verifica se o plugin AutoTable está disponível.
+        if (typeof doc.autoTable === 'function') {
+            doc.autoTable({
+                startY: sectionY,
+                head: [['Descrição', 'Qtd.', 'Preço unit.', 'Total']],
+                body: tableData,
+                theme: 'grid',
+                margin: {
+                    left: left,
+                    right: pageWidth - right
+                },
+                styles: {
+                    font: 'helvetica',
+                    fontSize: 8,
+                    cellPadding: 3,
+                    textColor: dark,
+                    lineColor: line,
+                    lineWidth: 0.2
+                },
+                headStyles: {
+                    fillColor: green,
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold',
+                    fontSize: 8
+                },
+                alternateRowStyles: {
+                    fillColor: [250, 250, 247]
+                },
+                columnStyles: {
+                    0: {
+                        cellWidth: 78
+                    },
+                    1: {
+                        cellWidth: 20,
+                        halign: 'center'
+                    },
+                    2: {
+                        cellWidth: 36,
+                        halign: 'right'
+                    },
+                    3: {
+                        cellWidth: 36,
+                        halign: 'right'
+                    }
+                }
+            });
+        } else {
+            // Fallback caso AutoTable não carregue.
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8);
+            doc.setTextColor(...dark);
+            doc.text('Descrição', left, sectionY);
+            doc.text('Qtd.', 115, sectionY);
+            doc.text('Preço', 140, sectionY);
+            doc.text('Total', 170, sectionY);
+
+            let rowY = sectionY + 6;
+
+            doc.setFont('helvetica', 'normal');
+
+            tableData.forEach(row => {
+                doc.text(String(row[0]).slice(0, 45), left, rowY);
+                doc.text(String(row[1]), 115, rowY);
+                doc.text(String(row[2]), 140, rowY);
+                doc.text(String(row[3]), 170, rowY);
+                rowY += 6;
+            });
+
+            doc.setDrawColor(...line);
+            doc.line(left, rowY, right, rowY);
+
+            doc.lastAutoTable = {
+                finalY: rowY
+            };
+        }
+
+        const tableFinalY = (
+            doc.lastAutoTable &&
+            Number.isFinite(doc.lastAutoTable.finalY)
+        )
+            ? doc.lastAutoTable.finalY
+            : sectionY + 20;
+
+        // =========================================================
+        // CÁLCULOS
+        // =========================================================
+        const subtotal = safeNumber(
+            sale.subtotal !== undefined
+                ? sale.subtotal
+                : items.reduce((sum, item) => {
+                    const qty = safeNumber(item.qty || item.quantity || 1);
+                    const price = safeNumber(item.price || item.unitPrice || 0);
+                    return sum + (qty * price);
+                }, 0)
+        );
+
+        const discount = Math.max(0, safeNumber(sale.discount));
+
+        // A venda já guarda o imposto calculado.
+        // Não o recalculamos se existir para evitar duplicação.
+        const taxRate = Math.max(
+            0,
+            safeNumber(
+                sale.taxRate !== undefined
+                    ? sale.taxRate
+                    : company.taxRate
+            )
+        );
+
+        const tax = sale.tax !== undefined
+            ? Math.max(0, safeNumber(sale.tax))
+            : (
+                company.showTaxOnInvoice === false
+                    ? 0
+                    : Math.max(0, subtotal * (taxRate / 100))
+            );
+
+        const total = sale.total !== undefined
+            ? Math.max(0, safeNumber(sale.total))
+            : Math.max(0, subtotal + tax - discount);
+
+        const paid = Math.max(0, safeNumber(sale.paid));
+        const balance = Math.max(0, total - paid);
+        const change = Math.max(0, paid - total);
+
+        // =========================================================
+        // RESUMO FINANCEIRO
+        // =========================================================
+        let totalsY = tableFinalY + 9;
+
+        // Evitar colisão com o rodapé.
+        if (totalsY > 235) {
+            doc.addPage();
+            totalsY = 20;
+        }
+
+        const totalsX = 122;
+        const totalsW = 68;
+
+        doc.setFillColor(...light);
+        doc.setDrawColor(...line);
+        doc.roundedRect(
+            totalsX,
+            totalsY - 5,
+            totalsW,
+            48,
+            3,
+            3,
+            'FD'
+        );
+
+        let ty = totalsY + 2;
+
+        const totalLine = (label, value, bold = false, color = muted) => {
+            doc.setFont('helvetica', bold ? 'bold' : 'normal');
+            doc.setFontSize(bold ? 9.5 : 8.5);
+            doc.setTextColor(...color);
+
+            doc.text(label, totalsX + 5, ty);
+            doc.text(
+                value,
+                totalsX + totalsW - 5,
+                ty,
+                { align: 'right' }
+            );
+
+            ty += bold ? 7 : 5.5;
+        };
+
+        totalLine('Subtotal', formatMoneyPDF(subtotal));
+
+        if (company.showTaxOnInvoice !== false && taxRate > 0) {
+            totalLine(`IVA (${taxRate}%)`, formatMoneyPDF(tax));
+        }
+
+        if (discount > 0) {
+            totalLine('Desconto', '- ' + formatMoneyPDF(discount), false, [190, 70, 80]);
+        }
+
+        doc.setDrawColor(...green);
+        doc.setLineWidth(0.35);
+        doc.line(
+            totalsX + 5,
+            ty - 2,
+            totalsX + totalsW - 5,
+            ty - 2
+        );
+
+        totalLine('TOTAL', formatMoneyPDF(total), true, green);
+        totalLine('Pago', formatMoneyPDF(paid), false, [25, 135, 90]);
+
+        if (change > 0) {
+            totalLine('Troco', formatMoneyPDF(change), false, green);
+        } else {
+            totalLine('Saldo', formatMoneyPDF(balance), false, balance > 0 ? [220, 100, 70] : green);
+        }
+
+        // =========================================================
+        // PAGAMENTO / ESTADO
+        // =========================================================
+        const paymentX = left;
+        let paymentY = totalsY + 3;
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9.5);
+        doc.setTextColor(...dark);
+        doc.text('PAGAMENTO', paymentX, paymentY);
+
+        paymentY += 7;
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(...muted);
+
+        doc.text(
+            `Método: ${formatText(sale.method || 'Não informado')}`,
+            paymentX,
+            paymentY
+        );
+
+        paymentY += 5;
+
+        doc.text(
+            `Estado: ${formatText(sale.status || 'Pendente')}`,
+            paymentX,
+            paymentY
+        );
+
+        paymentY += 8;
+
+        // =========================================================
+        // OBSERVAÇÕES
+        // =========================================================
+        if (sale.notes) {
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8.5);
+            doc.setTextColor(...dark);
+            doc.text('OBSERVAÇÕES', paymentX, paymentY);
+
+            paymentY += 5;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(...muted);
+
+            const noteLines = wrapText(sale.notes, 88).slice(0, 5);
+
+            noteLines.forEach(lineText => {
+                doc.text(lineText, paymentX, paymentY);
+                paymentY += 4.2;
+            });
+        }
+
+        // =========================================================
+        // RODAPÉ
+        // =========================================================
+        const footerTop = Math.min(
+            pageHeight - 38,
+            Math.max(245, Math.max(paymentY + 8, ty + 8))
+        );
+
+        doc.setDrawColor(...line);
+        doc.setLineWidth(0.3);
+        doc.line(left, footerTop, right, footerTop);
+
+        let fy = footerTop + 6;
+
+        if (company.footer) {
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(8);
+            doc.setTextColor(...green);
+
+            const footerLines = wrapText(company.footer, contentWidth).slice(0, 2);
+
+            footerLines.forEach(lineText => {
+                doc.text(lineText, left, fy);
+                fy += 4.2;
+            });
+        }
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.setTextColor(...muted);
+
+        const footerCompany = [
+            companyName,
+            companyPhone,
+            companyEmail
+        ].filter(Boolean).join(' | ');
+
+        if (footerCompany) {
+            doc.text(footerCompany, left, fy);
+            fy += 4;
+        }
+
+        if (companyNuit) {
+            doc.text(`NUIT: ${companyNuit}`, left, fy);
+            fy += 4;
+        }
+
+        doc.text(
+            `Documento gerado em ${new Date().toLocaleString('pt-PT')}`,
+            left,
+            fy
+        );
+
+        // Número de página
+        doc.setFontSize(7);
+        doc.text(
+            'SumbanePay',
+            right,
+            pageHeight - 8,
+            { align: 'right' }
+        );
+
+        // =========================================================
+        // GUARDAR PDF
+        // =========================================================
+        const invoiceNumber = sanitizeFileName(
+            sale.invoiceNo || 'FT-0000'
+        );
+
+        const clientFileName = sanitizeFileName(
+            sale.clientName || 'cliente'
+        );
+
+        doc.save(
+            `Factura_${invoiceNumber}_${clientFileName}.pdf`
+        );
+
+        return true;
+
+    } catch (error) {
+        console.error('Erro ao gerar PDF:', error);
+
+        if (typeof toast === 'function') {
+            toast(
+                'A venda foi criada, mas ocorreu um erro ao gerar o PDF. Verifique a consola.',
+                'error'
+            );
+        } else {
+            alert(
+                'A venda foi criada, mas ocorreu um erro ao gerar o PDF.'
+            );
+        }
+
+        return false;
+    }
+}
+
+        // ======== LEMBRETES ========
+        function addReminder(type, title, message, icon = 'bi-info-circle') {
+            const notifications = read('notifications', []);
+            notifications.unshift({
+                id: 'rem_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                type: type || 'info',
+                title: title,
+                message: message,
+                icon: icon,
+                read: false,
+                date: new Date().toISOString()
+            });
+            write('notifications', notifications);
+            updateNotifDot();
+            return notifications;
+        }
+
+        function getNotifications() {
+            return read('notifications', []);
+        }
+
+        function markNotifRead(id) {
+            const notifications = read('notifications', []);
+            const updated = notifications.map(n => {
+                if (n.id === id) n.read = true;
+                return n;
+            });
+            write('notifications', updated);
+            renderNotifications();
+            updateNotifDot();
+        }
+
+        function clearReminders() {
+            confirmAction('Limpar lembretes?', 'Todos os lembretes serão eliminados.', 'Sim, limpar')
+                .then(result => {
+                    if (result.isConfirmed) {
+                        write('notifications', []);
+                        renderNotifications();
+                        updateNotifDot();
+                        toast('Lembretes limpos!', 'info');
+                    }
+                });
+        }
+
+        function updateNotifDot() {
+            const notifications = getNotifications();
+            const unread = notifications.filter(n => !n.read).length;
+            const dot = document.getElementById('notifDot');
+            if (dot) {
+                dot.classList.toggle('show', unread > 0);
+            }
+        }
+
+        function generateAutoReminders() {
+            const sales = getAll('sales');
+            const products = getAll('products');
+            const notifications = getNotifications();
+
+            const pendingSales = sales.filter(s => s.status === 'Pendente' || s.status === 'Parcial');
+            if (pendingSales.length > 0 && !notifications.some(n => n.type === 'pending_sales')) {
+                const totalPending = pendingSales.reduce((sum, s) => sum + (s.total || 0), 0);
+                addReminder(
+                    'pending_sales',
+                    '⚠️ Vendas Pendentes',
+                    `Tem ${pendingSales.length} venda(s) pendente(s) no valor total de ${money(totalPending)}.`,
+                    'bi-exclamation-triangle'
+                );
+            }
+
+            const lowStock = products.filter(p => (p.stock || 0) <= (p.stock_min || 3) && p.status === 'ativo');
+            if (lowStock.length > 0 && !notifications.some(n => n.type === 'low_stock')) {
+                const names = lowStock.slice(0, 3).map(p => p.name).join(', ');
+                const extra = lowStock.length > 3 ? ` e mais ${lowStock.length - 3}` : '';
+                addReminder(
+                    'low_stock',
+                    '📦 Stock Baixo',
+                    `${lowStock.length} produto(s) com stock baixo: ${names}${extra}.`,
+                    'bi-box-seam'
+                );
+            }
+
+            const today = new Date().toISOString().slice(0, 10);
+            const todaySales = sales.filter(s => (s.createdAt || s.date || '').slice(0, 10) === today);
+            if (todaySales.length === 0 && !notifications.some(n => n.type === 'no_sales_today')) {
+                addReminder(
+                    'no_sales_today',
+                    '📊 Vendas de Hoje',
+                    'Ainda não registou nenhuma venda hoje. Aproveite para movimentar o seu negócio!',
+                    'bi-graph-up'
+                );
+            }
+        }
+
+        function toggleNotifDropdown() {
+            notifDropdownOpen = !notifDropdownOpen;
+            document.getElementById('notifDropdown').classList.toggle('show', notifDropdownOpen);
+            if (notifDropdownOpen) {
+                renderNotifications();
+            }
+        }
+
+        function renderNotifications() {
+            const notifications = getNotifications();
+            const container = document.getElementById('notifList');
+
+            if (notifications.length === 0) {
+                container.innerHTML = `
+                    <div class="notif-empty">
+                        <i class="bi bi-inbox"></i>
+                        Nenhum lembrete no momento
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notifications.slice(0, 10).map(n => `
+                <div class="notif-item ${!n.read ? 'unread' : ''} ${n.type === 'low_stock' || n.type === 'pending_sales' ? 'alert' : ''}" onclick="markNotifRead('${n.id}')">
+                    <div style="display:flex;align-items:flex-start;gap:10px;">
+                        <span class="notif-icon" style="color:${n.type === 'low_stock' || n.type === 'pending_sales' ? 'var(--sz-danger)' : 'var(--sz-green)'}">
+                            <i class="${n.icon || 'bi-info-circle'}"></i>
+                        </span>
+                        <div>
+                            <div class="notif-title">${n.title}</div>
+                            <div class="notif-text">${n.message}</div>
+                            <div class="notif-time">${formatDateTime(n.date)}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            if (notifications.length > 0) {
+                container.innerHTML += `
+                    <div style="padding:0.5rem 1rem;border-top:1px solid var(--sz-line);text-align:center;">
+                        <button class="btn-sm-sz" onclick="event.stopPropagation();clearReminders()" style="width:100%;">
+                            <i class="bi bi-check-all me-1"></i> Limpar lembretes
+                        </button>
+                    </div>
+                `;
+            }
+
+            updateNotifDot();
+        }
+
+        // ======== AUTENTICAÇÃO ========
+        function requireSession() {
+            if (window._sessionChecking) return false;
+            window._sessionChecking = true;
+
+            try {
+                const oldSession = localStorage.getItem('sz_session');
+                if (oldSession) {
+                    const users = getAll('users');
+                    const user = users.find(u => u.id === oldSession);
+                    if (user) {
+                        const session = { userId: user.id, email: user.email, name: user.name, role: user.role || 'user' };
+                        sessionStorage.setItem(KEY + 'session', JSON.stringify(session));
+                        localStorage.removeItem('sz_session');
+                        window._sessionChecking = false;
+                        return true;
+                    } else {
+                        localStorage.removeItem('sz_session');
+                    }
+                }
+
+                const sessionData = sessionStorage.getItem(KEY + 'session');
+                if (!sessionData) {
+                    window._sessionChecking = false;
+                    window.location.replace('./login.html');
+                    return false;
+                }
+
+                const session = JSON.parse(sessionData);
+                const users = getAll('users');
+                const user = users.find(u => u.id === session.userId);
+
+                if (!user || user.status === 'inativo') {
+                    sessionStorage.removeItem(KEY + 'session');
+                    window._sessionChecking = false;
+                    window.location.replace('./login.html');
+                    return false;
+                }
+
+                // HEADER
+                const userDisplay = document.getElementById('userDisplay');
+                if (userDisplay) {
+                    userDisplay.textContent = user.name;
+                }
+
+                const avatar = document.getElementById('userAvatar');
+                if (avatar) {
+                    avatar.textContent = user.name.charAt(0).toUpperCase();
+                }
+
+                const roleEl = document.getElementById('userRole');
+                if (roleEl) {
+                    const roles = { 'admin': 'Administrador', 'user': 'Utilizador', 'superadmin': 'SuperAdmin' };
+                    roleEl.textContent = roles[user.role] || 'Utilizador';
+                }
+
+                // FOOTER
+                const footerName = document.getElementById('footerUserName');
+                if (footerName) {
+                    footerName.textContent = user.name;
+                }
+
+                const footerEmail = document.getElementById('footerUserEmail');
+                if (footerEmail) {
+                    footerEmail.textContent = user.email || 'sem-email@cadastrado.com';
+                }
+
+                const footerRole = document.getElementById('footerUserRole');
+                if (footerRole) {
+                    const roles = { 'admin': 'Administrador', 'user': 'Utilizador', 'superadmin': 'SuperAdmin' };
+                    footerRole.textContent = roles[user.role] || 'Utilizador';
+                }
+
+                window._sessionChecking = false;
+                return true;
+            } catch (e) {
+                window._sessionChecking = false;
+                window.location.replace('./login.html');
+                return false;
+            }
+        }
+
+        function logout() {
+            confirmAction('Sair da sua conta?', 'Terá que fazer login novamente para aceder.', 'Sair')
+                .then(result => {
+                    if (result.isConfirmed) {
+                        sessionStorage.removeItem(KEY + 'session');
+                        localStorage.removeItem('sz_session');
+                        localStorage.removeItem(KEY + 'session');
+                        window.location.replace('./login.html');
+                    }
+                });
+        }
+
+        // ======== PRÓXIMO NÚMERO DE FACTURA ========
+        function nextInvoiceNumber() {
+            const counter = read('invoiceCounter', 0) + 1;
+            write('invoiceCounter', counter);
+            const company = read('company', {});
+            const prefix = company.invoicePrefix || 'FT';
+            return prefix + '-' + String(counter).padStart(4, '0');
+        }
+
+        function updatePreviewInvoice() {
+            const preview = document.getElementById('previewInvoice');
+            if (preview) {
+                const counter = read('invoiceCounter', 0) + 1;
+                const company = read('company', {});
+                const prefix = company.invoicePrefix || 'FT';
+                preview.textContent = prefix + '-' + String(counter).padStart(4, '0');
+            }
+        }
+
+        // ======== ATUALIZAR TOTAIS ========
+        function updateTotals() {
+            const discount = Number(document.getElementById('discount').value || 0);
+            const paidAmount = Number(document.getElementById('paidAmount').value || 0);
+            const subtotal = currentItems.reduce((sum, x) => sum + (x.qty * x.price), 0);
+            const total = Math.max(0, subtotal - discount);
+            const balance = Math.max(0, total - paidAmount);
+
+            document.getElementById('subtotalDisplay').textContent = money(subtotal);
+            document.getElementById('discountDisplay').textContent = money(discount);
+            document.getElementById('paidDisplay').textContent = money(paidAmount);
+            document.getElementById('balanceDisplay').textContent = money(balance);
+            document.getElementById('totalDisplay').textContent = money(total);
+
+            const totalEl = document.getElementById('totalDisplay');
+            if (total > 0) {
+                totalEl.style.color = 'var(--sz-green)';
+            } else {
+                totalEl.style.color = 'var(--sz-muted)';
+            }
+
+            const statusSelect = document.getElementById('saleStatus');
+            if (paidAmount >= total && total > 0) {
+                if (statusSelect.value === 'Pendente' || statusSelect.value === 'Parcial') {
+                    statusSelect.value = 'Pago';
+                }
+            } else if (paidAmount > 0 && paidAmount < total) {
+                if (statusSelect.value === 'Pendente' || statusSelect.value === 'Pago') {
+                    statusSelect.value = 'Parcial';
+                }
+            } else if (paidAmount === 0) {
+                if (statusSelect.value === 'Pago' || statusSelect.value === 'Parcial') {
+                    statusSelect.value = 'Pendente';
+                }
+            }
+        }
+
+        // ======== PARSE TEXTO ========
+        function parseText() {
+            const text = document.getElementById('saleText').value.trim();
+            const lines = text.split('\n')
+                .map(x => x.trim())
+                .filter(Boolean)
+                .map(line => {
+                    const match = line.match(/^(\d+)\s+(.+?)\s+(\d+(?:[.,]\d+)?)$/);
+                    if (match) {
+                        return {
+                            id: 'item_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                            name: match[2].trim(),
+                            qty: Number(match[1]),
+                            price: Number(match[3].replace(',', '.'))
+                        };
+                    }
+                    return null;
+                })
+                .filter(Boolean);
+
+            currentItems = lines;
+
+            const container = document.getElementById('itemsContainer');
+            if (lines.length === 0) {
+                container.className = 'items-list';
+                container.innerHTML = `
+                    <div class="empty-items">
+                        <i class="bi bi-receipt"></i>
+                        Escreva linhas como: <strong>2 cortes 500</strong>
+                    </div>
+                `;
+                updateTotals();
+                return;
+            }
+
+            container.className = 'items-list has-items';
+            const subtotal = lines.reduce((sum, x) => sum + (x.qty * x.price), 0);
+
+            container.innerHTML = lines.map((x, idx) => `
+                <div class="sale-item">
+                    <span class="item-name">
+                        ${x.name}
+                        <small>${x.qty} × ${money(x.price)}</small>
+                    </span>
+                    <span class="item-total">${money(x.qty * x.price)}</span>
+                </div>
+            `).join('');
+
+            container.innerHTML += `
+                <div class="sale-item" style="border-top:2px solid var(--sz-green);padding-top:0.75rem;margin-top:0.25rem;">
+                    <span class="item-name" style="font-weight:700;">Subtotal</span>
+                    <span class="item-total" style="color:var(--sz-green);font-size:1.1rem;">${money(subtotal)}</span>
+                </div>
+            `;
+
+            updateTotals();
+        }
+
+        // ======== ATUALIZAR DATALIST DE CLIENTES ========
+        function updateClientDatalist() {
+            const clients = getAll('clients');
+            const datalist = document.getElementById('clientList');
+            datalist.innerHTML = '';
+            clients.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.name;
+                datalist.appendChild(option);
+            });
+        }
+
+        // ======== PREENCHER CAMPOS DO CLIENTE - AUTO COMPLETE ========
+        function fillClientFields() {
+            const name = document.getElementById('clientName').value.trim();
+            
+            if (!name) {
+                // Se o campo estiver vazio, limpar os outros campos
+                document.getElementById('clientPhone').value = '';
+                document.getElementById('clientEmail').value = '';
+                document.getElementById('clientCity').value = '';
+                document.getElementById('clientAddress').value = '';
+                return;
+            }
+
+            const clients = getAll('clients');
+            // Procurar cliente pelo nome (case insensitive)
+            const client = clients.find(c => c.name.toLowerCase() === name.toLowerCase());
+            
+            if (client) {
+                // Preencher automaticamente os dados do cliente
+                document.getElementById('clientPhone').value = client.phone || '';
+                document.getElementById('clientEmail').value = client.email || '';
+                document.getElementById('clientCity').value = client.city || '';
+                document.getElementById('clientAddress').value = client.address || '';
+                
+                // Adicionar um indicador visual de que o cliente foi encontrado
+                document.getElementById('clientName').style.borderColor = 'var(--sz-success)';
+            } else {
+                // Se o nome não existir, limpar os campos mas manter o nome digitado
+                document.getElementById('clientPhone').value = '';
+                document.getElementById('clientEmail').value = '';
+                document.getElementById('clientCity').value = '';
+                document.getElementById('clientAddress').value = '';
+                document.getElementById('clientName').style.borderColor = '';
+            }
+        }
+
+        // ======== CRIAR VENDA ========
+        function createSale() {
+            const clientName = document.getElementById('clientName').value.trim();
+            const clientPhone = document.getElementById('clientPhone').value.trim();
+            const clientEmail = document.getElementById('clientEmail').value.trim();
+            const clientCity = document.getElementById('clientCity').value.trim();
+            const clientAddress = document.getElementById('clientAddress').value.trim();
+            const discount = Number(document.getElementById('discount').value || 0);
+            const method = document.getElementById('method').value;
+            const status = document.getElementById('saleStatus').value;
+            const paid = Number(document.getElementById('paidAmount').value || 0);
+            const notes = document.getElementById('saleNotes').value.trim();
+
+            let saleDate = new Date().toISOString();
+            const dateVal = document.getElementById('saleDate').value;
+            const timeVal = document.getElementById('saleTime').value;
+            if (dateVal && timeVal) {
+                saleDate = new Date(dateVal + 'T' + timeVal + ':00').toISOString();
+            } else if (dateVal) {
+                saleDate = new Date(dateVal + 'T00:00:00').toISOString();
+            }
+
+            const items = currentItems;
+
+            if (!clientName) {
+                toast('Por favor, digite o nome do cliente.', 'error');
+                document.getElementById('clientName').classList.add('is-invalid');
+                return;
+            }
+            document.getElementById('clientName').classList.remove('is-invalid');
+
+            if (items.length === 0) {
+                toast('Adicione pelo menos um item. Escreva no formato: 2 cortes 500', 'error');
+                document.getElementById('saleText').classList.add('is-invalid');
+                return;
+            }
+            document.getElementById('saleText').classList.remove('is-invalid');
+
+            const company = read('company', {});
+            const taxRate = company.taxRate || 0;
+            const subtotal = items.reduce((sum, x) => sum + (x.qty * x.price), 0);
+            const tax = subtotal * (taxRate / 100);
+            const totalWithTax = subtotal + tax - discount;
+            const invoiceNo = nextInvoiceNumber();
+
+            // ==========================================================
+            // CADASTRO AUTOMÁTICO DO CLIENTE
+            // ==========================================================
+            const clients = getAll('clients');
+            let clientId = null;
+
+            let existingClient = clients.find(c => 
+                c.name.toLowerCase() === clientName.toLowerCase()
+            );
+
+            if (existingClient) {
+                clientId = existingClient.id;
+                const updates = {};
+                if (clientPhone && clientPhone !== existingClient.phone) updates.phone = clientPhone;
+                if (clientEmail && clientEmail !== existingClient.email) updates.email = clientEmail;
+                if (clientCity && clientCity !== existingClient.city) updates.city = clientCity;
+                if (clientAddress && clientAddress !== existingClient.address) updates.address = clientAddress;
+                
+                if (Object.keys(updates).length > 0) {
+                    updateItem('clients', clientId, updates);
+                    toast('Dados do cliente atualizados!', 'info');
+                }
+            } else {
+                const newClient = {
+                    id: generateId('c'),
+                    name: clientName,
+                    phone: clientPhone || '',
+                    email: clientEmail || '',
+                    city: clientCity || '',
+                    address: clientAddress || '',
+                    createdAt: new Date().toISOString(),
+                    status: 'ativo'
+                };
+                addItem('clients', newClient);
+                clientId = newClient.id;
+                toast('Cliente cadastrado automaticamente!', 'success');
+            }
+
+            updateClientDatalist();
+
+            // ==========================================================
+            // CRIAR VENDA
+            // ==========================================================
+            const sale = {
+                id: generateId('s'),
+                invoiceNo: invoiceNo,
+                clientId: clientId,
+                clientName: clientName,
+                clientPhone: clientPhone,
+                clientEmail: clientEmail,
+                clientCity: clientCity,
+                clientAddress: clientAddress,
+                items: items,
+                subtotal: subtotal,
+                tax: tax,
+                taxRate: taxRate,
+                discount: discount,
+                paid: paid,
+                total: totalWithTax,
+                method: method,
+                status: status,
+                notes: notes,
+                date: saleDate,
+                createdAt: new Date().toISOString()
+            };
+
+            const sales = getAll('sales');
+            const invoices = getAll('invoices');
+            sales.unshift(sale);
+            invoices.unshift(sale);
+            write('sales', sales);
+            write('invoices', invoices);
+
+            const payment = {
+                id: generateId('pay'),
+                saleId: sale.id,
+                invoiceNo: invoiceNo,
+                clientName: clientName,
+                value: paid,
+                method: method,
+                status: status === 'Pago' ? 'Pago' : (paid > 0 ? 'Parcial' : 'Pendente'),
+                date: saleDate,
+                createdAt: new Date().toISOString()
+            };
+            const payments = getAll('payments');
+            payments.push(payment);
+            write('payments', payments);
+
+            try {
+                const notifications = getAll('admin_notifications');
+                notifications.push({
+                    id: 'notif_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                    type: 'new_sale',
+                    name: 'Nova venda',
+                    email: clientName,
+                    amount: totalWithTax,
+                    invoiceNo: invoiceNo,
+                    date: new Date().toISOString(),
+                    read: false
+                });
+                write('admin_notifications', notifications);
+            } catch (e) {}
+
+            // ==========================================================
+            // GERAR PDF COM LOGOTIPO E NOME DA EMPRESA
+            // ==========================================================
+            generateInvoicePDF(sale);
+
+            // Limpar campos
+            currentItems = [];
+            document.getElementById('saleText').value = '';
+            document.getElementById('discount').value = 0;
+            document.getElementById('paidAmount').value = 0;
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientPhone').value = '';
+            document.getElementById('clientEmail').value = '';
+            document.getElementById('clientCity').value = '';
+            document.getElementById('clientAddress').value = '';
+            document.getElementById('saleNotes').value = '';
+            document.getElementById('itemsContainer').className = 'items-list';
+            document.getElementById('itemsContainer').innerHTML = `
+                <div class="empty-items">
+                    <i class="bi bi-receipt"></i>
+                    Escreva linhas como: <strong>2 cortes 500</strong>
+                </div>
+            `;
+            document.getElementById('saleStatus').value = 'Pendente';
+            document.getElementById('clientName').style.borderColor = '';
+            updateTotals();
+            updatePreviewInvoice();
+            loadLastSales();
+            loadStats();
+
+            // Gerar lembretes
+            generateAutoReminders();
+
+            toast(`Venda ${invoiceNo} criada com sucesso! Factura com logotipo baixada.`);
+
+            setTimeout(() => {
+                document.getElementById('clientName').focus();
+            }, 300);
+        }
+
+        // ======== CARREGAR STATS ========
+        function loadStats() {
+            const clients = getAll('clients');
+            const products = getAll('products');
+            const sales = getAll('sales');
+
+            document.getElementById('clientCount').textContent = clients.length;
+            document.getElementById('productCount').textContent = products.length;
+
+            const today = new Date().toISOString().slice(0, 10);
+            const todaySales = sales.filter(s => (s.createdAt || s.date || '').slice(0, 10) === today);
+            const todayRevenue = todaySales.reduce((sum, s) => sum + (s.total || 0), 0);
+
+            document.getElementById('salesToday').textContent = todaySales.length;
+            document.getElementById('revenueToday').textContent = money(todayRevenue);
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('pt-PT');
+
+            generateAutoReminders();
+        }
+
+        // ======== CARREGAR ÚLTIMAS VENDAS ========
+        function loadLastSales() {
+            const sales = getAll('sales');
+            const last = sales.slice(0, 3);
+            const container = document.getElementById('lastSales');
+            if (last.length === 0) {
+                container.innerHTML = '<span class="text-muted small">Nenhuma venda registada</span>';
+                return;
+            }
+            container.innerHTML = last.map(s => `
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;padding:4px 0;border-bottom:1px solid var(--sz-line);">
+                    <span style="font-weight:500;">${s.invoiceNo}</span>
+                    <span style="font-weight:600;color:var(--sz-green);">${money(s.total)}</span>
+                    <span class="text-muted">${formatDate(s.createdAt || s.date)}</span>
+                </div>
+            `).join('');
+        }
+
+        // ======== TEMA ========
+        function toggleTheme() {
+            const settings = read('settings', {});
+            const currentTheme = settings.theme || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            settings.theme = newTheme;
+            write('settings', settings);
+            applyTheme(newTheme);
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+            setTimeout(parseText, 50);
+        }
+
+        function loadTheme() {
+            const settings = read('settings', {});
+            const theme = settings.theme || 'light';
+            applyTheme(theme);
+        }
+
+        // ======== SINCRONIZAÇÃO ========
+        function setupStorageSync() {
+            window.addEventListener('storage', function(e) {
+                if (e.key && e.key.startsWith(KEY)) {
+                    updateClientDatalist();
+                    loadLastSales();
+                    loadStats();
+                }
+            });
+        }
+
+        function startAutoRefresh() {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            autoRefreshInterval = setInterval(function() {
+                const session = sessionStorage.getItem(KEY + 'session');
+                if (!session) {
+                    clearInterval(autoRefreshInterval);
+                    window.location.replace('./login.html');
+                } else {
+                    updateClientDatalist();
+                    loadStats();
+                    loadLastSales();
+                }
+            }, 30000);
+        }
+
+        // ======== INICIALIZAÇÃO ========
+        function boot() {
+            Object.entries(seed).forEach(([k, v]) => {
+                if (localStorage.getItem(KEY + k) === null) {
+                    write(k, v);
+                }
+            });
+            loadTheme();
+
+            const now = new Date();
+            const dateStr = now.getFullYear() + '-' + 
+                String(now.getMonth()+1).padStart(2, '0') + '-' + 
+                String(now.getDate()).padStart(2, '0');
+            const timeStr = String(now.getHours()).padStart(2, '0') + ':' + 
+                String(now.getMinutes()).padStart(2, '0');
+
+            document.getElementById('saleDate').value = dateStr;
+            document.getElementById('saleTime').value = timeStr;
+            updatePreviewInvoice();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            boot();
+            if (requireSession()) {
+                updateClientDatalist();
+                loadLastSales();
+                loadStats();
+                parseText();
+                updateTotals();
+                setupStorageSync();
+                startAutoRefresh();
+
+                // Event listeners para auto-complete
+                document.getElementById('clientName').addEventListener('input', fillClientFields);
+                document.getElementById('clientName').addEventListener('change', fillClientFields);
+                document.getElementById('paidAmount').addEventListener('input', updateTotals);
+                document.getElementById('discount').addEventListener('input', updateTotals);
+
+                document.getElementById('clientName').addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        document.getElementById('saleText').focus();
+                    }
+                });
+                document.getElementById('saleText').addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && e.shiftKey) {
+                        e.preventDefault();
+                        createSale();
+                    }
+                });
+
+                document.addEventListener('click', function(e) {
+                    const dropdown = document.getElementById('notifDropdown');
+                    const btn = document.getElementById('notifBtn');
+                    if (dropdown && btn) {
+                        if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
+                            dropdown.classList.remove('show');
+                            notifDropdownOpen = false;
+                        }
+                    }
+                });
+            }
+        });
+
+        // ======== EXPORTA ========
+        window.logout = logout;
+        window.toggleTheme = toggleTheme;
+        window.parseText = parseText;
+        window.createSale = createSale;
+        window.updateTotals = updateTotals;
+        window.generateInvoicePDF = generateInvoicePDF;
+        window.getCompanyLogo = getCompanyLogo;
+        window.updateClientDatalist = updateClientDatalist;
+        window.fillClientFields = fillClientFields;
+        window.toggleNotifDropdown = toggleNotifDropdown;
+        window.markNotifRead = markNotifRead;
+        window.clearReminders = clearReminders;
+        window.addReminder = addReminder;
+        window.getNotifications = getNotifications;
+        window.read = read;
+        window.write = write;
+        window.getAll = getAll;
+        window.getById = getById;
+        window.updateItem = updateItem;
+        window.addItem = addItem;
+        window.generateId = generateId;
+        window.money = money;
+        window.formatDate = formatDate;
+        window.formatDateTime = formatDateTime;
+        window.toast = toast;
+        window.confirmAction = confirmAction;
+        window.KEY = KEY;
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

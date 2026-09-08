@@ -1,0 +1,1210 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Entrar — SumbanePay</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* ============================================================
+           ROOT VARIABLES
+           ============================================================ */
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 16px 48px rgba(16, 63, 55, 0.12);
+            --sz-shadow-hover: 0 20px 60px rgba(16, 63, 55, 0.18);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+
+        /* ============================================================
+           DARK MODE
+           ============================================================ */
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+            --sz-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ============================================================
+           BASE
+           ============================================================ */
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .serif { font-family: 'Georgia', 'Times New Roman', serif; }
+
+        /* ============================================================
+           BRAND
+           ============================================================ */
+        .brand {
+            font-family: 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); transform: translateY(-1px); }
+        .brand.text-white { color: #fff; }
+        .brand.text-white:hover { color: var(--sz-gold); }
+        .brand b { color: var(--sz-coral); }
+        .brand.text-white b { color: var(--sz-gold); }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+        }
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(23, 107, 91, 0.4);
+        }
+
+        /* ============================================================
+           BOTÕES
+           ============================================================ */
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 12px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz i { transition: var(--transition); }
+        .btn-sz:hover i { transform: translateX(4px); }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 10px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+        [data-theme="dark"] .btn-outline-sz {
+            border-color: var(--sz-green-light);
+            color: var(--sz-green-light);
+        }
+        [data-theme="dark"] .btn-outline-sz:hover {
+            background: var(--sz-green-light);
+            color: var(--sz-paper);
+        }
+
+        .btn-outline-gold-sz {
+            border: 2px solid var(--sz-gold);
+            color: var(--sz-gold);
+            background: transparent;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-outline-gold-sz:hover {
+            background: var(--sz-gold);
+            color: var(--sz-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(232, 179, 91, 0.3);
+        }
+        [data-theme="dark"] .btn-outline-gold-sz {
+            border-color: var(--sz-gold);
+            color: var(--sz-gold);
+        }
+        [data-theme="dark"] .btn-outline-gold-sz:hover {
+            background: var(--sz-gold);
+            color: var(--sz-dark);
+        }
+
+        /* ============================================================
+           EYEBROW
+           ============================================================ */
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           PASSWORD TOGGLE
+           ============================================================ */
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper .form-control {
+            padding-right: 45px;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--sz-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            z-index: 5;
+        }
+        .password-toggle:hover {
+            color: var(--sz-green);
+        }
+        [data-theme="dark"] .password-toggle:hover {
+            color: var(--sz-gold);
+        }
+
+        /* ============================================================
+           AUTH LAYOUT
+           ============================================================ */
+        .auth-wrap {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            align-items: stretch;
+        }
+
+        .auth-side {
+            background: var(--sz-dark);
+            color: #fff;
+            padding: 3rem;
+            background-image: radial-gradient(#ffffff12 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+            transition: background 0.3s ease;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-side::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(232, 179, 91, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        [data-theme="dark"] .auth-side {
+            background: #0a1f1a;
+        }
+
+        .auth-side-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        .auth-side h1 {
+            font: 700 clamp(2.8rem, 4vw, 4rem)/1.05 Georgia, serif;
+        }
+        .auth-side h1 em {
+            color: var(--sz-gold);
+            font-style: normal;
+        }
+        .auth-side p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.05rem;
+            max-width: 320px;
+        }
+
+        /* BADGE AO VIVO */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(78, 205, 196, 0.15);
+            color: #4ecdc4;
+            padding: 2px 12px 2px 8px;
+            border-radius: 20px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            margin-left: 10px;
+        }
+        .live-badge .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .auth-side .footer-note {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: auto;
+            padding-top: 2rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .auth-side .footer-note .sep {
+            opacity: 0.2;
+        }
+
+        .auth-form-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: var(--sz-paper);
+            transition: background 0.3s ease;
+        }
+
+        .auth-form {
+            background: var(--sz-white);
+            padding: 2.5rem;
+            max-width: 480px;
+            width: 100%;
+            border-radius: var(--sz-radius);
+            box-shadow: var(--sz-shadow);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        .auth-form:hover {
+            box-shadow: var(--sz-shadow-hover);
+        }
+        [data-theme="dark"] .auth-form {
+            background: var(--sz-white);
+        }
+
+        .auth-form .eyebrow { margin-bottom: 0.25rem; }
+        .auth-form h2 { font-size: 1.8rem; margin-bottom: 0.25rem; }
+        .auth-form .subtitle {
+            color: var(--sz-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-form .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--sz-ink);
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .auth-form .form-label .required {
+            color: var(--sz-danger);
+            font-size: 1.1rem;
+        }
+        .auth-form .form-control {
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            padding: 10px 14px;
+            transition: var(--transition);
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .auth-form .form-control:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 4px rgba(23, 107, 91, 0.1);
+            outline: none;
+        }
+        .auth-form .form-control.is-invalid {
+            border-color: var(--sz-danger);
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+        }
+        .auth-form .form-control.is-valid {
+            border-color: var(--sz-success);
+            box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.1);
+        }
+        .auth-form .form-control::placeholder {
+            color: var(--sz-muted-light);
+        }
+
+        [data-theme="dark"] .auth-form .form-control {
+            background: #102a23;
+            color: #f0efe8;
+            border-color: #42675b;
+        }
+        [data-theme="dark"] .auth-form .form-control:focus {
+            border-color: var(--sz-gold);
+            box-shadow: 0 0 0 4px rgba(232, 179, 91, 0.15);
+        }
+        [data-theme="dark"] .auth-form .form-control::placeholder {
+            color: #6a8a7a;
+        }
+
+        .auth-form .invalid-feedback {
+            font-size: 0.75rem;
+            color: var(--sz-danger);
+            margin-top: 4px;
+            display: none;
+        }
+        .auth-form .form-control.is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+
+        .auth-form .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .auth-form .links a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .auth-form .links a:hover { color: var(--sz-green); }
+        [data-theme="dark"] .auth-form .links a { color: var(--sz-muted-light); }
+        [data-theme="dark"] .auth-form .links a:hover { color: var(--sz-gold); }
+
+        .auth-form .links .register-link {
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        [data-theme="dark"] .auth-form .links .register-link {
+            color: var(--sz-gold);
+        }
+        .auth-form .links .register-link:hover {
+            color: var(--sz-dark);
+            text-decoration: underline;
+        }
+        [data-theme="dark"] .auth-form .links .register-link:hover {
+            color: #fff;
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--sz-muted);
+            font-size: 0.8rem;
+            margin: 1.5rem 0;
+        }
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--sz-line);
+        }
+
+        .admin-badge {
+            font-size: 0.55rem;
+            background: var(--sz-gold);
+            color: var(--sz-dark);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        [data-theme="dark"] .admin-badge {
+            background: var(--sz-gold);
+            color: var(--sz-dark);
+        }
+
+        .admin-access {
+            text-align: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--sz-line);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .admin-access .admin-hint {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .admin-access .admin-hint i {
+            font-size: 0.6rem;
+        }
+
+        /* ============================================================
+           TOGGLE THEME
+           ============================================================ */
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--sz-line);
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+            box-shadow: var(--sz-shadow);
+        }
+        .theme-toggle:hover {
+            transform: scale(1.08) rotate(8deg);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-green);
+        }
+        [data-theme="dark"] .theme-toggle {
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .theme-toggle:hover {
+            border-color: var(--sz-gold);
+        }
+
+        /* ============================================================
+           FOOTER DO FORMULÁRIO
+           ============================================================ */
+        .form-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .form-footer .footer-item {
+            font-size: 0.6rem;
+            color: var(--sz-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .form-footer .footer-item i {
+            color: var(--sz-green);
+        }
+        .form-footer .footer-item .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            display: inline-block;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        [data-theme="dark"] .form-footer .footer-item .status-dot {
+            background: var(--sz-green-light);
+        }
+
+        /* ============================================================
+           BOTÃO VOLTAR PARA INDEX
+           ============================================================ */
+        .btn-back-index {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--sz-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(90, 106, 98, 0.06);
+            border: 1px solid transparent;
+        }
+        .btn-back-index:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+            border-color: var(--sz-line);
+            transform: translateX(-2px);
+        }
+        [data-theme="dark"] .btn-back-index:hover {
+            color: var(--sz-gold);
+            background: rgba(232, 179, 91, 0.08);
+            border-color: var(--sz-line);
+        }
+        .btn-exit-main {
+            color: var(--sz-danger);
+            cursor: pointer;
+            font: inherit;
+        }
+        .btn-exit-main:hover {
+            color: #fff;
+            background: var(--sz-danger);
+            border-color: var(--sz-danger);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .auth-wrap { flex-direction: column; }
+            .auth-side { min-height: 35vh; padding: 2rem; }
+            .auth-side h1 { font-size: 2.5rem; }
+            .auth-side .footer-note { margin-top: 1rem; padding-top: 1rem; }
+            .auth-form-wrapper { padding: 2rem 1rem; min-height: 65vh; }
+            .auth-form { padding: 2rem; box-shadow: none; background: transparent; }
+            [data-theme="dark"] .auth-form { background: transparent; }
+        }
+
+        @media (max-width: 576px) {
+            .auth-side { padding: 1.5rem; min-height: 30vh; }
+            .auth-side h1 { font-size: 2rem; }
+            .auth-side p { font-size: 0.9rem; }
+            .auth-form { padding: 1.5rem; }
+            .auth-form h2 { font-size: 1.5rem; }
+            .auth-form .btn-sz { font-size: 0.9rem; padding: 10px 20px; }
+            .auth-form .links { flex-direction: column; align-items: center; gap: 0.5rem; }
+            .theme-toggle { top: 12px; right: 12px; width: 38px; height: 38px; font-size: 0.9rem; }
+            .live-badge { font-size: 0.45rem; padding: 1px 8px 1px 6px; }
+            .form-footer .footer-item { font-size: 0.5rem; }
+            .admin-access .admin-hint { font-size: 0.5rem; }
+            .password-toggle { font-size: 0.9rem; right: 8px; }
+            .btn-back-index { font-size: 0.7rem; padding: 4px 10px; }
+        }
+
+        @media (max-width: 380px) {
+            .auth-side h1 { font-size: 1.6rem; }
+            .auth-form { padding: 1rem; }
+            .auth-form .form-control { padding: 8px 12px; font-size: 0.85rem; }
+            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
+            .brand { font-size: 1rem; }
+            .theme-toggle { top: 10px; right: 10px; width: 34px; height: 34px; font-size: 0.8rem; }
+            .password-toggle { font-size: 0.8rem; right: 6px; padding: 2px 6px; }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <!-- ============================================================
+    TOGGLE THEME
+    ============================================================ -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema" title="Alternar tema">
+        <i class="bi bi-moon-fill" id="themeIcon"></i>
+    </button>
+
+    <!-- ============================================================
+    AUTH WRAPPER
+    ============================================================ -->
+    <div class="auth-wrap">
+        <!-- LADO ESQUERDO - BRANDING -->
+        <div class="auth-side">
+            <div>
+                <a class="brand text-white" href="../index.html" onclick="goToMain(event)">
+                    <span class="logo-mark">Pay</span>
+                    Sumbane<b>Pay</b>
+                </a>
+                <span class="live-badge">
+                    <span class="dot"></span>
+                    AO VIVO
+                </span>
+            </div>
+            <div class="auth-side-content">
+                <h1>Mais tempo<br><em>para o que importa.</em></h1>
+                <p>Facturação simples para quem faz o seu negócio acontecer.</p>
+            </div>
+            <div class="footer-note">
+                <span><i class="bi bi-shield-check me-1"></i> Área segura</span>
+                <span class="sep">|</span>
+                <span>v1.0.0</span>
+                <span class="sep">|</span>
+                <span><i class="bi bi-person me-1"></i> Utilizador</span>
+            </div>
+        </div>
+
+        <!-- LADO DIREITO - FORMULÁRIO -->
+        <div class="auth-form-wrapper">
+            <div class="auth-form">
+                <!-- Saída para a página principal -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button type="button" class="btn-back-index btn-exit-main" onclick="goToMain(event)" title="Sair e ir para a página principal">
+                        <i class="bi bi-box-arrow-right"></i> Sair
+                    </button>
+                    <a class="brand" href="../index.html" onclick="goToMain(event)" style="font-size:1rem;">
+                        <span class="logo-mark" style="width:28px;height:28px;font-size:0.55rem;">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                </div>
+
+                <div class="eyebrow">BEM-VINDO DE VOLTA</div>
+                <h2 class="serif mt-1">Entre no seu espaço.</h2>
+                <p class="subtitle">Aceda à sua conta e gerencie o seu negócio.</p>
+
+                <!-- ===== FORMULÁRIO DE LOGIN ===== -->
+                <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
+                    <label class="form-label" for="email">
+                        <i class="bi bi-envelope me-1"></i> Email <span class="required">*</span>
+                    </label>
+                    <input id="email" class="form-control" type="email" placeholder="exemplo@email.com" autocomplete="username" required>
+                    <div class="invalid-feedback">Por favor, insira o seu email.</div>
+
+                    <label class="form-label" for="password">
+                        <i class="bi bi-lock me-1"></i> Senha <span class="required">*</span>
+                    </label>
+                    <div class="password-wrapper">
+                        <input id="password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password" required>
+                        <button type="button" class="password-toggle" id="passwordToggle" onclick="togglePasswordVisibility()" aria-label="Mostrar ou ocultar senha">
+                            <i class="bi bi-eye" id="passwordIcon"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback">Por favor, insira a sua senha.</div>
+
+                    <button type="submit" class="btn-sz mt-3">
+                        Entrar <i class="bi bi-arrow-right"></i>
+                    </button>
+                </form>
+
+                <!-- ===== DIVIDER ===== -->
+                <div class="auth-divider">
+                    <span>ou</span>
+                </div>
+
+                <!-- ===== LINK PARA CADASTRO ===== -->
+                <div class="text-center">
+                    <p class="text-muted small mb-2">Ainda não tem conta?</p>
+                    <a href="cadastro.html" class="btn-outline-sz">
+                        <i class="bi bi-person-plus"></i> Criar nova conta
+                    </a>
+                </div>
+
+                <!-- ===== LINKS ===== -->
+                <div class="links">
+                    <a href="recuperar-palavra-passe.html">
+                        <i class="bi bi-question-circle me-1"></i> Esqueci a senha
+                    </a>
+                </div>
+
+                <!-- ===== SUPERADMIN - LIMPA SESSÕES ANTES DE IR ===== -->
+                <div class="admin-access">
+                    <a href="#" onclick="goToSuperAdmin(event)" class="btn-outline-gold-sz">
+                        <i class="bi bi-shield-lock"></i>
+                        <span class="admin-badge">Admin</span>
+                        Área SuperAdmin
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                    <span class="admin-hint">
+                        <i class="bi bi-lock"></i> Acesso restrito a administradores
+                    </span>
+                </div>
+
+                <!-- ===== FOOTER DO FORMULÁRIO ===== -->
+                <div class="form-footer">
+                    <span class="footer-item">
+                        <i class="bi bi-shield-check"></i> SSL Seguro
+                    </span>
+                    <span class="footer-item">
+                        <span class="status-dot"></span> Online
+                    </span>
+                    <span class="footer-item">
+                        <i class="bi bi-clock"></i> <span id="currentTime">--:--</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
+    <script>
+        /* ============================================================
+           LOGIN - SUMBANEPAY
+           Versão: 12.0.0 - VOLTAR E SAIR PARA A PÁGINA PRINCIPAL
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+
+        // ======== DADOS PADRÃO ========
+        const seed = {
+            users: [],
+            company: {
+                name: 'SumbanePay',
+                nuit: '',
+                phone: '',
+                email: '',
+                address: '',
+                city: 'Maputo',
+                logo: '',
+                invoicePrefix: 'FT',
+                currency: 'MZN',
+                currencySymbol: 'MT',
+                footer: 'Obrigado pela preferência!'
+            },
+            settings: { theme: 'light' },
+            clients: [],
+            products: [],
+            sales: [],
+            invoices: [],
+            payments: [],
+            invoiceCounter: 0,
+            admin_notifications: []
+        };
+
+        // ======== FUNÇÕES CORE ========
+        function read(key, fallback = null) {
+            try {
+                const data = localStorage.getItem(KEY + key);
+                return data ? JSON.parse(data) : fallback;
+            } catch (e) {
+                console.warn('Erro ao ler', key, e);
+                return fallback;
+            }
+        }
+
+        function write(key, value) {
+            try {
+                localStorage.setItem(KEY + key, JSON.stringify(value));
+                return value;
+            } catch (e) {
+                console.warn('Erro ao escrever', key, e);
+                return null;
+            }
+        }
+
+        function getAll(key) {
+            return read(key, []);
+        }
+
+        function toast(message, icon = 'success') {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                timer: 2500,
+                showConfirmButton: false,
+                icon: icon,
+                title: message
+            });
+        }
+
+        // ======== TEMA ========
+        function toggleTheme() {
+            const settings = read('settings', {});
+            const currentTheme = settings.theme || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            settings.theme = newTheme;
+            write('settings', settings);
+            applyTheme(newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            }
+        }
+
+        function loadTheme() {
+            const settings = read('settings', {});
+            const theme = settings.theme || 'light';
+            applyTheme(theme);
+            updateThemeIcon(theme);
+        }
+
+        // ======== RELÓGIO ========
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('pt-PT', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            const el = document.getElementById('currentTime');
+            if (el) el.textContent = time;
+        }
+
+        // ======== MOSTRAR/OCULTAR SENHA ========
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const icon = document.getElementById('passwordIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        }
+
+        // ======== IR PARA SUPERADMIN ========
+        function goToSuperAdmin(e) {
+            e.preventDefault();
+            
+            // LIMPAR TODAS AS SESSÕES
+            localStorage.removeItem(KEY + 'admin_session');
+            localStorage.removeItem('sz_admin_session');
+            localStorage.removeItem('sz_session');
+            localStorage.removeItem(KEY + 'session');
+            localStorage.removeItem('sumbanepay_admin_session');
+            sessionStorage.removeItem(KEY + 'session');
+            sessionStorage.removeItem('sumbanepay_session');
+            
+            // Limpar cookies
+            document.cookie.split(";").forEach(function(c) {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+            
+            window.location.href = 'superadmin_sumbanepay/superadmin-login.html?t=' + Date.now();
+        }
+
+        // ======== LOGIN ========
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const emailField = document.getElementById('email');
+            const passwordField = document.getElementById('password');
+            const email = emailField.value.trim().toLowerCase();
+            const password = passwordField.value.trim();
+
+            [emailField, passwordField].forEach(el => el.classList.remove('is-invalid', 'is-valid'));
+
+            let valid = true;
+            if (!email) {
+                emailField.classList.add('is-invalid');
+                valid = false;
+            } else {
+                emailField.classList.add('is-valid');
+            }
+
+            if (!password || password.length < 6) {
+                passwordField.classList.add('is-invalid');
+                valid = false;
+            } else {
+                passwordField.classList.add('is-valid');
+            }
+
+            if (!valid) {
+                toast('Preencha todos os campos corretamente.', 'error');
+                return;
+            }
+
+            const users = getAll('users');
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (!user) {
+                [emailField, passwordField].forEach(el => el.classList.add('is-invalid'));
+                toast('Email ou senha inválidos.', 'error');
+                return;
+            }
+
+            if (user.status === 'inativo') {
+                toast('Esta conta está desativada. Contacte o administrador.', 'error');
+                return;
+            }
+
+            const updatedUsers = users.map(u => {
+                if (u.id === user.id) {
+                    return { ...u, lastAccess: new Date().toISOString() };
+                }
+                return u;
+            });
+            write('users', updatedUsers);
+
+            const session = {
+                userId: user.id,
+                email: user.email,
+                name: user.name,
+                role: user.role || 'user',
+                loggedInAt: new Date().toISOString()
+            };
+            sessionStorage.setItem(KEY + 'session', JSON.stringify(session));
+            localStorage.setItem(KEY + 'session', JSON.stringify(session));
+            localStorage.setItem('sz_session', user.id);
+
+            toast(`Bem-vindo(a), ${user.name}!`);
+
+            setTimeout(() => {
+                window.location.replace('dashboard.html');
+            }, 500);
+        }
+
+        // ======== PREVENÇÃO DE BFCACHE ========
+        function preventBFCache() {
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    const session = sessionStorage.getItem(KEY + 'session');
+                    if (session) {
+                        try {
+                            const data = JSON.parse(session);
+                            if (data.userId) {
+                                window.location.replace('dashboard.html');
+                                return;
+                            }
+                        } catch (e) {}
+                    }
+                    sessionStorage.removeItem(KEY + 'session');
+                    localStorage.removeItem('sz_session');
+                }
+            });
+        }
+
+        // ======== VERIFICAR SESSÃO ATIVA ========
+        function checkActiveSession() {
+            const sessionData = sessionStorage.getItem(KEY + 'session');
+            if (sessionData) {
+                try {
+                    const session = JSON.parse(sessionData);
+                    const users = getAll('users');
+                    const user = users.find(u => u.id === session.userId);
+                    if (user && user.status !== 'inativo') {
+                        window.location.replace('dashboard.html');
+                        return true;
+                    }
+                } catch (e) {
+                    sessionStorage.removeItem(KEY + 'session');
+                }
+            }
+            return false;
+        }
+
+        // ======== PREENCHER EMAIL DO CADASTRO ========
+        function fillEmailFromRegistration() {
+            const email = localStorage.getItem('sz_registered_email');
+            if (email) {
+                document.getElementById('email').value = email;
+                localStorage.removeItem('sz_registered_email');
+                document.getElementById('password').focus();
+            }
+        }
+
+        // ======== SAIR / VOLTAR PARA A PÁGINA PRINCIPAL ========
+        const MAIN_PAGE = new URL('../index.html', window.location.href).href;
+        let navigationControlInitialized = false;
+        let leavingToMain = false;
+
+        function clearAuthSession() {
+            // Remover todas as variantes usadas pelo sistema para autenticação.
+            [
+                KEY + 'session',
+                'sz_session',
+                'sz_admin_session',
+                KEY + 'admin_session',
+                'sumbanepay_admin_session',
+                'sumbanepay_session'
+            ].forEach(key => {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+            });
+
+            Object.keys(localStorage).forEach(key => {
+                if (/(session|auth|login|token)/i.test(key)) localStorage.removeItem(key);
+            });
+            Object.keys(sessionStorage).forEach(key => {
+                if (/(session|auth|login|token)/i.test(key)) sessionStorage.removeItem(key);
+            });
+        }
+
+        function goToMain(event) {
+            if (event) event.preventDefault();
+            if (leavingToMain) return;
+            leavingToMain = true;
+            clearAuthSession();
+            // replace impede retornar à tela de login/dashboard pelo histórico.
+            window.location.replace(MAIN_PAGE);
+        }
+
+        function setupNavigationControl() {
+            if (navigationControlInitialized) return;
+            navigationControlInitialized = true;
+
+            // Estado sentinela: o primeiro clique em "Voltar" dispara o guard.
+            window.history.pushState(
+                { sumbanePayMainGuard: true, createdAt: Date.now() },
+                '',
+                window.location.href
+            );
+
+            window.addEventListener('popstate', function () {
+                goToMain();
+            });
+
+            // Se o navegador restaurar esta tela pelo bfcache, sair para a página principal.
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted) goToMain();
+            });
+        }
+
+        // ======== INICIALIZAÇÃO ========
+        function boot() {
+            // Seed data
+            Object.entries(seed).forEach(([key, value]) => {
+                if (localStorage.getItem(KEY + key) === null) {
+                    write(key, value);
+                }
+            });
+
+            // Carregar tema
+            loadTheme();
+
+            // Verificar sessão ativa
+            if (checkActiveSession()) return;
+
+            // Prevenir BFCache
+            preventBFCache();
+
+            // Configurar controle de navegação
+            setupNavigationControl();
+
+            // Preencher email do cadastro
+            fillEmailFromRegistration();
+
+            // Iniciar relógio
+            updateClock();
+            setInterval(updateClock, 10000);
+
+            // Validação em tempo real
+            document.querySelectorAll('.form-control').forEach(el => {
+                el.addEventListener('input', function() {
+                    if (this.value.length > 0) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                    }
+                });
+            });
+
+            // Enter para submeter
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const active = document.activeElement;
+                    if (active && (active.id === 'email' || active.id === 'password')) {
+                        handleLogin(e);
+                    }
+                }
+            });
+        }
+
+        // ======== EXPORTA ========
+        window.handleLogin = handleLogin;
+        window.toggleTheme = toggleTheme;
+        window.togglePasswordVisibility = togglePasswordVisibility;
+        window.goToSuperAdmin = goToSuperAdmin;
+        window.goToMain = goToMain;
+        window.read = read;
+        window.write = write;
+        window.getAll = getAll;
+        window.toast = toast;
+        window.KEY = KEY;
+
+        document.addEventListener('DOMContentLoaded', boot);
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>
