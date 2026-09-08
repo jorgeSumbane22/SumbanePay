@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
     <title>Utilizadores — SumbanePay SuperAdmin</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -37,10 +37,15 @@
             --sz-purple: #9b59b6;
             --sz-radius: 16px;
             --sz-radius-sm: 10px;
+            --sz-focus: #0b5ed7;
+            --sz-surface-2: #f0efe8;
+            --sz-input-bg: #ffffff;
+            --sz-on-accent: #ffffff;
+            color-scheme: light;
         }
 
         /* ============================================================
-           DARK MODE - TODAS AS CORES AJUSTADAS
+           DARK MODE
            ============================================================ */
         [data-theme="dark"] {
             --sz-paper: #0d1c17;
@@ -60,6 +65,11 @@
             --sz-warning: #f5d76e;
             --sz-info: #7cbdda;
             --sz-purple: #b07cc6;
+            --sz-focus: #8fc7ff;
+            --sz-surface-2: #1d3b31;
+            --sz-input-bg: #10271f;
+            --sz-on-accent: #07130f;
+            color-scheme: dark;
         }
 
         /* ============================================================
@@ -301,22 +311,6 @@
         [data-theme="dark"] .sidebar .brand .logo-mark {
             background: linear-gradient(135deg, #2a9d8f, #1a6b5e) !important;
         }
-        [data-theme="dark"] .sidebar .btn-outline-secondary {
-            color: #b8c5bf !important;
-            border-color: #42675b !important;
-        }
-        [data-theme="dark"] .sidebar .btn-outline-secondary:hover {
-            background: rgba(255, 255, 255, 0.06) !important;
-            color: #f0efe8 !important;
-        }
-        [data-theme="dark"] .sidebar .btn-outline-danger-sz {
-            color: #f06a7a !important;
-            border-color: #f06a7a !important;
-        }
-        [data-theme="dark"] .sidebar .btn-outline-danger-sz:hover {
-            background: #f06a7a !important;
-            color: #0d1c17 !important;
-        }
 
         /* ============================================================
            TOP NAV - HEADER PREMIUM
@@ -324,7 +318,7 @@
         .top-nav {
             background: var(--sz-white);
             border-bottom: 1px solid var(--sz-line);
-            padding: 12px 28px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -347,7 +341,7 @@
         .top-nav .breadcrumb-premium {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: var(--sz-muted);
             font-size: 0.85rem;
             flex-wrap: wrap;
@@ -355,7 +349,7 @@
         .top-nav .breadcrumb-premium .breadcrumb-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
         .top-nav .breadcrumb-premium .breadcrumb-item a {
             color: var(--sz-muted);
@@ -410,20 +404,11 @@
             50% { opacity: 0.4; transform: scale(0.7); }
         }
 
-        [data-theme="dark"] .live-badge {
-            background: rgba(42, 157, 143, 0.15);
-            color: var(--sz-green-light);
-            border-color: rgba(42, 157, 143, 0.2);
-        }
-        [data-theme="dark"] .live-badge .dot { background: var(--sz-green-light); }
-
         [data-theme="dark"] .top-nav {
             background: #0a1a14;
             border-color: #2a4a3e;
         }
-        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a {
-            color: #a0b0a8 !important;
-        }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a { color: #a0b0a8 !important; }
         [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
             color: #f0c97a !important;
             background: rgba(42, 157, 143, 0.15) !important;
@@ -432,17 +417,20 @@
             color: #f0efe8 !important;
             background: rgba(42, 157, 143, 0.15) !important;
         }
-        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item .separator {
-            color: #6a8a7a !important;
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item .separator { color: #6a8a7a !important; }
+        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item .home-icon { color: #2a9d8f !important; }
+        [data-theme="dark"] .live-badge {
+            background: rgba(42, 157, 143, 0.15);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.2);
         }
-        [data-theme="dark"] .top-nav .breadcrumb-premium .breadcrumb-item .home-icon {
-            color: #2a9d8f !important;
-        }
+        [data-theme="dark"] .live-badge .dot { background: var(--sz-green-light); }
 
         .top-nav .user-info-premium {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         .top-nav .user-info-premium .user-avatar {
             width: 40px;
@@ -502,13 +490,8 @@
             border-color: var(--sz-ink);
             transform: translateY(-1px);
         }
-
-        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-name {
-            color: #f0efe8 !important;
-        }
-        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-role {
-            color: #a0b0a8 !important;
-        }
+        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-name { color: #f0efe8 !important; }
+        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-role { color: #a0b0a8 !important; }
         [data-theme="dark"] .top-nav .user-info-premium .btn-icon-premium {
             border-color: #2a4a3e !important;
             color: #a0b0a8 !important;
@@ -524,7 +507,7 @@
         .stat-card {
             background: var(--sz-white);
             border-radius: var(--sz-radius);
-            padding: 1.25rem 1.5rem;
+            padding: 1rem 1.25rem;
             border: 1px solid var(--sz-line);
             box-shadow: var(--sz-shadow);
             transition: var(--transition);
@@ -537,25 +520,22 @@
             box-shadow: var(--sz-shadow-hover);
         }
         .stat-card .stat-icon {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: var(--sz-radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
-            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+            margin-bottom: 0.6rem;
         }
         .stat-card .stat-icon.green { background: rgba(23, 107, 91, 0.12); color: var(--sz-green); }
         .stat-card .stat-icon.gold { background: rgba(232, 179, 91, 0.12); color: var(--sz-gold); }
         .stat-card .stat-icon.coral { background: rgba(239, 109, 78, 0.12); color: var(--sz-coral); }
-        .stat-card .stat-icon.blue { background: rgba(124, 157, 181, 0.12); color: #7c9db5; }
         .stat-card .stat-icon.red { background: rgba(220, 53, 69, 0.12); color: var(--sz-danger); }
-        .stat-card .stat-icon.purple { background: rgba(155, 89, 182, 0.12); color: #9b59b6; }
-        .stat-card .stat-icon.teal { background: rgba(13, 202, 240, 0.12); color: #0dcaf0; }
 
         .stat-card .stat-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 0.06em;
             color: var(--sz-muted);
@@ -563,17 +543,17 @@
         }
         .stat-card .stat-value {
             font-family: 'Playfair Display', 'Georgia', serif;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--sz-ink);
             line-height: 1.2;
             margin-top: 2px;
         }
         .stat-card .stat-change {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            margin-top: 6px;
-            padding: 2px 12px;
+            margin-top: 4px;
+            padding: 2px 10px;
             border-radius: 20px;
             display: inline-flex;
             align-items: center;
@@ -586,10 +566,7 @@
         .stat-card.green { border-left: 4px solid var(--sz-green); }
         .stat-card.gold { border-left: 4px solid var(--sz-gold); }
         .stat-card.coral { border-left: 4px solid var(--sz-coral); }
-        .stat-card.blue { border-left: 4px solid #7c9db5; }
         .stat-card.red { border-left: 4px solid var(--sz-danger); }
-        .stat-card.purple { border-left: 4px solid #9b59b6; }
-        .stat-card.teal { border-left: 4px solid #0dcaf0; }
 
         [data-theme="dark"] .stat-card {
             background: var(--sz-white);
@@ -597,31 +574,26 @@
         }
         [data-theme="dark"] .stat-card .stat-value { color: #f0efe8 !important; }
         [data-theme="dark"] .stat-card .stat-label { color: #a0b0a8 !important; }
-        [data-theme="dark"] .stat-card .stat-change {
-            color: #a0b0a8 !important;
-        }
+        [data-theme="dark"] .stat-card .stat-change { color: #a0b0a8 !important; }
         [data-theme="dark"] .stat-card .stat-icon.green { background: rgba(42, 157, 143, 0.15); color: var(--sz-green-light); }
         [data-theme="dark"] .stat-card .stat-icon.gold { background: rgba(240, 201, 122, 0.15); color: var(--sz-gold); }
         [data-theme="dark"] .stat-card .stat-icon.coral { background: rgba(242, 138, 113, 0.15); color: var(--sz-coral); }
-        [data-theme="dark"] .stat-card .stat-icon.blue { background: rgba(124, 189, 218, 0.15); color: #7cbdda; }
         [data-theme="dark"] .stat-card .stat-icon.red { background: rgba(240, 106, 122, 0.15); color: var(--sz-danger); }
-        [data-theme="dark"] .stat-card .stat-icon.purple { background: rgba(176, 124, 198, 0.15); color: #b07cc6; }
-        [data-theme="dark"] .stat-card .stat-icon.teal { background: rgba(124, 189, 218, 0.15); color: #7cbdda; }
 
         /* ============================================================
            QUICK ACTIONS
            ============================================================ */
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            margin-bottom: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 24px;
         }
         .quick-action-item {
             background: var(--sz-white);
             border: 1px solid var(--sz-line);
             border-radius: var(--sz-radius);
-            padding: 1.2rem 0.75rem;
+            padding: 1rem 0.5rem;
             text-align: center;
             transition: var(--transition);
             cursor: pointer;
@@ -636,10 +608,10 @@
             color: var(--sz-ink);
         }
         .quick-action-item i {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             color: var(--sz-green);
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             transition: var(--transition);
         }
         .quick-action-item:hover i {
@@ -647,11 +619,10 @@
             color: var(--sz-coral);
         }
         .quick-action-item span {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             letter-spacing: 0.02em;
         }
-
         [data-theme="dark"] .quick-action-item {
             background: var(--sz-white);
             border-color: #2a4a3e;
@@ -677,19 +648,20 @@
         .filter-bar .form-select {
             border-radius: 8px;
             border: 2px solid var(--sz-line);
-            padding: 6px 14px;
-            font-size: 0.85rem;
+            padding: 6px 12px;
+            font-size: 0.8rem;
             background: var(--sz-white);
             transition: var(--transition);
             color: var(--sz-ink);
+            min-width: 130px;
         }
         .filter-bar .form-control:focus,
         .filter-bar .form-select:focus {
             border-color: var(--sz-green);
             box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
         }
-        .filter-bar .form-control { min-width: 150px; }
-        .filter-bar .form-control[type="date"] { min-width: 140px; }
+        .filter-bar .form-control { min-width: 120px; }
+        .filter-bar .form-control[type="date"] { min-width: 120px; }
 
         [data-theme="dark"] .filter-bar .form-control,
         [data-theme="dark"] .filter-bar .form-select {
@@ -697,9 +669,7 @@
             color: #f0efe8 !important;
             border-color: #2a4a3e !important;
         }
-        [data-theme="dark"] .filter-bar .form-control::placeholder {
-            color: #6a8a7a !important;
-        }
+        [data-theme="dark"] .filter-bar .form-control::placeholder { color: #6a8a7a !important; }
         [data-theme="dark"] .filter-bar .form-control:focus,
         [data-theme="dark"] .filter-bar .form-select:focus {
             border-color: #f0c97a !important;
@@ -710,13 +680,13 @@
            TABLE
            ============================================================ */
         .table-custom thead th {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             letter-spacing: 0.08em;
             color: var(--sz-muted);
             text-transform: uppercase;
             font-weight: 700;
             border-bottom: 2px solid var(--sz-line);
-            padding: 0.75rem 0.5rem;
+            padding: 0.6rem 0.4rem;
             background: var(--sz-paper);
             cursor: pointer;
             user-select: none;
@@ -733,7 +703,7 @@
             color: var(--sz-green);
         }
         .table-custom tbody td {
-            padding: 0.75rem 0.5rem;
+            padding: 0.6rem 0.4rem;
             border-bottom: 1px solid var(--sz-line);
             vertical-align: middle;
             color: var(--sz-ink);
@@ -743,20 +713,17 @@
             background: rgba(23, 107, 91, 0.04);
         }
         .table-custom .empty-state {
-            padding: 2.5rem;
+            padding: 2rem;
             text-align: center;
             color: var(--sz-muted);
         }
         .table-custom .empty-state i {
-            font-size: 2.5rem;
+            font-size: 2rem;
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             opacity: 0.3;
         }
 
-        [data-theme="dark"] .table-custom {
-            --bs-table-bg: transparent;
-        }
         [data-theme="dark"] .table-custom thead th {
             background: #0a1a14 !important;
             color: #a0b0a8 !important;
@@ -766,38 +733,34 @@
             color: #f0efe8 !important;
             border-color: #2a4a3e !important;
         }
-        [data-theme="dark"] .table-custom tbody td strong {
-            color: #f0efe8 !important;
-        }
-        [data-theme="dark"] .table-custom .empty-state {
-            color: #a0b0a8 !important;
-        }
-        [data-theme="dark"] .table-custom .empty-state i {
-            color: #6a8a7a !important;
-        }
+        [data-theme="dark"] .table-custom tbody td strong { color: #f0efe8 !important; }
+        [data-theme="dark"] .table-custom .empty-state { color: #a0b0a8 !important; }
+        [data-theme="dark"] .table-custom .empty-state i { color: #6a8a7a !important; }
 
         /* ============================================================
            BADGES
            ============================================================ */
         .badge-role {
-            padding: 3px 12px;
+            padding: 3px 10px;
             border-radius: 12px;
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.04em;
+            display: inline-block;
         }
         .badge-role.superadmin { background: var(--sz-gold); color: var(--sz-dark); }
         .badge-role.admin { background: #9b59b6; color: #fff; }
         .badge-role.user { background: var(--sz-muted); color: #fff; }
 
         .badge-status {
-            padding: 3px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.04em;
+            display: inline-block;
         }
         .badge-status.active { background: #e4f3e9; color: var(--sz-green); }
         .badge-status.inactive { background: #f8d7da; color: #dc3545; }
@@ -836,6 +799,7 @@
             padding: 2px 8px;
             border-radius: 10px;
             font-weight: 600;
+            display: inline-block;
         }
         .badge-permission.full { background: var(--sz-gold); color: var(--sz-dark); }
         .badge-permission.read { background: #17a2b8; color: #fff; }
@@ -865,23 +829,23 @@
         .user-info-cell {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .user-avatar-sm {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             flex-shrink: 0;
         }
-        .user-name { font-weight: 600; font-size: 0.85rem; color: var(--sz-ink); }
-        .user-email-sm { font-size: 0.65rem; color: var(--sz-muted); display: block; }
-        .user-business { font-size: 0.6rem; color: var(--sz-muted); display: block; }
+        .user-name { font-weight: 600; font-size: 0.8rem; color: var(--sz-ink); }
+        .user-email-sm { font-size: 0.6rem; color: var(--sz-muted); display: block; }
+        .user-business { font-size: 0.55rem; color: var(--sz-muted); display: block; }
 
         /* ============================================================
            CARD
@@ -896,7 +860,7 @@
         }
         .card-sz:hover { box-shadow: var(--sz-shadow-hover); }
         .card-sz .card-header-custom {
-            padding: 1rem 1.25rem;
+            padding: 0.8rem 1rem;
             border-bottom: 1px solid var(--sz-line);
             display: flex;
             justify-content: space-between;
@@ -907,10 +871,9 @@
         .card-sz .card-header-custom h5 {
             margin: 0;
             font-family: 'Playfair Display', 'Georgia', serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--sz-ink);
         }
-
         [data-theme="dark"] .card-sz {
             background: var(--sz-white);
             border-color: var(--sz-line);
@@ -918,9 +881,7 @@
         [data-theme="dark"] .card-sz .card-header-custom {
             border-color: var(--sz-line);
         }
-        [data-theme="dark"] .card-sz .card-header-custom h5 {
-            color: #f0efe8 !important;
-        }
+        [data-theme="dark"] .card-sz .card-header-custom h5 { color: #f0efe8 !important; }
 
         /* ============================================================
            PAGINATION
@@ -930,6 +891,8 @@
             color: var(--sz-muted);
             background: var(--sz-white);
             transition: var(--transition);
+            padding: 4px 10px;
+            font-size: 0.8rem;
         }
         .pagination-custom .page-link:hover {
             background: var(--sz-paper);
@@ -962,7 +925,7 @@
         .app-footer {
             background: var(--sz-white);
             border-top: 1px solid var(--sz-line);
-            padding: 0.75rem 2rem;
+            padding: 0.6rem 1rem;
             transition: background 0.3s ease, border-color 0.3s ease;
             margin-top: 1.5rem;
         }
@@ -971,18 +934,18 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 0.75rem;
+            gap: 0.5rem;
             max-width: 1400px;
             margin: 0 auto;
         }
         .app-footer .footer-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .app-footer .footer-brand .footer-logo {
-            width: 30px;
-            height: 30px;
+            width: 26px;
+            height: 26px;
             border-radius: 8px;
             background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
             display: flex;
@@ -990,41 +953,41 @@
             justify-content: center;
             color: #fff;
             font-weight: 700;
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             letter-spacing: 0.5px;
         }
         .app-footer .footer-brand .footer-company {
             font-family: 'Playfair Display', 'Georgia', serif;
             font-weight: 700;
             color: var(--sz-ink);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
         .app-footer .footer-brand .footer-company b { color: var(--sz-coral); }
         .app-footer .footer-brand .footer-version {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: var(--sz-muted);
             background: var(--sz-paper);
             padding: 1px 8px;
             border-radius: 10px;
-            margin-left: 4px;
+            margin-left: 2px;
         }
         .app-footer .footer-user-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.6rem;
             flex-wrap: wrap;
         }
         .app-footer .footer-user-info .user-data-item {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.75rem;
+            gap: 4px;
+            font-size: 0.7rem;
             color: var(--sz-muted);
         }
         .app-footer .footer-user-info .user-data-item i {
             color: var(--sz-green);
-            font-size: 0.85rem;
-            width: 16px;
+            font-size: 0.75rem;
+            width: 14px;
             text-align: center;
         }
         .app-footer .footer-user-info .user-data-item .data-value {
@@ -1032,19 +995,19 @@
             font-weight: 500;
         }
         .app-footer .footer-user-info .user-data-item .data-value.email-value {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 400;
             color: var(--sz-muted);
         }
         .app-footer .footer-user-info .user-status {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.6rem;
+            gap: 4px;
+            font-size: 0.55rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            padding: 3px 10px;
+            padding: 2px 8px;
             border-radius: 20px;
             background: rgba(23, 107, 91, 0.08);
             color: var(--sz-green);
@@ -1062,33 +1025,21 @@
             background: #0a1a14;
             border-color: #2a4a3e;
         }
-        [data-theme="dark"] .app-footer .footer-brand .footer-company {
-            color: #f0efe8 !important;
-        }
+        [data-theme="dark"] .app-footer .footer-brand .footer-company { color: #f0efe8 !important; }
         [data-theme="dark"] .app-footer .footer-brand .footer-version {
             background: #162f27 !important;
             color: #6a8a7a !important;
         }
-        [data-theme="dark"] .app-footer .footer-user-info .user-data-item {
-            color: #a0b0a8 !important;
-        }
-        [data-theme="dark"] .app-footer .footer-user-info .user-data-item i {
-            color: #2a9d8f !important;
-        }
-        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value {
-            color: #f0efe8 !important;
-        }
-        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value.email-value {
-            color: #a0b0a8 !important;
-        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item { color: #a0b0a8 !important; }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item i { color: #2a9d8f !important; }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value.email-value { color: #a0b0a8 !important; }
         [data-theme="dark"] .app-footer .footer-user-info .user-status {
             background: rgba(42, 157, 143, 0.12);
             color: var(--sz-green-light);
             border-color: rgba(42, 157, 143, 0.15);
         }
-        [data-theme="dark"] .app-footer .footer-user-info .user-status .status-dot {
-            background: var(--sz-green-light);
-        }
+        [data-theme="dark"] .app-footer .footer-user-info .user-status .status-dot { background: var(--sz-green-light); }
 
         /* ============================================================
            MODAL
@@ -1101,31 +1052,33 @@
         }
         .modal-content-sz .modal-header {
             border-bottom-color: var(--sz-line);
-            padding: 1rem 1.5rem;
+            padding: 0.8rem 1.2rem;
         }
         .modal-content-sz .modal-header .modal-title {
             font-family: 'Playfair Display', 'Georgia', serif;
             color: var(--sz-ink);
+            font-size: 1.1rem;
         }
-        .modal-content-sz .modal-body { padding: 1.5rem; }
+        .modal-content-sz .modal-body { padding: 1.2rem; }
         .modal-content-sz .modal-footer {
             border-top-color: var(--sz-line);
-            padding: 1rem 1.5rem;
+            padding: 0.8rem 1.2rem;
         }
         .modal-content-sz .form-label {
             color: var(--sz-ink);
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
         .modal-content-sz .form-label .required { color: var(--sz-danger); }
         .modal-content-sz .form-control,
         .modal-content-sz .form-select {
             border-radius: var(--sz-radius-sm);
             border: 2px solid var(--sz-line);
-            padding: 8px 14px;
+            padding: 6px 12px;
             background: var(--sz-paper);
             color: var(--sz-ink);
             transition: var(--transition);
+            font-size: 0.85rem;
         }
         .modal-content-sz .form-control:focus,
         .modal-content-sz .form-select:focus {
@@ -1142,8 +1095,8 @@
         .permission-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            padding: 12px;
+            gap: 6px;
+            padding: 10px;
             background: var(--sz-paper);
             border-radius: 10px;
             border: 1px solid var(--sz-line);
@@ -1152,21 +1105,21 @@
         .permission-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 10px;
+            gap: 6px;
+            padding: 4px 8px;
             border-radius: 6px;
             transition: all 0.3s ease;
             cursor: pointer;
         }
         .permission-item:hover { background: rgba(23, 107, 91, 0.06); }
         .permission-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
             accent-color: var(--sz-green);
         }
         .permission-item label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             margin: 0;
             font-weight: 500;
@@ -1177,18 +1130,10 @@
             background: var(--sz-white);
             border-color: var(--sz-line);
         }
-        [data-theme="dark"] .modal-content-sz .modal-header {
-            border-color: var(--sz-line);
-        }
-        [data-theme="dark"] .modal-content-sz .modal-header .modal-title {
-            color: #f0efe8 !important;
-        }
-        [data-theme="dark"] .modal-content-sz .modal-footer {
-            border-color: var(--sz-line);
-        }
-        [data-theme="dark"] .modal-content-sz .form-label {
-            color: #f0efe8 !important;
-        }
+        [data-theme="dark"] .modal-content-sz .modal-header { border-color: var(--sz-line); }
+        [data-theme="dark"] .modal-content-sz .modal-header .modal-title { color: #f0efe8 !important; }
+        [data-theme="dark"] .modal-content-sz .modal-footer { border-color: var(--sz-line); }
+        [data-theme="dark"] .modal-content-sz .form-label { color: #f0efe8 !important; }
         [data-theme="dark"] .modal-content-sz .form-control,
         [data-theme="dark"] .modal-content-sz .form-select {
             background: #162f27 !important;
@@ -1200,109 +1145,128 @@
             border-color: #f0c97a !important;
             box-shadow: 0 0 0 3px rgba(240, 201, 122, 0.15) !important;
         }
-        [data-theme="dark"] .modal-content-sz .form-control::placeholder {
-            color: #6a8a7a !important;
-        }
+        [data-theme="dark"] .modal-content-sz .form-control::placeholder { color: #6a8a7a !important; }
         [data-theme="dark"] .permission-grid {
             background: var(--sz-paper);
             border-color: var(--sz-line);
         }
-        [data-theme="dark"] .permission-item label {
-            color: #f0efe8 !important;
-        }
-        [data-theme="dark"] .permission-item:hover {
-            background: rgba(240, 201, 122, 0.06) !important;
-        }
-        [data-theme="dark"] .permission-item input[type="checkbox"] {
-            accent-color: #f0c97a;
-        }
+        [data-theme="dark"] .permission-item label { color: #f0efe8 !important; }
+        [data-theme="dark"] .permission-item:hover { background: rgba(240, 201, 122, 0.06) !important; }
+        [data-theme="dark"] .permission-item input[type="checkbox"] { accent-color: #f0c97a; }
 
         /* ============================================================
-           RESPONSIVE
+           RESPONSIVE - MOBILE FIRST
            ============================================================ */
         @media (max-width: 992px) {
-            .sidebar { width: 100%; min-height: auto; position: relative; padding: 1rem; max-height: none; }
-            .stat-card .stat-value { font-size: 1.5rem; }
-            .top-nav { padding: 12px 16px; }
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                position: relative;
+                padding: 0.8rem;
+                max-height: none;
+            }
+            .stat-card .stat-value { font-size: 1.4rem; }
+            .top-nav { padding: 10px 12px; }
             .app-footer .footer-content { flex-direction: column; text-align: center; }
             .app-footer .footer-user-info { justify-content: center; }
             .permission-grid { grid-template-columns: 1fr; }
         }
+
         @media (max-width: 768px) {
-            .top-nav { padding: 10px 14px; }
-            .top-nav .breadcrumb-premium { font-size: 0.75rem; }
-            .top-nav .user-info-premium .user-details .user-name { font-size: 0.8rem; }
+            .top-nav .breadcrumb-premium { font-size: 0.7rem; }
+            .top-nav .user-info-premium .user-details .user-name { font-size: 0.75rem; }
             .top-nav .user-info-premium .user-details .user-role { display: none; }
             .top-nav .user-info-premium .user-avatar { width: 32px; height: 32px; font-size: 0.8rem; }
-            .stat-card { padding: 1rem; }
-            .stat-card .stat-value { font-size: 1.3rem; }
+            .stat-card { padding: 0.8rem 1rem; }
+            .stat-card .stat-value { font-size: 1.2rem; }
             .quick-actions { grid-template-columns: repeat(3, 1fr); }
-            .app-footer { padding: 0.5rem 1rem; }
-            .app-footer .footer-user-info .user-data-item { font-size: 0.65rem; }
-            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.6rem; }
-        }
-        @media (max-width: 425px) {
-            .brand { font-size: 1rem; }
-            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
-            .top-nav .breadcrumb-premium { font-size: 0.65rem; }
-            .top-nav .breadcrumb-premium .breadcrumb-item .separator { display: none; }
-            .top-nav .user-info-premium .user-avatar { width: 28px; height: 28px; font-size: 0.7rem; }
-            .top-nav .user-info-premium .btn-icon-premium { width: 32px; height: 32px; font-size: 0.9rem; }
-            .stat-card .stat-value { font-size: 1.1rem; }
-            .quick-actions { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .quick-action-item { padding: 0.8rem 0.5rem; }
-            .quick-action-item i { font-size: 1.2rem; }
-            .app-footer .footer-user-info { gap: 0.4rem; }
-            .app-footer .footer-user-info .user-data-item { font-size: 0.55rem; }
-            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.5rem; }
-            .app-footer .footer-user-info .user-status { font-size: 0.5rem; padding: 2px 8px; }
-            .app-footer .footer-brand .footer-company { font-size: 0.8rem; }
-            .permission-grid { grid-template-columns: 1fr; }
+            .app-footer { padding: 0.4rem 0.8rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.6rem; }
+            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.55rem; }
             .user-avatar-sm { width: 28px; height: 28px; font-size: 0.6rem; }
             .user-name { font-size: 0.75rem; }
             .user-email-sm { font-size: 0.55rem; }
+            .filter-bar .form-control,
+            .filter-bar .form-select { min-width: 100px; font-size: 0.75rem; }
+            .btn-sz { padding: 8px 16px; font-size: 0.8rem; }
+            .btn-outline-sz { padding: 6px 14px; font-size: 0.75rem; }
+            .brand { font-size: 1.1rem; }
+            .logo-mark { width: 30px; height: 30px; font-size: 0.6rem; }
+            .table-custom thead th { font-size: 0.55rem; padding: 0.4rem 0.3rem; }
+            .table-custom tbody td { padding: 0.4rem 0.3rem; font-size: 0.8rem; }
+            .badge-role, .badge-status, .badge-permission { font-size: 0.45rem; padding: 2px 6px; }
+            .btn-sm-sz { padding: 2px 8px; font-size: 0.6rem; }
         }
+
+        @media (max-width: 425px) {
+            .brand { font-size: 1rem; }
+            .logo-mark { width: 26px; height: 26px; font-size: 0.5rem; }
+            .top-nav .breadcrumb-premium { font-size: 0.6rem; }
+            .top-nav .breadcrumb-premium .breadcrumb-item .separator { display: none; }
+            .top-nav .user-info-premium .user-avatar { width: 28px; height: 28px; font-size: 0.7rem; }
+            .top-nav .user-info-premium .btn-icon-premium { width: 32px; height: 32px; font-size: 0.9rem; }
+            .stat-card .stat-value { font-size: 1rem; }
+            .stat-card .stat-label { font-size: 0.55rem; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+            .quick-action-item { padding: 0.6rem 0.3rem; }
+            .quick-action-item i { font-size: 1.1rem; }
+            .quick-action-item span { font-size: 0.55rem; }
+            .app-footer .footer-user-info { gap: 0.3rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.5rem; }
+            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.45rem; }
+            .app-footer .footer-user-info .user-status { font-size: 0.45rem; padding: 1px 6px; }
+            .app-footer .footer-brand .footer-company { font-size: 0.75rem; }
+            .permission-grid { grid-template-columns: 1fr; }
+            .user-avatar-sm { width: 24px; height: 24px; font-size: 0.5rem; }
+            .user-name { font-size: 0.7rem; }
+            .user-email-sm { font-size: 0.5rem; }
+            .user-business { font-size: 0.5rem; }
+            .filter-bar .form-control,
+            .filter-bar .form-select { min-width: 80px; font-size: 0.7rem; padding: 4px 8px; }
+            .btn-sz { padding: 6px 12px; font-size: 0.7rem; }
+            .btn-outline-sz { padding: 4px 10px; font-size: 0.65rem; }
+            .table-custom thead th { font-size: 0.5rem; padding: 0.3rem 0.2rem; }
+            .table-custom tbody td { padding: 0.3rem 0.2rem; font-size: 0.7rem; }
+            .badge-role, .badge-status, .badge-permission { font-size: 0.4rem; padding: 1px 4px; }
+            .btn-sm-sz { padding: 1px 6px; font-size: 0.5rem; }
+            .modal-content-sz .modal-header .modal-title { font-size: 0.95rem; }
+            .modal-content-sz .form-label { font-size: 0.75rem; }
+            .modal-content-sz .form-control,
+            .modal-content-sz .form-select { font-size: 0.75rem; padding: 4px 10px; }
+        }
+
         /* ============================================================
-           THEME ACCESSIBILITY OVERRIDES - USERS PAGE
+           THEME ACCESSIBILITY OVERRIDES
            ============================================================ */
-        :root {
-            color-scheme: light;
-            --sz-focus: #0b5ed7;
-            --sz-surface-2: #f0efe8;
-            --sz-input-bg: #ffffff;
-            --sz-on-accent: #ffffff;
-        }
-        [data-theme="dark"] {
-            color-scheme: dark;
-            --sz-focus: #8fc7ff;
-            --sz-surface-2: #1d3b31;
-            --sz-input-bg: #10271f;
-            --sz-on-accent: #07130f;
-        }
         body, .app-wrapper, .app-main, .app-content { background-color: var(--sz-paper); color: var(--sz-ink); }
         .text-muted { color: var(--sz-muted) !important; }
         .bg-light { background-color: var(--sz-surface-2) !important; color: var(--sz-ink) !important; }
         .bg-white { background-color: var(--sz-white) !important; color: var(--sz-ink) !important; }
         .border, .border-top, .border-end, .border-bottom, .border-start { border-color: var(--sz-line) !important; }
         .stat-card .stat-value, .stat-card .stat-label, .stat-card .stat-change,
-        .table-custom tbody td, .table-custom tbody td strong, .card-sz, .card-sz h1,
-        .card-sz h2, .card-sz h3, .card-sz h4, .card-sz h5, .card-sz h6 { color: var(--sz-ink); }
+        .table-custom tbody td, .table-custom tbody td strong, .card-sz,
+        .card-sz h1, .card-sz h2, .card-sz h3, .card-sz h4, .card-sz h5, .card-sz h6 { color: var(--sz-ink); }
         [data-theme="dark"] .stat-card .stat-value,
         [data-theme="dark"] .card-sz h1, [data-theme="dark"] .card-sz h2,
         [data-theme="dark"] .card-sz h3, [data-theme="dark"] .card-sz h4,
         [data-theme="dark"] .card-sz h5, [data-theme="dark"] .card-sz h6 {
-            color: #f0efe8 !important; opacity: 1 !important;
+            color: #f0efe8 !important;
+            opacity: 1 !important;
         }
         [data-theme="dark"] .stat-card .stat-label,
         [data-theme="dark"] .stat-card .stat-change { color: #c0d0c8 !important; opacity: 1 !important; }
         .form-control, .form-select, .form-check-input, .input-group-text, textarea, select,
         input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
-            background-color: var(--sz-input-bg); color: var(--sz-ink); border-color: var(--sz-line);
+            background-color: var(--sz-input-bg);
+            color: var(--sz-ink);
+            border-color: var(--sz-line);
         }
         .form-control::placeholder, textarea::placeholder { color: var(--sz-muted); opacity: 1; }
         .form-control:focus, .form-select:focus, textarea:focus, select:focus, input:focus,
         button:focus-visible, a:focus-visible {
-            color: var(--sz-ink); background-color: var(--sz-input-bg); border-color: var(--sz-focus);
+            color: var(--sz-ink);
+            background-color: var(--sz-input-bg);
+            border-color: var(--sz-focus);
             box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--sz-focus) 25%, transparent);
             outline: 2px solid transparent;
         }
@@ -1314,7 +1278,9 @@
         [data-theme="dark"] .table-custom tbody td strong { color: #f0efe8 !important; }
         [data-theme="dark"] .table-custom tbody tr:hover { background: rgba(42, 157, 143, 0.12) !important; }
         .dropdown-menu, .modal-content, .modal-content-sz, .offcanvas, .popover {
-            background-color: var(--sz-white); color: var(--sz-ink); border-color: var(--sz-line);
+            background-color: var(--sz-white);
+            color: var(--sz-ink);
+            border-color: var(--sz-line);
         }
         .dropdown-item { color: var(--sz-ink); }
         .dropdown-item:hover, .dropdown-item:focus { background-color: var(--sz-surface-2); color: var(--sz-ink); }
@@ -1328,9 +1294,6 @@
             *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
         }
     </style>
-    <link rel="stylesheet" href="../responsive.css">
-    <link rel="stylesheet" href="../darkmode.css">
-    <meta name="theme-color" content="#0d1c17">
 </head>
 <body>
 
@@ -1344,31 +1307,31 @@
 
             <!-- SIDEBAR -->
             <aside class="sidebar" role="navigation">
-                <div class="mb-4">
+                <div class="mb-3">
                     <a class="brand" href="index.html">
                         <span class="logo-mark">Pay</span>
                         Sumbane<b>Pay</b>
                     </a>
-                    <div class="small text-muted mt-2" style="font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;">
+                    <div class="small text-muted mt-1" style="font-size:0.6rem;letter-spacing:0.06em;text-transform:uppercase;">
                         <i class="bi bi-grid-3x3-gap-fill me-1"></i> SuperAdmin
                     </div>
                 </div>
                 <nav class="nav flex-column">
                     <a class="nav-link" href="index.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
-                    <a class="nav-link active" href="utilizadores.html"><i class="bi bi-people me-2"></i>Utilizadores <span class="badge-nav" id="userBadge">0</span></a>
-                    <a class="nav-link" href="empresas.html"><i class="bi bi-building me-2"></i>Empresas <span class="badge-nav" id="companyBadge">0</span></a>
-                    <a class="nav-link" href="pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos <span class="badge-nav" id="paymentBadge">0</span></a>
-                    <a class="nav-link" href="faturacao.html"><i class="bi bi-receipt me-2"></i>Faturação</a>
-                    <a class="nav-link" href="relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
-                    <a class="nav-link" href="notificacoes.html"><i class="bi bi-bell me-2"></i>Notificações <span class="badge-nav" id="notifBadge">0</span></a>
-                    <a class="nav-link" href="suporte.html"><i class="bi bi-ticket me-2"></i>Suporte</a>
-                    <a class="nav-link" href="actividades.html"><i class="bi bi-clipboard-data me-2"></i>Auditoria</a>
-                    <a class="nav-link" href="roles.html"><i class="bi bi-shield-lock me-2"></i>Permissões</a>
-                    <a class="nav-link" href="comunicacao.html"><i class="bi bi-megaphone me-2"></i>Comunicação</a>
-                    <a class="nav-link" href="seguranca.html"><i class="bi bi-shield-check me-2"></i>Segurança</a>
-                    <a class="nav-link" href="configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                    <a class="nav-link active" href="#"><i class="bi bi-people me-2"></i>Utilizadores <span class="badge-nav" id="userBadge">0</span></a>
+                    <a class="nav-link" href="#"><i class="bi bi-building me-2"></i>Empresas <span class="badge-nav" id="companyBadge">0</span></a>
+                    <a class="nav-link" href="#"><i class="bi bi-wallet2 me-2"></i>Pagamentos <span class="badge-nav" id="paymentBadge">0</span></a>
+                    <a class="nav-link" href="#"><i class="bi bi-receipt me-2"></i>Faturação</a>
+                    <a class="nav-link" href="#"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link" href="#"><i class="bi bi-bell me-2"></i>Notificações <span class="badge-nav" id="notifBadge">0</span></a>
+                    <a class="nav-link" href="#"><i class="bi bi-ticket me-2"></i>Suporte</a>
+                    <a class="nav-link" href="#"><i class="bi bi-clipboard-data me-2"></i>Auditoria</a>
+                    <a class="nav-link" href="#"><i class="bi bi-shield-lock me-2"></i>Permissões</a>
+                    <a class="nav-link" href="#"><i class="bi bi-megaphone me-2"></i>Comunicação</a>
+                    <a class="nav-link" href="#"><i class="bi bi-shield-check me-2"></i>Segurança</a>
+                    <a class="nav-link" href="#"><i class="bi bi-gear me-2"></i>Configurações</a>
                 </nav>
-                <div class="mt-4 d-flex flex-column gap-2">
+                <div class="mt-3 d-flex flex-column gap-2">
                     <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
                         <i class="bi bi-circle-half me-2"></i>Tema
                     </button>
@@ -1381,7 +1344,7 @@
             <!-- MAIN CONTENT -->
             <main class="app-main">
 
-                <!-- TOP NAV - HEADER PREMIUM -->
+                <!-- TOP NAV -->
                 <div class="top-nav">
                     <div class="breadcrumb-premium">
                         <span class="breadcrumb-item">
@@ -1392,7 +1355,7 @@
                         <span class="breadcrumb-item current">
                             <i class="bi bi-people me-1"></i> Utilizadores
                         </span>
-                        <span class="live-badge ms-2">
+                        <span class="live-badge ms-1">
                             <span class="dot"></span>
                             AO VIVO
                         </span>
@@ -1413,16 +1376,16 @@
                 </div>
 
                 <!-- CONTEÚDO -->
-                <div class="app-content container-fluid p-3 p-lg-4">
+                <div class="app-content container-fluid p-2 p-lg-4">
 
                     <!-- HEADER -->
-                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
                         <div>
                             <div class="eyebrow"><i class="bi bi-people me-1"></i> GESTÃO</div>
-                            <h1 class="font-display" style="font-size:clamp(1.8rem,3vw,2.5rem);margin:0;">
+                            <h1 class="font-display" style="font-size:clamp(1.5rem,2.5vw,2.2rem);margin:0;">
                                 Utilizadores <em style="color:var(--sz-coral);font-style:normal;">✦</em>
                             </h1>
-                            <p class="text-muted mt-1" style="font-size:0.9rem;">
+                            <p class="text-muted mt-1" style="font-size:0.8rem;">
                                 Gestão completa dos utilizadores da plataforma
                             </p>
                         </div>
@@ -1434,10 +1397,10 @@
                                 <i class="bi bi-file-earmark-code"></i> JSON
                             </button>
                             <button class="btn-outline-sz btn-sm" onclick="forceRefresh()">
-                                <i class="bi bi-arrow-clockwise"></i> Actualizar
+                                <i class="bi bi-arrow-clockwise"></i>
                             </button>
                             <button class="btn-sz" onclick="openAddUserModal()">
-                                <i class="bi bi-person-plus"></i> Novo Utilizador
+                                <i class="bi bi-person-plus"></i> <span class="d-none d-sm-inline">Novo</span>
                             </button>
                         </div>
                     </div>
@@ -1446,11 +1409,11 @@
                     <div class="quick-actions">
                         <a href="#" onclick="openAddUserModal()" class="quick-action-item">
                             <i class="bi bi-person-plus"></i>
-                            <span>Criar Utilizador</span>
+                            <span>Criar</span>
                         </a>
                         <a href="#" onclick="openAddUserModal()" class="quick-action-item">
                             <i class="bi bi-person-badge"></i>
-                            <span>Definir Função</span>
+                            <span>Função</span>
                         </a>
                         <a href="#" onclick="openAddUserModal()" class="quick-action-item">
                             <i class="bi bi-shield-lock"></i>
@@ -1460,27 +1423,27 @@
                             <i class="bi bi-clock-history"></i>
                             <span>Histórico</span>
                         </a>
-                        <a href="roles.html" class="quick-action-item">
+                        <a href="#" class="quick-action-item">
                             <i class="bi bi-diagram-3"></i>
                             <span>Funções</span>
                         </a>
-                        <a href="actividades.html" class="quick-action-item">
+                        <a href="#" class="quick-action-item">
                             <i class="bi bi-journal"></i>
                             <span>Auditoria</span>
                         </a>
                     </div>
 
                     <!-- STATS CARDS -->
-                    <div class="row g-3">
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                    <div class="row g-2 g-lg-3">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card green">
                                 <div class="stat-icon green"><i class="bi bi-people-fill"></i></div>
-                                <div class="stat-label">Total Utilizadores</div>
+                                <div class="stat-label">Total</div>
                                 <div class="stat-value" id="totalUsers">0</div>
                                 <div class="stat-change neutral">Registados</div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card gold">
                                 <div class="stat-icon gold"><i class="bi bi-check-circle"></i></div>
                                 <div class="stat-label">Activos</div>
@@ -1488,7 +1451,7 @@
                                 <div class="stat-change up"><i class="bi bi-arrow-up"></i> Activos</div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card coral">
                                 <div class="stat-icon coral"><i class="bi bi-shield-check"></i></div>
                                 <div class="stat-label">Admins</div>
@@ -1496,10 +1459,10 @@
                                 <div class="stat-change neutral">Administradores</div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card red">
                                 <div class="stat-icon red"><i class="bi bi-person-x"></i></div>
-                                <div class="stat-label">Inactivos/Suspensos</div>
+                                <div class="stat-label">Inactivos</div>
                                 <div class="stat-value" id="inactiveUsers">0</div>
                                 <div class="stat-change down"><i class="bi bi-arrow-down"></i> Inactivos</div>
                             </div>
@@ -1507,29 +1470,29 @@
                     </div>
 
                     <!-- FILTERS -->
-                    <div class="card-sz p-3 mt-3">
+                    <div class="card-sz p-2 p-md-3 mt-3">
                         <div class="filter-bar">
-                            <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center gap-1">
                                 <i class="bi bi-search text-muted"></i>
-                                <input class="form-control" id="searchInput" placeholder="Pesquisar utilizador..." oninput="renderUsers()">
+                                <input class="form-control" id="searchInput" placeholder="Pesquisar..." oninput="renderUsers()" style="min-width:100px;">
                             </div>
-                            <select class="form-select" id="roleFilter" onchange="renderUsers()" style="min-width:140px;">
-                                <option value="">Todos os cargos</option>
+                            <select class="form-select" id="roleFilter" onchange="renderUsers()" style="min-width:110px;">
+                                <option value="">Cargo</option>
                                 <option value="superadmin">SuperAdmin</option>
                                 <option value="admin">Admin</option>
                                 <option value="user">Utilizador</option>
                             </select>
-                            <select class="form-select" id="statusFilter" onchange="renderUsers()" style="min-width:140px;">
-                                <option value="">Todos os estados</option>
+                            <select class="form-select" id="statusFilter" onchange="renderUsers()" style="min-width:110px;">
+                                <option value="">Estado</option>
                                 <option value="ativo">Activo</option>
                                 <option value="inativo">Inactivo</option>
                                 <option value="suspenso">Suspenso</option>
                             </select>
                             <button class="btn-sm-sz" onclick="resetFilters()">
-                                <i class="bi bi-arrow-counterclockwise"></i> Limpar
+                                <i class="bi bi-arrow-counterclockwise"></i>
                             </button>
-                            <span class="text-muted small ms-auto" style="font-size:0.7rem;">
-                                <i class="bi bi-database"></i> <span id="userCount">0</span> utilizadores
+                            <span class="text-muted small ms-auto" style="font-size:0.65rem;">
+                                <i class="bi bi-database"></i> <span id="userCount">0</span>
                             </span>
                         </div>
                     </div>
@@ -1540,7 +1503,7 @@
                             <table class="table table-custom mb-0">
                                 <thead>
                                     <tr>
-                                        <th onclick="sortUsers('name')" style="min-width:200px;">
+                                        <th onclick="sortUsers('name')" style="min-width:160px;">
                                             Utilizador <i class="bi bi-arrow-up sort-icon" id="sort-name"></i>
                                         </th>
                                         <th onclick="sortUsers('email')" class="d-none d-md-table-cell">
@@ -1553,7 +1516,7 @@
                                             Estado <i class="bi bi-arrow-up sort-icon" id="sort-status"></i>
                                         </th>
                                         <th class="d-none d-xl-table-cell">Permissões</th>
-                                        <th style="text-align:right;min-width:200px;">Acções</th>
+                                        <th style="text-align:right;min-width:160px;">Acções</th>
                                     </tr>
                                 </thead>
                                 <tbody id="userRows">
@@ -1561,7 +1524,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center p-3 border-top border-light">
+                        <div class="d-flex justify-content-between align-items-center p-2 p-md-3 border-top border-light flex-wrap gap-2">
                             <span class="text-muted small" id="paginationInfo">Mostrando 0 de 0</span>
                             <nav>
                                 <ul class="pagination pagination-custom mb-0" id="paginationControls"></ul>
@@ -1571,9 +1534,7 @@
 
                 </div>
 
-                <!-- ============================================================
-                FOOTER PREMIUM
-                ============================================================ -->
+                <!-- FOOTER -->
                 <footer class="app-footer">
                     <div class="footer-content">
                         <div class="footer-brand">
@@ -1586,11 +1547,11 @@
                                 <i class="bi bi-person"></i>
                                 <span class="data-value" id="footerUserName">Carregando...</span>
                             </span>
-                            <span class="user-data-item">
+                            <span class="user-data-item d-none d-sm-inline-flex">
                                 <i class="bi bi-envelope"></i>
                                 <span class="data-value email-value" id="footerUserEmail">carregando@email.com</span>
                             </span>
-                            <span class="user-data-item">
+                            <span class="user-data-item d-none d-md-inline-flex">
                                 <i class="bi bi-shield-check"></i>
                                 <span class="data-value" id="footerUserRole">SuperAdmin</span>
                             </span>
@@ -1598,7 +1559,7 @@
                                 <span class="status-dot"></span>
                                 Online
                             </span>
-                            <span class="user-data-item">
+                            <span class="user-data-item d-none d-lg-inline-flex">
                                 <i class="bi bi-clock"></i>
                                 <span class="data-value" id="footerLastUpdate">—</span>
                             </span>
@@ -1626,44 +1587,44 @@
                 <div class="modal-body">
                     <form id="userForm" novalidate>
                         <input type="hidden" id="editUserId">
-                        <div class="row">
+                        <div class="row g-2">
                             <div class="col-md-6">
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label" for="userName"><i class="bi bi-person me-1"></i> Nome <span class="required">*</span></label>
                                     <input id="userName" class="form-control" type="text" placeholder="Nome completo" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label" for="userEmail"><i class="bi bi-envelope me-1"></i> Email <span class="required">*</span></label>
                                     <input id="userEmail" class="form-control" type="email" placeholder="email@exemplo.com" required>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row g-2">
                             <div class="col-md-6">
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label" for="userPhone"><i class="bi bi-phone me-1"></i> Telefone</label>
                                     <input id="userPhone" class="form-control" type="text" placeholder="84 000 0000">
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label" for="userBusiness"><i class="bi bi-building me-1"></i> Negócio</label>
                                     <input id="userBusiness" class="form-control" type="text" placeholder="Nome do negócio">
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row g-2">
                             <div class="col-md-6">
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label" for="userPassword"><i class="bi bi-lock me-1"></i> Senha</label>
                                     <input id="userPassword" class="form-control" type="password" placeholder="Nova senha (mínimo 6)" minlength="6">
-                                    <small class="text-muted" style="color:var(--sz-muted);font-size:0.65rem;">Mínimo 6 caracteres. Deixe em branco para manter.</small>
+                                    <small class="text-muted" style="font-size:0.6rem;">Mínimo 6 caracteres. Deixe em branco para manter.</small>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label" for="userRole"><i class="bi bi-shield me-1"></i> Cargo</label>
                                     <select id="userRole" class="form-select">
                                         <option value="user">Utilizador</option>
@@ -1673,9 +1634,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row g-2">
                             <div class="col-md-6">
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label" for="userStatus"><i class="bi bi-toggle-on me-1"></i> Estado</label>
                                     <select id="userStatus" class="form-select">
                                         <option value="ativo">Activo</option>
@@ -1730,10 +1691,10 @@
                                     <label for="perm_superadmin">SuperAdmin</label>
                                 </div>
                             </div>
-                            <small class="text-muted" style="color:var(--sz-muted);font-size:0.65rem;">Selecione as permissões que o utilizador terá acesso.</small>
+                            <small class="text-muted" style="font-size:0.6rem;">Selecione as permissões que o utilizador terá acesso.</small>
                         </div>
 
-                        <div class="mt-4">
+                        <div class="mt-3">
                             <button type="submit" class="btn-sz w-100" id="saveUserBtn">
                                 <i class="bi bi-check-lg"></i> Guardar
                             </button>
@@ -1759,24 +1720,24 @@
                 </div>
                 <div class="modal-body" id="profileBody">
                     <div class="text-center mb-3">
-                        <div class="user-avatar-sm" id="profileAvatar" style="width:64px;height:64px;font-size:1.5rem;margin:0 auto;">U</div>
+                        <div class="user-avatar-sm" id="profileAvatar" style="width:56px;height:56px;font-size:1.3rem;margin:0 auto;">U</div>
                         <h5 class="mt-2" id="profileName">Nome</h5>
                         <span class="badge-role" id="profileRole">user</span>
                     </div>
                     <hr>
-                    <div class="row g-2">
-                        <div class="col-6"><strong>Email:</strong></div>
-                        <div class="col-6" id="profileEmail">—</div>
-                        <div class="col-6"><strong>Telefone:</strong></div>
-                        <div class="col-6" id="profilePhone">—</div>
-                        <div class="col-6"><strong>Negócio:</strong></div>
-                        <div class="col-6" id="profileBusiness">—</div>
-                        <div class="col-6"><strong>Estado:</strong></div>
-                        <div class="col-6" id="profileStatus">—</div>
-                        <div class="col-6"><strong>Criado em:</strong></div>
-                        <div class="col-6" id="profileCreated">—</div>
-                        <div class="col-6"><strong>Último acesso:</strong></div>
-                        <div class="col-6" id="profileLastAccess">—</div>
+                    <div class="row g-1">
+                        <div class="col-5"><strong>Email:</strong></div>
+                        <div class="col-7" id="profileEmail">—</div>
+                        <div class="col-5"><strong>Telefone:</strong></div>
+                        <div class="col-7" id="profilePhone">—</div>
+                        <div class="col-5"><strong>Negócio:</strong></div>
+                        <div class="col-7" id="profileBusiness">—</div>
+                        <div class="col-5"><strong>Estado:</strong></div>
+                        <div class="col-7" id="profileStatus">—</div>
+                        <div class="col-5"><strong>Criado em:</strong></div>
+                        <div class="col-7" id="profileCreated">—</div>
+                        <div class="col-5"><strong>Último acesso:</strong></div>
+                        <div class="col-7" id="profileLastAccess">—</div>
                         <div class="col-12"><strong>Permissões:</strong></div>
                         <div class="col-12" id="profilePermissions" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
                     </div>
@@ -1804,11 +1765,11 @@
                 <div class="modal-body">
                     <form id="passwordForm" onsubmit="changePassword(event)">
                         <input type="hidden" id="passwordUserId">
-                        <div class="mb-3">
+                        <div class="mb-2">
                             <label class="form-label" for="newPassword">Nova Password <span class="required">*</span></label>
                             <input id="newPassword" class="form-control" type="password" placeholder="Mínimo 6 caracteres" minlength="6" required>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-2">
                             <label class="form-label" for="confirmPassword">Confirmar Password <span class="required">*</span></label>
                             <input id="confirmPassword" class="form-control" type="password" placeholder="Confirme a password" minlength="6" required>
                         </div>
@@ -1825,7 +1786,7 @@
     <script>
         /* ============================================================
            UTILIZADORES - SUMBANEPAY SUPERADMIN
-           Versão: 18.0.0 - REMOVIDO PLANOS E ASSINATURAS
+           Versão: 18.0.0 - RESPONSIVO MOBILE
            ============================================================ */
 
         const KEY = 'sumbanepay_';
@@ -1838,7 +1799,7 @@
         let sortField = 'name';
         let sortDirection = 'asc';
         let currentPage = 1;
-        let itemsPerPage = 10;
+        let itemsPerPage = 8;
         let isRendering = false;
         let autoRefreshInterval = null;
 
@@ -1897,7 +1858,6 @@
             const next = current === 'dark' ? 'light' : 'dark';
             applyTheme(next);
             localStorage.setItem('sumbanepay_theme', next);
-            // Atualiza os números e a tabela imediatamente após trocar o tema.
             if (typeof renderUsers === 'function') renderUsers();
         }
 
@@ -2031,8 +1991,6 @@
                 ensureSuperAdmin();
 
                 const users = getAll('users');
-                const notes = read('admin_notifications', []);
-
                 const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
                 const roleFilter = document.getElementById('roleFilter')?.value || '';
                 const statusFilter = document.getElementById('statusFilter')?.value || '';
@@ -2075,7 +2033,7 @@
                 }
 
                 const now = new Date();
-                document.getElementById('footerLastUpdate').textContent = 'Última atualização: ' + now.toLocaleTimeString('pt-PT');
+                document.getElementById('footerLastUpdate').textContent = now.toLocaleTimeString('pt-PT');
 
                 const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
                 if (currentPage > totalPages) currentPage = totalPages;
@@ -2110,15 +2068,15 @@
                                         ${initials}
                                     </div>
                                     <div>
-                                        <div class="user-name">${escapeHTML(u.name || '—')} ${isSuperAdmin ? '<span class="badge-role superadmin" style="font-size:0.45rem;padding:1px 6px;">★</span>' : ''}</div>
+                                        <div class="user-name">${escapeHTML(u.name || '—')} ${isSuperAdmin ? '<span class="badge-role superadmin" style="font-size:0.4rem;padding:1px 4px;">★</span>' : ''}</div>
                                         <div class="user-business">${escapeHTML(u.business || 'Sem negócio')}</div>
                                         <div class="user-email-sm d-md-none">${escapeHTML(u.email)}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="d-none d-md-table-cell">
-                                <div style="font-size:0.85rem;color:var(--sz-ink);">${escapeHTML(u.email)}</div>
-                                <div style="font-size:0.65rem;color:var(--sz-muted);">${escapeHTML(u.phone || '—')}</div>
+                                <div style="font-size:0.8rem;color:var(--sz-ink);">${escapeHTML(u.email)}</div>
+                                <div style="font-size:0.6rem;color:var(--sz-muted);">${escapeHTML(u.phone || '—')}</div>
                             </td>
                             <td class="d-none d-lg-table-cell">
                                 <span class="badge-role ${u.role || 'user'}">${u.role || 'user'}</span>
@@ -2167,12 +2125,13 @@
                     html += `<li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
                         <a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">«</a>
                     </li>`;
-                    for (let i = 1; i <= Math.min(totalPages, 7); i++) {
+                    const maxShow = Math.min(totalPages, 5);
+                    for (let i = 1; i <= maxShow; i++) {
                         html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
                             <a class="page-link" href="#" onclick="goToPage(${i})">${i}</a>
                         </li>`;
                     }
-                    if (totalPages > 7) {
+                    if (totalPages > 5) {
                         html += `<li class="page-item disabled"><a class="page-link">…</a></li>`;
                         html += `<li class="page-item"><a class="page-link" href="#" onclick="goToPage(${totalPages})">${totalPages}</a></li>`;
                     }
@@ -2291,7 +2250,7 @@
             };
             permContainer.innerHTML = Object.entries(perms)
                 .filter(([_, v]) => v === true)
-                .map(([k]) => `<span class="badge bg-success" style="font-size:0.55rem;padding:2px 8px;">${permNames[k] || k}</span>`)
+                .map(([k]) => `<span class="badge bg-success" style="font-size:0.5rem;padding:2px 6px;">${permNames[k] || k}</span>`)
                 .join('') || '<span class="text-muted">Nenhuma permissão</span>';
 
             if (!profileModalInstance) {
@@ -2563,9 +2522,9 @@
             }
 
             const html = activities.slice(0, 20).map(a => `
-                <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--sz-line);font-size:0.8rem;">
+                <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--sz-line);font-size:0.75rem;">
                     <span><strong>${escapeHTML(a.title || a.type)}</strong> ${escapeHTML(a.desc || '')}</span>
-                    <span style="color:var(--sz-muted);font-size:0.65rem;">${formatDateTime(a.date)}</span>
+                    <span style="color:var(--sz-muted);font-size:0.6rem;">${formatDateTime(a.date)}</span>
                 </div>
             `).join('');
 
@@ -2611,6 +2570,11 @@
             loadTheme();
             if (!requireAdmin()) return;
 
+            // Ajuste de items por página para mobile
+            if (window.innerWidth < 576) itemsPerPage = 5;
+            else if (window.innerWidth < 768) itemsPerPage = 6;
+            else itemsPerPage = 10;
+
             renderUsers();
             preventBFCache();
             startAutoRefresh();
@@ -2629,6 +2593,19 @@
                 if (e.key && e.key.startsWith(KEY)) {
                     renderUsers();
                 }
+            });
+
+            // Re-render on resize para ajustar itemsPerPage
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    const newItems = window.innerWidth < 576 ? 5 : window.innerWidth < 768 ? 6 : 10;
+                    if (newItems !== itemsPerPage) {
+                        itemsPerPage = newItems;
+                        renderUsers();
+                    }
+                }, 300);
             });
         });
 
@@ -2662,6 +2639,5 @@
         window.confirmAction = confirmAction;
     </script>
 
-    <script src="../mobile.js" defer></script>
 </body>
 </html>
