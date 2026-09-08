@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
     <title>Pagamentos — SumbanePay SuperAdmin</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -38,6 +38,11 @@
             --sz-purple: #9b59b6;
             --sz-radius: 16px;
             --sz-radius-sm: 10px;
+            --sz-focus: #0b5ed7;
+            --sz-surface-2: #f0efe8;
+            --sz-input-bg: #ffffff;
+            --sz-on-accent: #ffffff;
+            color-scheme: light;
         }
 
         /* ============================================================
@@ -61,6 +66,11 @@
             --sz-warning: #f5d76e;
             --sz-info: #7cbdda;
             --sz-purple: #b07cc6;
+            --sz-focus: #8fc7ff;
+            --sz-surface-2: #1d3b31;
+            --sz-input-bg: #10271f;
+            --sz-on-accent: #07130f;
+            color-scheme: dark;
         }
 
         /* ============================================================
@@ -245,7 +255,7 @@
             border-right: 1px solid var(--sz-line);
             position: sticky;
             top: 0;
-            padding: 1.5rem 1rem;
+            padding: 1rem;
             transition: background 0.3s ease, border-color 0.3s ease;
             max-height: 100vh;
             overflow-y: auto;
@@ -325,12 +335,12 @@
         .top-nav {
             background: var(--sz-white);
             border-bottom: 1px solid var(--sz-line);
-            padding: 12px 28px;
+            padding: 10px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
             transition: background 0.3s ease, border-color 0.3s ease;
             position: relative;
         }
@@ -348,21 +358,21 @@
         .top-nav .breadcrumb-premium {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: var(--sz-muted);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             flex-wrap: wrap;
         }
         .top-nav .breadcrumb-premium .breadcrumb-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
         .top-nav .breadcrumb-premium .breadcrumb-item a {
             color: var(--sz-muted);
             text-decoration: none;
             transition: var(--transition);
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 6px;
         }
         .top-nav .breadcrumb-premium .breadcrumb-item a:hover {
@@ -376,32 +386,32 @@
         .top-nav .breadcrumb-premium .breadcrumb-item.current {
             color: var(--sz-ink);
             font-weight: 600;
-            padding: 4px 8px;
+            padding: 3px 6px;
             background: rgba(23, 107, 91, 0.06);
             border-radius: 6px;
         }
         .top-nav .breadcrumb-premium .breadcrumb-item .home-icon {
             color: var(--sz-green);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .live-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             background: rgba(23, 107, 91, 0.1);
             color: var(--sz-green);
-            padding: 3px 12px 3px 8px;
+            padding: 2px 10px 2px 6px;
             border-radius: 20px;
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.04em;
             border: 1px solid rgba(23, 107, 91, 0.15);
         }
         .live-badge .dot {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
             background: var(--sz-green);
             animation: pulse-dot 1.5s ease-in-out infinite;
@@ -443,11 +453,12 @@
         .top-nav .user-info-premium {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         .top-nav .user-info-premium .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
             display: flex;
@@ -455,7 +466,7 @@
             justify-content: center;
             color: #fff;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.85rem;
             box-shadow: 0 2px 12px rgba(23, 107, 91, 0.25);
             transition: var(--transition);
             cursor: pointer;
@@ -474,17 +485,17 @@
         .top-nav .user-info-premium .user-details .user-name {
             font-weight: 600;
             color: var(--sz-ink);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
         .top-nav .user-info-premium .user-details .user-role {
-            font-size: 0.65rem;
+            font-size: 0.55rem;
             color: var(--sz-muted);
             text-transform: uppercase;
             letter-spacing: 0.06em;
         }
         .top-nav .user-info-premium .btn-icon-premium {
-            width: 38px;
-            height: 38px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             border: 1.5px solid var(--sz-line);
             background: transparent;
@@ -495,7 +506,7 @@
             color: var(--sz-muted);
             cursor: pointer;
             position: relative;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         .top-nav .user-info-premium .btn-icon-premium:hover {
             background: var(--sz-paper);
@@ -525,7 +536,7 @@
         .stat-card {
             background: var(--sz-white);
             border-radius: var(--sz-radius);
-            padding: 1.25rem 1.5rem;
+            padding: 0.9rem 1rem;
             border: 1px solid var(--sz-line);
             box-shadow: var(--sz-shadow);
             transition: var(--transition);
@@ -534,18 +545,18 @@
             overflow: hidden;
         }
         .stat-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
             box-shadow: var(--sz-shadow-hover);
         }
         .stat-card .stat-icon {
-            width: 48px;
-            height: 48px;
+            width: 38px;
+            height: 38px;
             border-radius: var(--sz-radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
-            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
         }
         .stat-card .stat-icon.green { background: rgba(23, 107, 91, 0.12); color: var(--sz-green); }
         .stat-card .stat-icon.gold { background: rgba(232, 179, 91, 0.12); color: var(--sz-gold); }
@@ -556,7 +567,7 @@
         .stat-card .stat-icon.teal { background: rgba(13, 202, 240, 0.12); color: #0dcaf0; }
 
         .stat-card .stat-label {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
             letter-spacing: 0.06em;
             color: var(--sz-muted);
@@ -564,17 +575,17 @@
         }
         .stat-card .stat-value {
             font-family: 'Playfair Display', 'Georgia', serif;
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: var(--sz-ink);
             line-height: 1.2;
             margin-top: 2px;
         }
         .stat-card .stat-change {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 600;
-            margin-top: 6px;
-            padding: 2px 12px;
+            margin-top: 4px;
+            padding: 2px 10px;
             border-radius: 20px;
             display: inline-flex;
             align-items: center;
@@ -612,15 +623,15 @@
            ============================================================ */
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            margin-bottom: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 8px;
+            margin-bottom: 20px;
         }
         .quick-action-item {
             background: var(--sz-white);
             border: 1px solid var(--sz-line);
             border-radius: var(--sz-radius);
-            padding: 1.2rem 0.75rem;
+            padding: 0.8rem 0.4rem;
             text-align: center;
             transition: var(--transition);
             cursor: pointer;
@@ -629,16 +640,16 @@
             box-shadow: var(--sz-shadow);
         }
         .quick-action-item:hover {
-            transform: translateY(-4px) scale(1.02);
+            transform: translateY(-3px) scale(1.02);
             box-shadow: var(--sz-shadow-hover);
             border-color: var(--sz-green);
             color: var(--sz-ink);
         }
         .quick-action-item i {
-            font-size: 1.6rem;
+            font-size: 1.3rem;
             color: var(--sz-green);
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             transition: var(--transition);
         }
         .quick-action-item:hover i {
@@ -646,7 +657,7 @@
             color: var(--sz-coral);
         }
         .quick-action-item span {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 600;
             letter-spacing: 0.02em;
         }
@@ -669,26 +680,27 @@
         .filter-bar {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
         }
         .filter-bar .form-control,
         .filter-bar .form-select {
             border-radius: 8px;
             border: 2px solid var(--sz-line);
-            padding: 6px 14px;
-            font-size: 0.85rem;
+            padding: 5px 10px;
+            font-size: 0.75rem;
             background: var(--sz-white);
             transition: var(--transition);
             color: var(--sz-ink);
+            min-width: 90px;
         }
         .filter-bar .form-control:focus,
         .filter-bar .form-select:focus {
             border-color: var(--sz-green);
             box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
         }
-        .filter-bar .form-control { min-width: 150px; }
-        .filter-bar .form-control[type="date"] { min-width: 140px; }
+        .filter-bar .form-control { min-width: 90px; }
+        .filter-bar .form-control[type="date"] { min-width: 100px; }
 
         [data-theme="dark"] .filter-bar .form-control,
         [data-theme="dark"] .filter-bar .form-select {
@@ -709,13 +721,13 @@
            TABLE
            ============================================================ */
         .table-custom thead th {
-            font-size: 0.65rem;
+            font-size: 0.55rem;
             letter-spacing: 0.08em;
             color: var(--sz-muted);
             text-transform: uppercase;
             font-weight: 700;
             border-bottom: 2px solid var(--sz-line);
-            padding: 0.75rem 0.5rem;
+            padding: 0.5rem 0.3rem;
             background: var(--sz-paper);
             cursor: pointer;
             user-select: none;
@@ -732,24 +744,25 @@
             color: var(--sz-green);
         }
         .table-custom tbody td {
-            padding: 0.75rem 0.5rem;
+            padding: 0.5rem 0.3rem;
             border-bottom: 1px solid var(--sz-line);
             vertical-align: middle;
             color: var(--sz-ink);
+            font-size: 0.8rem;
         }
         .table-custom tbody td strong { color: var(--sz-ink); }
         .table-custom tbody tr:hover {
             background: rgba(23, 107, 91, 0.04);
         }
         .table-custom .empty-state {
-            padding: 2.5rem;
+            padding: 1.5rem;
             text-align: center;
             color: var(--sz-muted);
         }
         .table-custom .empty-state i {
-            font-size: 2.5rem;
+            font-size: 2rem;
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             opacity: 0.3;
         }
 
@@ -779,12 +792,13 @@
            BADGES
            ============================================================ */
         .badge-payment {
-            padding: 3px 12px;
+            padding: 2px 10px;
             border-radius: 20px;
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.04em;
+            display: inline-block;
         }
         .badge-payment.received { background: #e4f3e9; color: var(--sz-green); }
         .badge-payment.pending { background: #fff2ce; color: #987021; }
@@ -826,18 +840,18 @@
         }
         .card-sz:hover { box-shadow: var(--sz-shadow-hover); }
         .card-sz .card-header-custom {
-            padding: 1rem 1.25rem;
+            padding: 0.7rem 1rem;
             border-bottom: 1px solid var(--sz-line);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
         .card-sz .card-header-custom h5 {
             margin: 0;
             font-family: 'Playfair Display', 'Georgia', serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--sz-ink);
         }
 
@@ -857,7 +871,7 @@
            ============================================================ */
         .chart-container {
             position: relative;
-            height: 200px;
+            height: 170px;
             width: 100%;
         }
 
@@ -869,6 +883,8 @@
             color: var(--sz-muted);
             background: var(--sz-white);
             transition: var(--transition);
+            padding: 4px 10px;
+            font-size: 0.75rem;
         }
         .pagination-custom .page-link:hover {
             background: var(--sz-paper);
@@ -901,27 +917,27 @@
         .app-footer {
             background: var(--sz-white);
             border-top: 1px solid var(--sz-line);
-            padding: 0.75rem 2rem;
+            padding: 0.5rem 0.8rem;
             transition: background 0.3s ease, border-color 0.3s ease;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
         }
         .app-footer .footer-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 0.75rem;
+            gap: 0.5rem;
             max-width: 1400px;
             margin: 0 auto;
         }
         .app-footer .footer-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
         }
         .app-footer .footer-brand .footer-logo {
-            width: 30px;
-            height: 30px;
+            width: 24px;
+            height: 24px;
             border-radius: 8px;
             background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
             display: flex;
@@ -929,41 +945,41 @@
             justify-content: center;
             color: #fff;
             font-weight: 700;
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             letter-spacing: 0.5px;
         }
         .app-footer .footer-brand .footer-company {
             font-family: 'Playfair Display', 'Georgia', serif;
             font-weight: 700;
             color: var(--sz-ink);
-            font-size: 0.95rem;
+            font-size: 0.8rem;
         }
         .app-footer .footer-brand .footer-company b { color: var(--sz-coral); }
         .app-footer .footer-brand .footer-version {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: var(--sz-muted);
             background: var(--sz-paper);
-            padding: 1px 8px;
+            padding: 1px 6px;
             border-radius: 10px;
-            margin-left: 4px;
+            margin-left: 2px;
         }
         .app-footer .footer-user-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.5rem;
             flex-wrap: wrap;
         }
         .app-footer .footer-user-info .user-data-item {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.75rem;
+            gap: 3px;
+            font-size: 0.6rem;
             color: var(--sz-muted);
         }
         .app-footer .footer-user-info .user-data-item i {
             color: var(--sz-green);
-            font-size: 0.85rem;
-            width: 16px;
+            font-size: 0.7rem;
+            width: 14px;
             text-align: center;
         }
         .app-footer .footer-user-info .user-data-item .data-value {
@@ -971,27 +987,27 @@
             font-weight: 500;
         }
         .app-footer .footer-user-info .user-data-item .data-value.email-value {
-            font-size: 0.7rem;
+            font-size: 0.55rem;
             font-weight: 400;
             color: var(--sz-muted);
         }
         .app-footer .footer-user-info .user-status {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.6rem;
+            gap: 3px;
+            font-size: 0.5rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            padding: 3px 10px;
+            padding: 2px 8px;
             border-radius: 20px;
             background: rgba(23, 107, 91, 0.08);
             color: var(--sz-green);
             border: 1px solid rgba(23, 107, 91, 0.1);
         }
         .app-footer .footer-user-info .user-status .status-dot {
-            width: 5px;
-            height: 5px;
+            width: 4px;
+            height: 4px;
             border-radius: 50%;
             background: var(--sz-green);
             animation: pulse-dot 1.5s ease-in-out infinite;
@@ -1040,31 +1056,33 @@
         }
         .modal-content-sz .modal-header {
             border-bottom-color: var(--sz-line);
-            padding: 1rem 1.5rem;
+            padding: 0.7rem 1rem;
         }
         .modal-content-sz .modal-header .modal-title {
             font-family: 'Playfair Display', 'Georgia', serif;
             color: var(--sz-ink);
+            font-size: 1rem;
         }
-        .modal-content-sz .modal-body { padding: 1.5rem; }
+        .modal-content-sz .modal-body { padding: 1rem; }
         .modal-content-sz .modal-footer {
             border-top-color: var(--sz-line);
-            padding: 1rem 1.5rem;
+            padding: 0.7rem 1rem;
         }
         .modal-content-sz .form-label {
             color: var(--sz-ink);
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
         }
         .modal-content-sz .form-label .required { color: var(--sz-danger); }
         .modal-content-sz .form-control,
         .modal-content-sz .form-select {
             border-radius: var(--sz-radius-sm);
             border: 2px solid var(--sz-line);
-            padding: 8px 14px;
+            padding: 6px 10px;
             background: var(--sz-paper);
             color: var(--sz-ink);
             transition: var(--transition);
+            font-size: 0.8rem;
         }
         .modal-content-sz .form-control:focus,
         .modal-content-sz .form-select:focus {
@@ -1106,52 +1124,95 @@
         }
 
         /* ============================================================
-           RESPONSIVE
+           RESPONSIVE - MOBILE FIRST
            ============================================================ */
         @media (max-width: 992px) {
-            .sidebar { width: 100%; min-height: auto; position: relative; padding: 1rem; max-height: none; }
-            .stat-card .stat-value { font-size: 1.5rem; }
-            .top-nav { padding: 12px 16px; }
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                position: relative;
+                padding: 0.8rem;
+                max-height: none;
+            }
+            .stat-card .stat-value { font-size: 1.2rem; }
+            .top-nav { padding: 8px 12px; }
             .app-footer .footer-content { flex-direction: column; text-align: center; }
             .app-footer .footer-user-info { justify-content: center; }
+            .chart-container { height: 150px; }
         }
+
         @media (max-width: 768px) {
-            .top-nav { padding: 10px 14px; }
-            .top-nav .breadcrumb-premium { font-size: 0.75rem; }
-            .top-nav .user-info-premium .user-details .user-name { font-size: 0.8rem; }
-            .top-nav .user-info-premium .user-details .user-role { display: none; }
-            .top-nav .user-info-premium .user-avatar { width: 32px; height: 32px; font-size: 0.8rem; }
-            .stat-card { padding: 1rem; }
-            .stat-card .stat-value { font-size: 1.3rem; }
-            .quick-actions { grid-template-columns: repeat(3, 1fr); }
-            .app-footer { padding: 0.5rem 1rem; }
-            .app-footer .footer-user-info .user-data-item { font-size: 0.65rem; }
-            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.6rem; }
-            .chart-container { height: 160px; }
-        }
-        @media (max-width: 425px) {
-            .brand { font-size: 1rem; }
-            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
             .top-nav .breadcrumb-premium { font-size: 0.65rem; }
-            .top-nav .breadcrumb-premium .breadcrumb-item .separator { display: none; }
+            .top-nav .user-info-premium .user-details .user-name { font-size: 0.7rem; }
+            .top-nav .user-info-premium .user-details .user-role { display: none; }
             .top-nav .user-info-premium .user-avatar { width: 28px; height: 28px; font-size: 0.7rem; }
-            .top-nav .user-info-premium .btn-icon-premium { width: 32px; height: 32px; font-size: 0.9rem; }
+            .stat-card { padding: 0.7rem 0.8rem; }
             .stat-card .stat-value { font-size: 1.1rem; }
-            .quick-actions { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .quick-action-item { padding: 0.8rem 0.5rem; }
-            .quick-action-item i { font-size: 1.2rem; }
-            .app-footer .footer-user-info { gap: 0.4rem; }
+            .stat-card .stat-label { font-size: 0.55rem; }
+            .stat-card .stat-icon { width: 32px; height: 32px; font-size: 0.85rem; }
+            .quick-actions { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .quick-action-item { padding: 0.6rem 0.3rem; }
+            .quick-action-item i { font-size: 1.1rem; }
+            .quick-action-item span { font-size: 0.55rem; }
+            .app-footer { padding: 0.4rem 0.6rem; }
             .app-footer .footer-user-info .user-data-item { font-size: 0.55rem; }
             .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.5rem; }
-            .app-footer .footer-user-info .user-status { font-size: 0.5rem; padding: 2px 8px; }
-            .app-footer .footer-brand .footer-company { font-size: 0.8rem; }
-            .chart-container { height: 140px; }
+            .btn-sz { padding: 6px 14px; font-size: 0.75rem; }
+            .btn-outline-sz { padding: 5px 12px; font-size: 0.7rem; }
+            .brand { font-size: 1rem; }
+            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
+            .filter-bar .form-control,
+            .filter-bar .form-select { min-width: 80px; font-size: 0.7rem; padding: 4px 8px; }
+            .filter-bar .form-control[type="date"] { min-width: 90px; }
+            .btn-sm-sz { padding: 2px 8px; font-size: 0.55rem; }
+            .table-custom thead th { font-size: 0.5rem; padding: 0.4rem 0.2rem; }
+            .table-custom tbody td { padding: 0.4rem 0.2rem; font-size: 0.7rem; }
+            .modal-content-sz .modal-header .modal-title { font-size: 0.9rem; }
+            .modal-content-sz .form-label { font-size: 0.7rem; }
+            .modal-content-sz .form-control,
+            .modal-content-sz .form-select { font-size: 0.75rem; padding: 5px 8px; }
+            .chart-container { height: 130px; }
         }
+
+        @media (max-width: 425px) {
+            .brand { font-size: 0.9rem; }
+            .logo-mark { width: 24px; height: 24px; font-size: 0.5rem; }
+            .top-nav .breadcrumb-premium { font-size: 0.55rem; }
+            .top-nav .breadcrumb-premium .breadcrumb-item .separator { display: none; }
+            .top-nav .user-info-premium .user-avatar { width: 24px; height: 24px; font-size: 0.6rem; }
+            .top-nav .user-info-premium .btn-icon-premium { width: 28px; height: 28px; font-size: 0.8rem; }
+            .stat-card .stat-value { font-size: 1rem; }
+            .stat-card .stat-icon { width: 28px; height: 28px; font-size: 0.75rem; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+            .quick-action-item { padding: 0.5rem 0.2rem; }
+            .quick-action-item i { font-size: 1rem; }
+            .quick-action-item span { font-size: 0.5rem; }
+            .app-footer .footer-user-info { gap: 0.3rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.5rem; }
+            .app-footer .footer-user-info .user-data-item .data-value.email-value { font-size: 0.45rem; }
+            .app-footer .footer-user-info .user-status { font-size: 0.45rem; padding: 1px 6px; }
+            .app-footer .footer-brand .footer-company { font-size: 0.7rem; }
+            .app-footer .footer-brand .footer-logo { width: 20px; height: 20px; font-size: 0.4rem; }
+            .filter-bar .form-control,
+            .filter-bar .form-select { min-width: 65px; font-size: 0.65rem; padding: 3px 6px; }
+            .filter-bar .form-control[type="date"] { min-width: 80px; }
+            .btn-sz { padding: 5px 10px; font-size: 0.65rem; }
+            .btn-outline-sz { padding: 4px 8px; font-size: 0.6rem; }
+            .btn-sm-sz { padding: 1px 6px; font-size: 0.5rem; }
+            .table-custom thead th { font-size: 0.45rem; padding: 0.3rem 0.15rem; }
+            .table-custom tbody td { padding: 0.3rem 0.15rem; font-size: 0.65rem; }
+            .badge-payment { font-size: 0.45rem; padding: 1px 6px; }
+            .modal-content-sz .modal-header .modal-title { font-size: 0.8rem; }
+            .modal-content-sz .form-label { font-size: 0.65rem; }
+            .modal-content-sz .form-control,
+            .modal-content-sz .form-select { font-size: 0.7rem; padding: 4px 6px; }
+            .pagination-custom .page-link { padding: 3px 8px; font-size: 0.65rem; }
+            .chart-container { height: 110px; }
+        }
+
         /* ============================================================
            THEME ACCESSIBILITY OVERRIDES - PAYMENTS PAGE
            ============================================================ */
-        :root { color-scheme: light; --sz-focus: #0b5ed7; --sz-surface-2: #f0efe8; --sz-input-bg: #fff; --sz-on-accent: #fff; }
-        [data-theme="dark"] { color-scheme: dark; --sz-focus: #8fc7ff; --sz-surface-2: #1d3b31; --sz-input-bg: #10271f; --sz-on-accent: #07130f; }
         body, .app-wrapper, .app-main, .app-content { background-color: var(--sz-paper); color: var(--sz-ink); }
         .text-muted { color: var(--sz-muted) !important; }
         .bg-light { background-color: var(--sz-surface-2) !important; color: var(--sz-ink) !important; }
@@ -1163,31 +1224,44 @@
         [data-theme="dark"] .stat-card .stat-value,
         [data-theme="dark"] .card-sz h1, [data-theme="dark"] .card-sz h2,
         [data-theme="dark"] .card-sz h3, [data-theme="dark"] .card-sz h4,
-        [data-theme="dark"] .card-sz h5, [data-theme="dark"] .card-sz h6 { color: #f0efe8 !important; opacity: 1 !important; }
-        [data-theme="dark"] .stat-card .stat-label, [data-theme="dark"] .stat-card .stat-change { color: #c0d0c8 !important; opacity: 1 !important; }
+        [data-theme="dark"] .card-sz h5, [data-theme="dark"] .card-sz h6 {
+            color: #f0efe8 !important; opacity: 1 !important;
+        }
+        [data-theme="dark"] .stat-card .stat-label,
+        [data-theme="dark"] .stat-card .stat-change { color: #c0d0c8 !important; opacity: 1 !important; }
         .form-control, .form-select, .form-check-input, .input-group-text, textarea, select,
-        input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) { background-color: var(--sz-input-bg); color: var(--sz-ink); border-color: var(--sz-line); }
+        input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+            background-color: var(--sz-input-bg); color: var(--sz-ink); border-color: var(--sz-line);
+        }
         .form-control::placeholder, textarea::placeholder { color: var(--sz-muted); opacity: 1; }
-        .form-control:focus, .form-select:focus, textarea:focus, select:focus, input:focus, button:focus-visible, a:focus-visible {
+        .form-control:focus, .form-select:focus, textarea:focus, select:focus, input:focus,
+        button:focus-visible, a:focus-visible {
             color: var(--sz-ink); background-color: var(--sz-input-bg); border-color: var(--sz-focus);
-            box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--sz-focus) 25%, transparent); outline: 2px solid transparent;
+            box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--sz-focus) 25%, transparent);
+            outline: 2px solid transparent;
         }
         .form-label, .form-check-label, label { color: var(--sz-ink); }
+        .table-custom thead th { color: var(--sz-muted); }
+        .table-custom tbody td, .table-custom tbody td strong { color: var(--sz-ink); }
         [data-theme="dark"] .table-custom thead th { color: #c0d0c8 !important; background: #0a1a14 !important; }
-        [data-theme="dark"] .table-custom tbody td, [data-theme="dark"] .table-custom tbody td strong { color: #f0efe8 !important; }
+        [data-theme="dark"] .table-custom tbody td,
+        [data-theme="dark"] .table-custom tbody td strong { color: #f0efe8 !important; }
         [data-theme="dark"] .table-custom tbody tr:hover { background: rgba(42, 157, 143, 0.12) !important; }
-        .dropdown-menu, .modal-content, .modal-content-sz, .offcanvas, .popover { background-color: var(--sz-white); color: var(--sz-ink); border-color: var(--sz-line); }
+        .dropdown-menu, .modal-content, .modal-content-sz, .offcanvas, .popover {
+            background-color: var(--sz-white); color: var(--sz-ink); border-color: var(--sz-line);
+        }
         .dropdown-item { color: var(--sz-ink); }
         .dropdown-item:hover, .dropdown-item:focus { background-color: var(--sz-surface-2); color: var(--sz-ink); }
-        [data-theme="dark"] .modal-content-sz .modal-title, [data-theme="dark"] .modal-content-sz .form-label { color: #f0efe8 !important; }
-        [data-theme="dark"] .modal-content-sz .form-control, [data-theme="dark"] .modal-content-sz .form-select { background: #10271f !important; color: #f0efe8 !important; border-color: #42675b !important; }
+        [data-theme="dark"] .modal-content-sz .modal-title,
+        [data-theme="dark"] .modal-content-sz .form-label { color: #f0efe8 !important; }
+        [data-theme="dark"] .modal-content-sz .form-control,
+        [data-theme="dark"] .modal-content-sz .form-select { background: #10271f !important; color: #f0efe8 !important; border-color: #42675b !important; }
         .badge, .badge-role, .badge-status, .badge-permission { opacity: 1; }
-        [data-theme="dark"] .chart-card, [data-theme="dark"] .chart-container, [data-theme="dark"] .chart-container-sm { color: #f0efe8; }
-        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+        [data-theme="dark"] .chart-container canvas { opacity: 1; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+        }
     </style>
-    <link rel="stylesheet" href="../responsive.css">
-    <link rel="stylesheet" href="../darkmode.css">
-    <meta name="theme-color" content="#0d1c17">
 </head>
 <body>
 
@@ -1201,12 +1275,12 @@
 
             <!-- SIDEBAR -->
             <aside class="sidebar" role="navigation">
-                <div class="mb-4">
+                <div class="mb-3">
                     <a class="brand" href="index.html">
                         <span class="logo-mark">Pay</span>
                         Sumbane<b>Pay</b>
                     </a>
-                    <div class="small text-muted mt-2" style="font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;">
+                    <div class="small text-muted mt-1" style="font-size:0.55rem;letter-spacing:0.06em;text-transform:uppercase;">
                         <i class="bi bi-grid-3x3-gap-fill me-1"></i> SuperAdmin
                     </div>
                 </div>
@@ -1214,7 +1288,7 @@
                     <a class="nav-link" href="index.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
                     <a class="nav-link" href="utilizadores.html"><i class="bi bi-people me-2"></i>Utilizadores <span class="badge-nav" id="userBadge">0</span></a>
                     <a class="nav-link" href="empresas.html"><i class="bi bi-building me-2"></i>Empresas <span class="badge-nav" id="companyBadge">0</span></a>
-                    <a class="nav-link active" href="pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos <span class="badge-nav" id="paymentBadge">0</span></a>
+                    <a class="nav-link active" href="#"><i class="bi bi-wallet2 me-2"></i>Pagamentos <span class="badge-nav" id="paymentBadge">0</span></a>
                     <a class="nav-link" href="faturacao.html"><i class="bi bi-receipt me-2"></i>Faturação</a>
                     <a class="nav-link" href="relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
                     <a class="nav-link" href="notificacoes.html"><i class="bi bi-bell me-2"></i>Notificações <span class="badge-nav" id="notifBadge">0</span></a>
@@ -1225,7 +1299,7 @@
                     <a class="nav-link" href="seguranca.html"><i class="bi bi-shield-check me-2"></i>Segurança</a>
                     <a class="nav-link" href="configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
                 </nav>
-                <div class="mt-4 d-flex flex-column gap-2">
+                <div class="mt-3 d-flex flex-column gap-2">
                     <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
                         <i class="bi bi-circle-half me-2"></i>Tema
                     </button>
@@ -1249,7 +1323,7 @@
                         <span class="breadcrumb-item current">
                             <i class="bi bi-wallet2 me-1"></i> Pagamentos
                         </span>
-                        <span class="live-badge ms-2">
+                        <span class="live-badge ms-1">
                             <span class="dot"></span>
                             AO VIVO
                         </span>
@@ -1270,28 +1344,28 @@
                 </div>
 
                 <!-- CONTEÚDO -->
-                <div class="app-content container-fluid p-3 p-lg-4">
+                <div class="app-content container-fluid p-2 p-lg-4">
 
                     <!-- HEADER -->
-                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
                         <div>
                             <div class="eyebrow"><i class="bi bi-wallet2 me-1"></i> FINANCEIRO</div>
-                            <h1 class="font-display" style="font-size:clamp(1.8rem,3vw,2.5rem);margin:0;">
+                            <h1 class="font-display" style="font-size:clamp(1.4rem,2.5vw,2.2rem);margin:0;">
                                 Pagamentos <em style="color:var(--sz-coral);font-style:normal;">✦</em>
                             </h1>
-                            <p class="text-muted mt-1" style="font-size:0.9rem;">
+                            <p class="text-muted mt-1" style="font-size:0.75rem;">
                                 Central financeira da plataforma
                             </p>
                         </div>
                         <div class="d-flex gap-2 flex-wrap">
                             <button class="btn-outline-sz btn-sm" onclick="exportCSV()">
-                                <i class="bi bi-file-earmark-spreadsheet"></i> CSV
+                                <i class="bi bi-file-earmark-spreadsheet"></i> <span class="d-none d-sm-inline">CSV</span>
                             </button>
                             <button class="btn-outline-sz btn-sm" onclick="exportJSON()">
-                                <i class="bi bi-file-earmark-code"></i> JSON
+                                <i class="bi bi-file-earmark-code"></i> <span class="d-none d-sm-inline">JSON</span>
                             </button>
                             <button class="btn-outline-sz btn-sm" onclick="forceRefresh()">
-                                <i class="bi bi-arrow-clockwise"></i> Actualizar
+                                <i class="bi bi-arrow-clockwise"></i>
                             </button>
                         </div>
                     </div>
@@ -1310,23 +1384,23 @@
                             <i class="bi bi-clock-history"></i>
                             <span>Histórico</span>
                         </a>
-                        <a href="dashboard.html" class="quick-action-item">
+                        <a href="index.html" class="quick-action-item">
                             <i class="bi bi-grid-1x2"></i>
                             <span>Dashboard</span>
                         </a>
                     </div>
 
                     <!-- STATS CARDS -->
-                    <div class="row g-3">
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                    <div class="row g-2 g-lg-3">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card green">
                                 <div class="stat-icon green"><i class="bi bi-wallet2"></i></div>
-                                <div class="stat-label">Total Pagamentos</div>
+                                <div class="stat-label">Total</div>
                                 <div class="stat-value" id="totalPayments">0</div>
                                 <div class="stat-change neutral">Registados</div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card gold">
                                 <div class="stat-icon gold"><i class="bi bi-check-circle"></i></div>
                                 <div class="stat-label">Recebidos</div>
@@ -1334,7 +1408,7 @@
                                 <div class="stat-change up"><i class="bi bi-arrow-up"></i> Confirmados</div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card coral">
                                 <div class="stat-icon coral"><i class="bi bi-clock"></i></div>
                                 <div class="stat-label">Pendentes</div>
@@ -1342,7 +1416,7 @@
                                 <div class="stat-change down"><i class="bi bi-arrow-down"></i> Aguardando</div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card red">
                                 <div class="stat-icon red"><i class="bi bi-exclamation-circle"></i></div>
                                 <div class="stat-label">Falhados</div>
@@ -1352,8 +1426,8 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 mt-1">
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                    <div class="row g-2 g-lg-3 mt-1">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card blue">
                                 <div class="stat-icon blue"><i class="bi bi-arrow-counterclockwise"></i></div>
                                 <div class="stat-label">Reembolsados</div>
@@ -1361,7 +1435,7 @@
                                 <div class="stat-change neutral">Estornados</div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card purple">
                                 <div class="stat-icon purple"><i class="bi bi-coin"></i></div>
                                 <div class="stat-label">Valor Total</div>
@@ -1369,7 +1443,7 @@
                                 <div class="stat-change up"><i class="bi bi-arrow-up"></i> Acumulado</div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card teal">
                                 <div class="stat-icon teal"><i class="bi bi-calendar-month"></i></div>
                                 <div class="stat-label">Este Mês</div>
@@ -1377,7 +1451,7 @@
                                 <div class="stat-change up"><i class="bi bi-arrow-up"></i> Mês actual</div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                        <div class="col-6 col-xl-3">
                             <div class="stat-card coral">
                                 <div class="stat-icon coral"><i class="bi bi-tags"></i></div>
                                 <div class="stat-label">Reembolsos Totais</div>
@@ -1388,13 +1462,13 @@
                     </div>
 
                     <!-- CHARTS -->
-                    <div class="row g-3 mt-1">
+                    <div class="row g-2 g-lg-3 mt-1">
                         <div class="col-lg-6">
                             <div class="card-sz">
                                 <div class="card-header-custom">
-                                    <h5><i class="bi bi-pie-chart me-2" style="color:var(--sz-gold);"></i>Distribuição por Estado</h5>
+                                    <h5 style="font-size:0.8rem;"><i class="bi bi-pie-chart me-2" style="color:var(--sz-gold);"></i>Distribuição por Estado</h5>
                                 </div>
-                                <div class="p-3">
+                                <div class="p-2 p-md-3">
                                     <div class="chart-container">
                                         <canvas id="statusChart"></canvas>
                                     </div>
@@ -1404,9 +1478,9 @@
                         <div class="col-lg-6">
                             <div class="card-sz">
                                 <div class="card-header-custom">
-                                    <h5><i class="bi bi-bar-chart me-2" style="color:var(--sz-green);"></i>Por Método de Pagamento</h5>
+                                    <h5 style="font-size:0.8rem;"><i class="bi bi-bar-chart me-2" style="color:var(--sz-green);"></i>Por Método de Pagamento</h5>
                                 </div>
-                                <div class="p-3">
+                                <div class="p-2 p-md-3">
                                     <div class="chart-container">
                                         <canvas id="methodChart"></canvas>
                                     </div>
@@ -1416,35 +1490,35 @@
                     </div>
 
                     <!-- FILTERS -->
-                    <div class="card-sz p-3 mt-3">
+                    <div class="card-sz p-2 p-md-3 mt-3">
                         <div class="filter-bar">
-                            <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center gap-1">
                                 <i class="bi bi-search text-muted"></i>
-                                <input class="form-control" id="searchInput" placeholder="Pesquisar..." oninput="renderPayments()">
+                                <input class="form-control" id="searchInput" placeholder="Pesquisar..." oninput="renderPayments()" style="min-width:80px;">
                             </div>
-                            <select class="form-select" id="statusFilter" onchange="renderPayments()" style="min-width:140px;">
-                                <option value="">Todos os estados</option>
+                            <select class="form-select" id="statusFilter" onchange="renderPayments()" style="min-width:90px;">
+                                <option value="">Estado</option>
                                 <option value="received">Recebido</option>
                                 <option value="pending">Pendente</option>
                                 <option value="failed">Falhado</option>
                                 <option value="refunded">Reembolsado</option>
                                 <option value="partial">Parcial</option>
                             </select>
-                            <select class="form-select" id="methodFilter" onchange="renderPayments()" style="min-width:140px;">
-                                <option value="">Todos os métodos</option>
+                            <select class="form-select" id="methodFilter" onchange="renderPayments()" style="min-width:90px;">
+                                <option value="">Método</option>
                                 <option value="M-Pesa">M-Pesa</option>
                                 <option value="e-Mola">e-Mola</option>
                                 <option value="Dinheiro">Dinheiro</option>
                                 <option value="Transferência">Transferência</option>
                                 <option value="Cartão">Cartão</option>
                             </select>
-                            <input class="form-control" type="date" id="dateFrom" onchange="renderPayments()" style="min-width:130px;">
-                            <input class="form-control" type="date" id="dateTo" onchange="renderPayments()" style="min-width:130px;">
+                            <input class="form-control" type="date" id="dateFrom" onchange="renderPayments()" style="min-width:90px;">
+                            <input class="form-control" type="date" id="dateTo" onchange="renderPayments()" style="min-width:90px;">
                             <button class="btn-sm-sz" onclick="resetFilters()">
-                                <i class="bi bi-arrow-counterclockwise"></i> Limpar
+                                <i class="bi bi-arrow-counterclockwise"></i>
                             </button>
-                            <span class="text-muted small ms-auto" style="font-size:0.7rem;">
-                                <i class="bi bi-database"></i> <span id="paymentCount">0</span> pagamentos
+                            <span class="text-muted small ms-auto" style="font-size:0.6rem;">
+                                <i class="bi bi-database"></i> <span id="paymentCount">0</span>
                             </span>
                         </div>
                     </div>
@@ -1455,25 +1529,25 @@
                             <table class="table table-custom mb-0">
                                 <thead>
                                     <tr>
-                                        <th onclick="sortPayments('reference')" style="min-width:130px;">
+                                        <th onclick="sortPayments('reference')" style="min-width:110px;">
                                             Referência <i class="bi bi-arrow-up sort-icon" id="sort-reference"></i>
                                         </th>
-                                        <th onclick="sortPayments('entity')" style="min-width:150px;">
+                                        <th onclick="sortPayments('entity')" style="min-width:120px;">
                                             Empresa/Utilizador <i class="bi bi-arrow-up sort-icon" id="sort-entity"></i>
                                         </th>
-                                        <th onclick="sortPayments('amount')" style="min-width:100px;">
+                                        <th onclick="sortPayments('amount')" style="min-width:80px;">
                                             Valor <i class="bi bi-arrow-up sort-icon" id="sort-amount"></i>
                                         </th>
-                                        <th onclick="sortPayments('method')" style="min-width:100px;">
+                                        <th onclick="sortPayments('method')" style="min-width:80px;">
                                             Método <i class="bi bi-arrow-up sort-icon" id="sort-method"></i>
                                         </th>
-                                        <th onclick="sortPayments('status')" style="min-width:100px;">
+                                        <th onclick="sortPayments('status')" style="min-width:80px;">
                                             Estado <i class="bi bi-arrow-up sort-icon" id="sort-status"></i>
                                         </th>
                                         <th onclick="sortPayments('date')" class="d-none d-md-table-cell">
                                             Data <i class="bi bi-arrow-up sort-icon" id="sort-date"></i>
                                         </th>
-                                        <th style="text-align:right;min-width:180px;">Acções</th>
+                                        <th style="text-align:right;min-width:140px;">Acções</th>
                                     </tr>
                                 </thead>
                                 <tbody id="paymentRows">
@@ -1481,7 +1555,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center p-3 border-top border-light">
+                        <div class="d-flex justify-content-between align-items-center p-2 p-md-3 border-top border-light flex-wrap gap-2">
                             <span class="text-muted small" id="paginationInfo">Mostrando 0 de 0</span>
                             <nav>
                                 <ul class="pagination pagination-custom mb-0" id="paginationControls"></ul>
@@ -1504,11 +1578,11 @@
                                 <i class="bi bi-person"></i>
                                 <span class="data-value" id="footerUserName">Carregando...</span>
                             </span>
-                            <span class="user-data-item">
+                            <span class="user-data-item d-none d-sm-inline-flex">
                                 <i class="bi bi-envelope"></i>
                                 <span class="data-value email-value" id="footerUserEmail">carregando@email.com</span>
                             </span>
-                            <span class="user-data-item">
+                            <span class="user-data-item d-none d-md-inline-flex">
                                 <i class="bi bi-shield-check"></i>
                                 <span class="data-value" id="footerUserRole">SuperAdmin</span>
                             </span>
@@ -1516,7 +1590,7 @@
                                 <span class="status-dot"></span>
                                 Online
                             </span>
-                            <span class="user-data-item">
+                            <span class="user-data-item d-none d-lg-inline-flex">
                                 <i class="bi bi-clock"></i>
                                 <span class="data-value" id="footerLastUpdate">—</span>
                             </span>
@@ -1542,7 +1616,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body" id="detailsBody">
-                    <div class="row g-3">
+                    <div class="row g-2">
                         <div class="col-md-6">
                             <strong>Referência:</strong>
                             <div id="detailReference">—</div>
@@ -1592,7 +1666,7 @@
     <script>
         /* ============================================================
            PAGAMENTOS - SUMBANEPAY SUPERADMIN
-           Versão: 23.0.0 - GRÁFICOS EM TEMPO REAL
+           Versão: 23.0.0 - RESPONSIVO MOBILE
            ============================================================ */
 
         const KEY = 'sumbanepay_';
@@ -1677,7 +1751,6 @@
             const next = current === 'dark' ? 'light' : 'dark';
             applyTheme(next);
             localStorage.setItem('sumbanepay_theme', next);
-            // Recria números, tabela e gráficos com as cores do novo tema.
             if (typeof renderPayments === 'function') renderPayments();
         }
 
@@ -1941,7 +2014,7 @@
                 }
 
                 const now = new Date();
-                document.getElementById('footerLastUpdate').textContent = 'Última atualização: ' + now.toLocaleTimeString('pt-PT');
+                document.getElementById('footerLastUpdate').textContent = now.toLocaleTimeString('pt-PT');
 
                 // Gráficos - EM TEMPO REAL
                 renderCharts(payments);
@@ -1978,14 +2051,14 @@
                         <tr>
                             <td>
                                 <strong>${escapeHTML(p.reference || '—')}</strong>
-                                <br><small style="color:var(--sz-muted);font-size:0.6rem;">${escapeHTML(p.transactionId || '')}</small>
+                                <br><small style="color:var(--sz-muted);font-size:0.55rem;">${escapeHTML(p.transactionId || '')}</small>
                             </td>
                             <td>
                                 <strong>${escapeHTML(p.entity || '—')}</strong>
-                                <br><small style="color:var(--sz-muted);font-size:0.6rem;">${p.entityType === 'company' ? '🏢 Empresa' : '👤 Utilizador'}</small>
+                                <br><small style="color:var(--sz-muted);font-size:0.55rem;">${p.entityType === 'company' ? '🏢 Empresa' : '👤 Utilizador'}</small>
                             </td>
                             <td><strong>${money(p.amount || 0)}</strong></td>
-                            <td><span class="badge bg-light text-dark" style="font-size:0.6rem;">${escapeHTML(p.method || '—')}</span></td>
+                            <td><span class="badge bg-light text-dark" style="font-size:0.55rem;">${escapeHTML(p.method || '—')}</span></td>
                             <td><span class="badge-payment ${statusInfo.class}">${statusInfo.label}</span></td>
                             <td class="d-none d-md-table-cell">${formatDate(p.date)}</td>
                             <td style="text-align:right;">
@@ -2021,15 +2094,16 @@
                 const pagControls = document.getElementById('paginationControls');
                 if (pagControls) {
                     let html = '';
+                    const maxShow = Math.min(totalPages, 5);
                     html += `<li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
                         <a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">«</a>
                     </li>`;
-                    for (let i = 1; i <= Math.min(totalPages, 7); i++) {
+                    for (let i = 1; i <= maxShow; i++) {
                         html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
                             <a class="page-link" href="#" onclick="goToPage(${i})">${i}</a>
                         </li>`;
                     }
-                    if (totalPages > 7) {
+                    if (totalPages > 5) {
                         html += `<li class="page-item disabled"><a class="page-link">…</a></li>`;
                         html += `<li class="page-item"><a class="page-link" href="#" onclick="goToPage(${totalPages})">${totalPages}</a></li>`;
                     }
@@ -2091,11 +2165,12 @@
                             legend: {
                                 position: 'bottom',
                                 labels: {
-                                    font: { size: 9, weight: '600' },
-                                    padding: 8,
+                                    font: { size: 8, weight: '600' },
+                                    padding: 6,
                                     usePointStyle: true,
                                     pointStyle: 'circle',
-                                    color: textColor
+                                    color: textColor,
+                                    boxWidth: 10
                                 }
                             }
                         },
@@ -2143,6 +2218,7 @@
                                 grid: { color: isDark ? 'rgba(192, 208, 200, 0.24)' : 'rgba(25, 54, 46, 0.12)' },
                                 ticks: {
                                     color: textColor,
+                                    font: { size: 8 },
                                     callback: function(value) { return value.toLocaleString('pt-PT') + ' MT'; }
                                 }
                             },
@@ -2150,7 +2226,7 @@
                                 grid: { color: isDark ? 'rgba(192, 208, 200, 0.24)' : 'rgba(25, 54, 46, 0.12)' },
                                 ticks: {
                                     color: textColor,
-                                    font: { size: 9 }
+                                    font: { size: 8 }
                                 }
                             }
                         }
@@ -2262,7 +2338,7 @@
                 historyContainer.innerHTML = '<span class="text-muted">Nenhum histórico</span>';
             } else {
                 historyContainer.innerHTML = history.map(h => `
-                    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--sz-line);font-size:0.75rem;">
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--sz-line);font-size:0.7rem;">
                         <span>${escapeHTML(h.action || '—')} - ${escapeHTML(h.details || '')}</span>
                         <span style="color:var(--sz-muted);">${formatDateTime(h.date)}</span>
                     </div>
@@ -2401,15 +2477,15 @@
             }
 
             const html = payments.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 30).map(p => `
-                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--sz-line);font-size:0.8rem;">
+                <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--sz-line);font-size:0.75rem;">
                     <div>
                         <strong>${escapeHTML(p.reference)}</strong>
-                        <span style="color:var(--sz-muted);font-size:0.7rem;">(${escapeHTML(p.entity)})</span>
-                        <div style="font-size:0.7rem;color:var(--sz-muted);">${escapeHTML(p.description || '')}</div>
+                        <span style="color:var(--sz-muted);font-size:0.65rem;">(${escapeHTML(p.entity)})</span>
+                        <div style="font-size:0.65rem;color:var(--sz-muted);">${escapeHTML(p.description || '')}</div>
                     </div>
                     <div style="text-align:right;">
                         <strong>${money(p.amount)}</strong>
-                        <div style="font-size:0.65rem;color:var(--sz-muted);">${formatDateTime(p.date)}</div>
+                        <div style="font-size:0.6rem;color:var(--sz-muted);">${formatDateTime(p.date)}</div>
                     </div>
                 </div>
             `).join('');
@@ -2456,6 +2532,11 @@
             loadTheme();
             if (!requireAdmin()) return;
 
+            // Ajuste de items por página para mobile
+            if (window.innerWidth < 576) itemsPerPage = 5;
+            else if (window.innerWidth < 768) itemsPerPage = 6;
+            else itemsPerPage = 10;
+
             renderPayments();
             preventBFCache();
             startAutoRefresh();
@@ -2464,6 +2545,23 @@
                 if (e.key && e.key.startsWith(KEY)) {
                     renderPayments();
                 }
+            });
+
+            // Re-render on resize para ajustar itemsPerPage e gráficos
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    const newItems = window.innerWidth < 576 ? 5 : window.innerWidth < 768 ? 6 : 10;
+                    if (newItems !== itemsPerPage) {
+                        itemsPerPage = newItems;
+                        renderPayments();
+                    } else {
+                        // Apenas redesenha os gráficos para ajustar tamanho
+                        const payments = getAll('payments');
+                        renderCharts(payments);
+                    }
+                }, 300);
             });
         });
 
@@ -2496,6 +2594,5 @@
         window.confirmAction = confirmAction;
     </script>
 
-    <script src="../mobile.js" defer></script>
 </body>
 </html>
