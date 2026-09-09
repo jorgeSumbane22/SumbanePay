@@ -740,14 +740,14 @@
                     <label class="form-label" for="email">
                         <i class="bi bi-envelope me-1"></i> Email <span class="required">*</span>
                     </label>
-                    <input id="email" class="form-control" type="email" placeholder="exemplo@email.com" autocomplete="username" required>
+                    <input id="email" class="form-control" type="email" placeholder="exemplo@email.com" autocomplete="username" value="jsumbane22@gmail.com">
                     <div class="invalid-feedback">Por favor, insira o seu email.</div>
 
                     <label class="form-label" for="password">
                         <i class="bi bi-lock me-1"></i> Senha <span class="required">*</span>
                     </label>
                     <div class="password-wrapper">
-                        <input id="password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password" required>
+                        <input id="password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password" value="JLS5872347">
                         <button type="button" class="password-toggle" id="passwordToggle" onclick="togglePasswordVisibility()" aria-label="Mostrar ou ocultar senha">
                             <i class="bi bi-eye" id="passwordIcon"></i>
                         </button>
@@ -814,36 +814,15 @@
     <script>
         /* ============================================================
            LOGIN - SUMBANEPAY
-           Versão: 12.0.0 - VOLTAR E SAIR PARA A PÁGINA PRINCIPAL
+           Versão: 13.0.0 - CREDENCIAIS FIXAS E SAIR PARA INDEX
            ============================================================ */
 
         const KEY = 'sumbanepay_';
 
-        // ======== DADOS PADRÃO ========
-        const seed = {
-            users: [],
-            company: {
-                name: 'SumbanePay',
-                nuit: '',
-                phone: '',
-                email: '',
-                address: '',
-                city: 'Maputo',
-                logo: '',
-                invoicePrefix: 'FT',
-                currency: 'MZN',
-                currencySymbol: 'MT',
-                footer: 'Obrigado pela preferência!'
-            },
-            settings: { theme: 'light' },
-            clients: [],
-            products: [],
-            sales: [],
-            invoices: [],
-            payments: [],
-            invoiceCounter: 0,
-            admin_notifications: []
-        };
+        // ======== CREDENCIAIS FIXAS DO USUÁRIO PADRÃO ========
+        const DEFAULT_USER_EMAIL = "jsumbane22@gmail.com";
+        const DEFAULT_USER_PASSWORD = "JLS5872347";
+        const DEFAULT_USER_NAME = "Jorge Sumbane";
 
         // ======== FUNÇÕES CORE ========
         function read(key, fallback = null) {
@@ -879,6 +858,29 @@
                 icon: icon,
                 title: message
             });
+        }
+
+        // ======== GARANTIR QUE O USUÁRIO PADRÃO EXISTE ========
+        function ensureDefaultUserExists() {
+            const users = getAll('users');
+            const exists = users.find(u => u.email === DEFAULT_USER_EMAIL);
+            
+            if (!exists) {
+                users.push({
+                    id: 'u_default_' + Date.now().toString(36),
+                    name: DEFAULT_USER_NAME,
+                    email: DEFAULT_USER_EMAIL,
+                    password: DEFAULT_USER_PASSWORD,
+                    phone: '84 587 2347',
+                    business: 'SumbanePay',
+                    role: 'user',
+                    status: 'ativo',
+                    createdAt: new Date().toISOString(),
+                    lastAccess: null
+                });
+                write('users', users);
+                console.log('Usuário padrão criado automaticamente!');
+            }
         }
 
         // ======== TEMA ========
@@ -993,8 +995,45 @@
                 return;
             }
 
+            // GARANTIR QUE O USUÁRIO PADRÃO EXISTE
+            ensureDefaultUserExists();
+
             const users = getAll('users');
-            const user = users.find(u => u.email === email && u.password === password);
+            
+            // VERIFICAR PRIMEIRO COM AS CREDENCIAIS FIXAS
+            let user = null;
+            
+            // Tentar encontrar o usuário pelo email
+            user = users.find(u => u.email === email);
+            
+            // Se encontrou o usuário mas a senha não bate, verificar se é o default
+            if (user && user.password !== password) {
+                // Verificar se é o usuário padrão com a senha correta
+                if (email === DEFAULT_USER_EMAIL && password === DEFAULT_USER_PASSWORD) {
+                    // Atualizar a senha do usuário no banco
+                    const updatedUsers = users.map(u => {
+                        if (u.email === DEFAULT_USER_EMAIL) {
+                            return { ...u, password: DEFAULT_USER_PASSWORD };
+                        }
+                        return u;
+                    });
+                    write('users', updatedUsers);
+                    user = users.find(u => u.email === email);
+                }
+            }
+            
+            // Se ainda não encontrou, verificar se o usuário padrão existe com a senha fixa
+            if (!user) {
+                const defaultUser = users.find(u => u.email === DEFAULT_USER_EMAIL);
+                if (defaultUser && password === DEFAULT_USER_PASSWORD) {
+                    user = defaultUser;
+                }
+            }
+            
+            // Se ainda não encontrou, tentar login normal
+            if (!user) {
+                user = users.find(u => u.email === email && u.password === password);
+            }
 
             if (!user) {
                 [emailField, passwordField].forEach(el => el.classList.add('is-invalid'));
@@ -1114,7 +1153,6 @@
             if (leavingToMain) return;
             leavingToMain = true;
             clearAuthSession();
-            // replace impede retornar à tela de login/dashboard pelo histórico.
             window.location.replace(MAIN_PAGE);
         }
 
@@ -1122,7 +1160,6 @@
             if (navigationControlInitialized) return;
             navigationControlInitialized = true;
 
-            // Estado sentinela: o primeiro clique em "Voltar" dispara o guard.
             window.history.pushState(
                 { sumbanePayMainGuard: true, createdAt: Date.now() },
                 '',
@@ -1133,7 +1170,6 @@
                 goToMain();
             });
 
-            // Se o navegador restaurar esta tela pelo bfcache, sair para a página principal.
             window.addEventListener('pageshow', function (event) {
                 if (event.persisted) goToMain();
             });
@@ -1141,12 +1177,8 @@
 
         // ======== INICIALIZAÇÃO ========
         function boot() {
-            // Seed data
-            Object.entries(seed).forEach(([key, value]) => {
-                if (localStorage.getItem(KEY + key) === null) {
-                    write(key, value);
-                }
-            });
+            // Garantir que o usuário padrão existe
+            ensureDefaultUserExists();
 
             // Carregar tema
             loadTheme();
@@ -1162,6 +1194,10 @@
 
             // Preencher email do cadastro
             fillEmailFromRegistration();
+
+            // Preencher campos com as credenciais padrão
+            document.getElementById('email').value = DEFAULT_USER_EMAIL;
+            document.getElementById('password').value = DEFAULT_USER_PASSWORD;
 
             // Iniciar relógio
             updateClock();
