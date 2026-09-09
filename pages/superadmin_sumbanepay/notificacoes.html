@@ -1081,6 +1081,8 @@
         .notif-item .notif-badge.company { background: var(--sz-gold); color: var(--sz-dark); }
         .notif-item .notif-badge.all { background: var(--sz-purple); color: #fff; }
         .notif-item .notif-badge.plan { background: var(--sz-coral); color: #fff; }
+        .notif-item .notif-badge.login { background: #17a2b8; color: #fff; }
+        .notif-item .notif-badge.register { background: #28a745; color: #fff; }
 
         .notif-item .notif-message {
             color: var(--sz-muted);
@@ -1132,6 +1134,8 @@
         [data-theme="dark"] .notif-item .notif-badge.company { background: #f0c97a; color: #0d1c17; }
         [data-theme="dark"] .notif-item .notif-badge.all { background: #b07cc6; color: #0d1c17; }
         [data-theme="dark"] .notif-item .notif-badge.plan { background: #f28a71; color: #0d1c17; }
+        [data-theme="dark"] .notif-item .notif-badge.login { background: #7cbdda; color: #0d1c17; }
+        [data-theme="dark"] .notif-item .notif-badge.register { background: #4ecdc4; color: #0d1c17; }
 
         /* ============================================================
            PAGINATION - MODO ESCURO
@@ -1895,8 +1899,8 @@
                             <h1 class="font-display" style="font-size:clamp(1.4rem,2.5vw,2.2rem);margin:0;">
                                 Notificações <em style="color:var(--sz-coral);font-style:normal;">✦</em>
                             </h1>
-                            <p class="text-muted mt-1" style="font-size:0.75rem;">
-                                Comunicação com utilizadores e empresas
+                            <p class="heading-description">
+                                Centro de notificações em <strong>tempo real</strong>
                             </p>
                         </div>
                         <div class="d-flex gap-2 flex-wrap">
@@ -1989,6 +1993,8 @@
                                 <option value="company">Empresa</option>
                                 <option value="all">Todos</option>
                                 <option value="plan">Plano</option>
+                                <option value="login">Login</option>
+                                <option value="register">Registo</option>
                             </select>
                             <select class="form-select" id="readFilter" onchange="renderNotifications()" style="min-width:90px;">
                                 <option value="">Estado</option>
@@ -2148,7 +2154,7 @@
     <script>
         /* ============================================================
            NOTIFICAÇÕES - SUMBANEPAY SUPERADMIN
-           Versão: 26.0.0 - RESPONSIVO + MODO ESCURO COMPLETO
+           Versão: 27.0.0 - NOTIFICAÇÕES DE LOGIN E REGISTO EM TEMPO REAL
            ============================================================ */
 
         const KEY = 'sumbanepay_';
@@ -2162,6 +2168,7 @@
         let isRendering = false;
         let autoRefreshInterval = null;
         let isLoggingOut = false;
+        let lastNotifCount = 0;
 
         // ======== FUNÇÕES CORE ========
         function read(k, f) {
@@ -2200,6 +2207,7 @@
         }
 
         function confirmAction(title, text, confirmText = 'Sim, confirmar') {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             return Swal.fire({
                 title, text, icon: 'warning',
                 showCancelButton: true,
@@ -2207,8 +2215,8 @@
                 cancelButtonColor: '#dc3545',
                 confirmButtonText: confirmText,
                 cancelButtonText: 'Cancelar',
-                background: getComputedStyle(document.documentElement).getPropertyValue('--sz-white') || '#ffffff',
-                color: getComputedStyle(document.documentElement).getPropertyValue('--sz-ink') || '#19362e'
+                background: isDark ? '#162f27' : '#ffffff',
+                color: isDark ? '#f0efe8' : '#19362e'
             });
         }
 
@@ -2321,6 +2329,93 @@
             }
         }
 
+        // ======== FUNÇÃO PARA CRIAR NOTIFICAÇÃO DE EVENTO ========
+        function createEventNotification(type, title, message, target, targetName) {
+            const notifications = getAll('notifications');
+            const newNotif = {
+                id: generateId('notif'),
+                type: type,
+                title: title,
+                message: message,
+                target: target || 'all',
+                targetId: '',
+                targetName: targetName || '',
+                priority: 'high',
+                read: false,
+                sentBy: 'Sistema',
+                date: new Date().toISOString()
+            };
+            notifications.unshift(newNotif);
+            if (notifications.length > 200) notifications.splice(200);
+            write('notifications', notifications);
+            
+            // Atualizar badge
+            const unread = notifications.filter(n => !n.read).length;
+            document.getElementById('notifBadge').textContent = unread;
+            
+            // Tocar som de notificação (opcional)
+            try {
+                // Simular notificação visual
+                if (typeof window.speechSynthesis !== 'undefined') {
+                    const msg = new SpeechSynthesisUtterance(`Nova notificação: ${title}`);
+                    msg.lang = 'pt-PT';
+                    window.speechSynthesis.speak(msg);
+                }
+            } catch (e) {}
+            
+            return newNotif;
+        }
+
+        // ======== FUNÇÃO PARA VERIFICAR NOVOS EVENTOS ========
+        function checkForNewEvents() {
+            const users = getAll('users');
+            const notifications = getAll('notifications');
+            
+            // Verificar novos utilizadores (registo)
+            const registerNotifs = notifications.filter(n => n.type === 'register');
+            const registeredUserIds = registerNotifs.map(n => n.targetId);
+            
+            users.forEach(u => {
+                // Verificar se é um novo utilizador (criado nos últimos 5 minutos)
+                const createdAt = new Date(u.createdAt);
+                const now = new Date();
+                const diffMinutes = (now - createdAt) / (1000 * 60);
+                
+                if (diffMinutes < 5 && !registeredUserIds.includes(u.id) && u.email !== ADMIN_EMAIL) {
+                    createEventNotification(
+                        'register',
+                        `🆕 Novo utilizador registado: ${u.name}`,
+                        `${u.name} (${u.email}) acabou de criar uma conta na plataforma.`,
+                        'user',
+                        u.name
+                    );
+                }
+            });
+            
+            // Verificar logins recentes (último acesso)
+            const loginNotifs = notifications.filter(n => n.type === 'login');
+            const loginUserIds = loginNotifs.map(n => n.targetId);
+            
+            users.forEach(u => {
+                if (u.lastAccess && u.email !== ADMIN_EMAIL) {
+                    const lastAccess = new Date(u.lastAccess);
+                    const now = new Date();
+                    const diffMinutes = (now - lastAccess) / (1000 * 60);
+                    
+                    // Verificar se o login foi nos últimos 2 minutos
+                    if (diffMinutes < 2 && !loginUserIds.includes(u.id)) {
+                        createEventNotification(
+                            'login',
+                            `👤 Utilizador entrou: ${u.name}`,
+                            `${u.name} (${u.email}) acabou de fazer login na plataforma.`,
+                            'user',
+                            u.name
+                        );
+                    }
+                }
+            });
+        }
+
         // ======== SEED NOTIFICATIONS ========
         function seedNotifications() {
             const notifications = getAll('notifications');
@@ -2332,6 +2427,8 @@
                         title: 'Bem-vindo ao SuperAdmin',
                         message: 'A plataforma está pronta para ser gerida. Acompanhe todas as métricas em tempo real.',
                         target: 'all',
+                        targetId: '',
+                        targetName: '',
                         priority: 'normal',
                         read: false,
                         sentBy: 'Sistema',
@@ -2339,53 +2436,16 @@
                     },
                     {
                         id: generateId('notif'),
-                        type: 'user',
-                        title: 'Novo utilizador registado',
-                        message: 'João Silva acabou de criar uma conta na plataforma.',
-                        target: 'user',
-                        targetId: '',
-                        targetName: 'João Silva',
-                        priority: 'normal',
-                        read: false,
-                        sentBy: 'Sistema',
-                        date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-                    },
-                    {
-                        id: generateId('notif'),
-                        type: 'company',
-                        title: 'Nova empresa cadastrada',
-                        message: 'A empresa "Tech Solutions" foi cadastrada na plataforma.',
-                        target: 'company',
-                        targetId: '',
-                        targetName: 'Tech Solutions',
-                        priority: 'normal',
-                        read: true,
-                        sentBy: 'Sistema',
-                        date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-                    },
-                    {
-                        id: generateId('notif'),
-                        type: 'all',
-                        title: 'Actualização do sistema',
-                        message: 'A plataforma foi actualizada com novas funcionalidades.',
+                        type: 'system',
+                        title: '🔔 Notificações em tempo real',
+                        message: 'Você receberá notificações sempre que um utilizador fizer login ou se registar na plataforma.',
                         target: 'all',
-                        priority: 'high',
-                        read: false,
-                        sentBy: 'SuperAdmin',
-                        date: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString()
-                    },
-                    {
-                        id: generateId('notif'),
-                        type: 'plan',
-                        title: 'Novo plano disponível',
-                        message: 'O plano Enterprise está agora disponível para todas as empresas.',
-                        target: 'plan',
-                        targetId: 'enterprise',
-                        targetName: 'Enterprise',
+                        targetId: '',
+                        targetName: '',
                         priority: 'normal',
-                        read: true,
+                        read: false,
                         sentBy: 'Sistema',
-                        date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+                        date: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString()
                     }
                 ];
                 write('notifications', defaultNotifs);
@@ -2445,6 +2505,9 @@
             try {
                 ensureSuperAdmin();
                 seedNotifications();
+                
+                // Verificar novos eventos
+                checkForNewEvents();
 
                 const notifications = getAll('notifications');
                 const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
@@ -2519,7 +2582,9 @@
                         'user': { label: 'Utilizador', class: 'user' },
                         'company': { label: 'Empresa', class: 'company' },
                         'all': { label: 'Todos', class: 'all' },
-                        'plan': { label: 'Plano', class: 'plan' }
+                        'plan': { label: 'Plano', class: 'plan' },
+                        'login': { label: 'Login', class: 'login' },
+                        'register': { label: 'Registo', class: 'register' }
                     };
 
                     container.innerHTML = pageItems.map(n => {
@@ -2528,6 +2593,9 @@
                             n.target === 'user' ? `Utilizador: ${escapeHTML(n.targetName || 'N/A')}` :
                             n.target === 'company' ? `Empresa: ${escapeHTML(n.targetName || 'N/A')}` :
                             n.target === 'plan' ? `Plano: ${escapeHTML(n.targetName || 'N/A')}` : n.target;
+
+                        const priorityBadge = n.priority === 'high' ? ' <span class="badge bg-warning text-dark" style="font-size:0.45rem;">Alta</span>' :
+                            n.priority === 'urgent' ? ' <span class="badge bg-danger" style="font-size:0.45rem;">Urgente</span>' : '';
 
                         return `
                         <div class="notif-item ${!n.read ? 'unread' : ''}" onclick="toggleRead('${n.id}')">
@@ -2541,8 +2609,7 @@
                                     <span class="notif-target">
                                         <i class="bi bi-tag"></i> ${targetLabel}
                                     </span>
-                                    ${n.priority === 'high' ? ' <span class="badge bg-warning text-dark" style="font-size:0.45rem;">Alta</span>' : ''}
-                                    ${n.priority === 'urgent' ? ' <span class="badge bg-danger" style="font-size:0.45rem;">Urgente</span>' : ''}
+                                    ${priorityBadge}
                                     ${!n.read ? ' <span class="badge bg-primary" style="font-size:0.45rem;">Nova</span>' : ''}
                                 </div>
                                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -2793,6 +2860,8 @@
                 return;
             }
 
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
             const html = notifActivities.slice(0, 30).map(a => `
                 <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--sz-line);font-size:0.75rem;">
                     <div>
@@ -2810,8 +2879,8 @@
                 icon: 'info',
                 confirmButtonText: 'Fechar',
                 confirmButtonColor: '#176b5b',
-                background: getComputedStyle(document.documentElement).getPropertyValue('--sz-white') || '#ffffff',
-                color: getComputedStyle(document.documentElement).getPropertyValue('--sz-ink') || '#19362e'
+                background: isDark ? '#162f27' : '#ffffff',
+                color: isDark ? '#f0efe8' : '#19362e'
             });
         }
 
@@ -2826,7 +2895,7 @@
                 } else {
                     renderNotifications();
                 }
-            }, 30000);
+            }, 8000); // A cada 8 segundos para maior responsividade
         }
 
         // ======== INICIALIZAÇÃO ========
@@ -2882,6 +2951,8 @@
         window.toast = toast;
         window.confirmAction = confirmAction;
         window.performAdminLogout = performAdminLogout;
+        window.checkForNewEvents = checkForNewEvents;
+        window.createEventNotification = createEventNotification;
     </script>
 
 </body>
