@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
     <title>Produtos — SumbanePay</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -1856,7 +1856,7 @@
     <script>
         /* ============================================================
            PRODUTOS PREMIUM - SUMBANEPAY
-           Versão: 9.0.0 - HEADER + FOOTER + LEMBRETES + SEM DEMO
+           Versão: 10.0.0 - PRODUTOS PERMANECEM NO LOCALSTORAGE
            ============================================================ */
 
         const KEY = 'sumbanepay_';
@@ -1868,7 +1868,7 @@
         let autoUpdateInterval = null;
         let notifDropdownOpen = false;
 
-        // ======== DADOS PADRÃO - APENAS ESTRUTURA VAZIA ========
+        // ======== DADOS PADRÃO - APENAS ESTRUTURA ========
         const seed = {
             users: [],
             company: {
@@ -2853,15 +2853,18 @@
             }, 30000);
         }
 
-        // ======== INICIALIZAÇÃO - REMOVER DADOS DE DEMONSTRAÇÃO ========
+        // ======== INICIALIZAÇÃO ========
         function boot() {
+            // Inicializar estrutura apenas se não existir
             Object.entries(seed).forEach(([key, value]) => {
                 if (localStorage.getItem(KEY + key) === null) {
                     write(key, value);
                 }
             });
-            // Remover dados de demonstração
-            write('products', []);
+            
+            // NÃO REMOVER OS PRODUTOS! 
+            // write('products', []);  <- LINHA REMOVIDA PARA NÃO APAGAR OS PRODUTOS
+            
             loadTheme();
         }
 
