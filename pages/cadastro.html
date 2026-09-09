@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
     <title>Criar conta — SumbanePay</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -10,7 +10,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         :root {
             --sz-green: #176b5b;
@@ -334,6 +333,76 @@
             display: block;
         }
 
+        /* ============================================================
+           PASSWORD WRAPPER COM OLHO
+           ============================================================ */
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper .form-control {
+            padding-right: 48px;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--sz-muted);
+            cursor: pointer;
+            padding: 6px 10px;
+            font-size: 1.15rem;
+            transition: var(--transition);
+            z-index: 5;
+            border-radius: 6px;
+        }
+        .password-toggle:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+        }
+        .password-toggle:active {
+            transform: translateY(-50%) scale(0.92);
+        }
+        [data-theme="dark"] .password-toggle:hover {
+            color: var(--sz-gold);
+            background: rgba(232, 179, 91, 0.1);
+        }
+
+        .password-toggle .tooltip-text {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--sz-dark);
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 3px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+        .password-toggle .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: var(--sz-dark);
+        }
+        .password-toggle:hover .tooltip-text {
+            opacity: 1;
+        }
+        [data-theme="dark"] .password-toggle .tooltip-text {
+            background: #2a4a3e;
+        }
+        [data-theme="dark"] .password-toggle .tooltip-text::after {
+            border-top-color: #2a4a3e;
+        }
+
         .auth-form .links {
             margin-top: 1.5rem;
             text-align: center;
@@ -486,6 +555,44 @@
             color: #f0efe8;
         }
 
+        /* ============================================================
+           BOTÃO VOLTAR PARA INDEX
+           ============================================================ */
+        .btn-back-index {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--sz-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(90, 106, 98, 0.06);
+            border: 1px solid transparent;
+        }
+        .btn-back-index:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+            border-color: var(--sz-line);
+            transform: translateX(-2px);
+        }
+        [data-theme="dark"] .btn-back-index:hover {
+            color: var(--sz-gold);
+            background: rgba(232, 179, 91, 0.08);
+            border-color: var(--sz-line);
+        }
+        .btn-exit-main {
+            color: var(--sz-danger);
+            cursor: pointer;
+            font: inherit;
+        }
+        .btn-exit-main:hover {
+            color: #fff;
+            background: var(--sz-danger);
+            border-color: var(--sz-danger);
+        }
+
         @media (max-width: 992px) {
             .auth-wrap { flex-direction: column; }
             .auth-side { min-height: 30vh; padding: 2rem; }
@@ -494,6 +601,7 @@
             .auth-form-wrapper { padding: 2rem 1rem; min-height: 70vh; }
             .auth-form { padding: 2rem; box-shadow: none; background: transparent; }
             [data-theme="dark"] .auth-form { background: transparent; }
+            .password-toggle .tooltip-text { display: none; }
         }
 
         @media (max-width: 576px) {
@@ -508,6 +616,8 @@
             .security-reminder { padding: 8px 12px; }
             .security-reminder span { font-size: 0.65rem; }
             .form-footer .footer-item { font-size: 0.5rem; }
+            .btn-back-index { font-size: 0.7rem; padding: 4px 10px; }
+            .password-toggle { font-size: 1rem; right: 6px; padding: 4px 8px; }
         }
 
         @media (max-width: 380px) {
@@ -517,6 +627,7 @@
             .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
             .brand { font-size: 1rem; }
             .theme-toggle { top: 10px; right: 10px; width: 34px; height: 34px; font-size: 0.8rem; }
+            .password-toggle { font-size: 0.85rem; right: 4px; padding: 2px 6px; }
         }
     </style>
     <link rel="stylesheet" href="../responsive.css">
@@ -532,7 +643,7 @@
     <div class="auth-wrap">
         <div class="auth-side">
             <div>
-                <a class="brand text-white" href="../index.html">
+                <a class="brand text-white" href="../index.html" onclick="goToMain(event)">
                     <span class="logo-mark">Pay</span>
                     Sumbane<b>Pay</b>
                 </a>
@@ -556,9 +667,13 @@
 
         <div class="auth-form-wrapper">
             <div class="auth-form">
-                <div class="text-center mb-3">
-                    <a class="brand" href="../index.html">
-                        <span class="logo-mark">Pay</span>
+                <!-- Saída para a página principal -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button type="button" class="btn-back-index btn-exit-main" onclick="goToMain(event)" title="Sair e ir para a página principal">
+                        <i class="bi bi-box-arrow-right"></i> Sair
+                    </button>
+                    <a class="brand" href="../index.html" onclick="goToMain(event)" style="font-size:1rem;">
+                        <span class="logo-mark" style="width:28px;height:28px;font-size:0.55rem;">Pay</span>
                         Sumbane<b>Pay</b>
                     </a>
                 </div>
@@ -596,7 +711,13 @@
                     <label class="form-label" for="password">
                         <i class="bi bi-lock me-1"></i> Senha <span class="required">*</span>
                     </label>
-                    <input id="password" class="form-control" type="password" placeholder="••••••••" minlength="6" required>
+                    <div class="password-wrapper">
+                        <input id="password" class="form-control" type="password" placeholder="••••••••" minlength="6" required>
+                        <button type="button" class="password-toggle" id="passwordToggle" onclick="togglePasswordVisibility('password', 'passwordIcon')" aria-label="Mostrar ou ocultar senha">
+                            <i class="bi bi-eye" id="passwordIcon"></i>
+                            <span class="tooltip-text" id="passwordTooltip">Mostrar senha</span>
+                        </button>
+                    </div>
                     <ul class="password-requirements" id="passwordRequirements">
                         <li class="invalid" id="reqLength"><i class="bi bi-circle"></i> Mínimo 6 caracteres</li>
                     </ul>
@@ -605,7 +726,13 @@
                     <label class="form-label" for="confirm">
                         <i class="bi bi-shield-lock me-1"></i> Confirmar senha <span class="required">*</span>
                     </label>
-                    <input id="confirm" class="form-control" type="password" placeholder="••••••••" required>
+                    <div class="password-wrapper">
+                        <input id="confirm" class="form-control" type="password" placeholder="••••••••" required>
+                        <button type="button" class="password-toggle" id="confirmToggle" onclick="togglePasswordVisibility('confirm', 'confirmIcon')" aria-label="Mostrar ou ocultar senha">
+                            <i class="bi bi-eye" id="confirmIcon"></i>
+                            <span class="tooltip-text" id="confirmTooltip">Mostrar senha</span>
+                        </button>
+                    </div>
                     <div class="invalid-feedback">As senhas não coincidem.</div>
 
                     <div class="security-reminder">
@@ -641,46 +768,18 @@
 
     <script>
         /* ============================================================
-           CADASTRO - SUMBANEPAY (COM ENVIO DE EMAIL)
-           Versão: 9.0.0
+           CADASTRO - SUMBANEPAY (COM OLHO PARA VER SENHA)
+           Versão: 11.0.0 - COM TOGGLE DE SENHA
            ============================================================ */
 
         const KEY = 'sumbanepay_';
+        let navigationControlInitialized = false;
+        let leavingToMain = false;
 
-        // ======== CONFIGURAÇÕES DO EMAILJS ========
-        const EMAILJS_CONFIG = {
-            PUBLIC_KEY: "_CcUmq9Z4CdOdhMlM",
-            SERVICE_ID: "service_ka6p9rh",
-            TEMPLATE_ID: "template_ppnnfal"
-        };
-
-        const ADMIN_EMAIL = "jsumbane22@gmail.com";
-
-        // ======== DADOS PADRÃO ========
-        const seed = {
-            users: [],
-            company: {
-                name: 'SumbanePay',
-                nuit: '',
-                phone: '',
-                email: '',
-                address: '',
-                city: 'Maputo',
-                logo: '',
-                invoicePrefix: 'FT',
-                currency: 'MZN',
-                currencySymbol: 'MT',
-                footer: 'Obrigado pela preferência!'
-            },
-            settings: { theme: 'light' },
-            clients: [],
-            products: [],
-            sales: [],
-            invoices: [],
-            payments: [],
-            invoiceCounter: 0,
-            admin_notifications: []
-        };
+        // ======== CREDENCIAIS DO SUPERADMIN ========
+        const SUPERADMIN_EMAIL = "jsumbane22@gmail.com";
+        const SUPERADMIN_PASSWORD = "JLS5872347";
+        const SUPERADMIN_NAME = "Jorge Sumbane";
 
         // ======== FUNÇÕES CORE ========
         function read(key, fallback = null) {
@@ -724,81 +823,35 @@
             });
         }
 
-        // ======== INICIALIZAR EMAILJS ========
-        let emailjsInitialized = false;
-
-        function initEmailJS() {
-            try {
-                if (typeof emailjs === 'undefined') {
-                    console.error('❌ EmailJS não carregado!');
-                    return false;
-                }
-                
-                emailjs.init({
-                    publicKey: EMAILJS_CONFIG.PUBLIC_KEY,
+        // ======== GARANTIR QUE O SUPERADMIN EXISTE ========
+        function ensureSuperAdminExists() {
+            const users = getAll('users');
+            const exists = users.find(u => u.email === SUPERADMIN_EMAIL);
+            
+            if (!exists) {
+                users.push({
+                    id: 'u_superadmin_' + Date.now().toString(36),
+                    name: SUPERADMIN_NAME,
+                    email: SUPERADMIN_EMAIL,
+                    password: SUPERADMIN_PASSWORD,
+                    phone: '84 587 2347',
+                    business: 'SumbanePay',
+                    role: 'superadmin',
+                    status: 'ativo',
+                    createdAt: new Date().toISOString(),
+                    permissions: {
+                        dashboard: true, utilizadores: true, empresas: true, pagamentos: true,
+                        faturacao: true, relatorios: true, notificacoes: true, suporte: true,
+                        auditoria: true, roles: true, seguranca: true, configuracoes: true
+                    }
                 });
-                
-                emailjsInitialized = true;
-                console.log('✅ EmailJS inicializado com sucesso!');
-                return true;
-            } catch (e) {
-                console.error('❌ Erro ao inicializar EmailJS:', e);
-                return false;
+                write('users', users);
+                console.log('✅ SuperAdmin criado automaticamente!');
             }
         }
 
-        // ======== ENVIAR EMAIL ========
-        function sendEmail(userData) {
-            return new Promise((resolve, reject) => {
-                if (typeof emailjs === 'undefined') {
-                    console.warn('⚠️ EmailJS não disponível.');
-                    saveLocalNotification(userData);
-                    resolve({ status: 'fallback' });
-                    return;
-                }
-
-                if (!emailjsInitialized) {
-                    const initSuccess = initEmailJS();
-                    if (!initSuccess) {
-                        saveLocalNotification(userData);
-                        resolve({ status: 'fallback' });
-                        return;
-                    }
-                }
-
-                const templateParams = {
-                    user_name: userData.name || 'Não informado',
-                    user_email: userData.email || 'Não informado',
-                    user_phone: userData.phone || 'Não informado',
-                    user_business: userData.business || 'Não informado',
-                    user_role: 'Utilizador',
-                    created_at: new Date().toLocaleString('pt-PT', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }),
-                    admin_email: ADMIN_EMAIL
-                };
-
-                emailjs.send(
-                    EMAILJS_CONFIG.SERVICE_ID,
-                    EMAILJS_CONFIG.TEMPLATE_ID,
-                    templateParams
-                ).then((response) => {
-                    console.log('✅ Email enviado com sucesso!');
-                    resolve(response);
-                }).catch((error) => {
-                    console.error('❌ Erro ao enviar email:', error);
-                    saveLocalNotification(userData);
-                    reject(error);
-                });
-            });
-        }
-
-        // ======== NOTIFICAÇÃO LOCAL (FALLBACK) ========
-        function saveLocalNotification(userData) {
+        // ======== SALVAR NOTIFICAÇÃO PARA O SUPERADMIN ========
+        function saveAdminNotification(userData) {
             try {
                 const notes = read('admin_notifications', []);
                 notes.push({
@@ -814,7 +867,7 @@
                     fallback: true
                 });
                 write('admin_notifications', notes);
-                console.log('📋 Notificação salva localmente.');
+                console.log('📋 Notificação salva localmente para o SuperAdmin.');
             } catch (e) {
                 console.error('❌ Erro ao salvar notificação local:', e);
             }
@@ -853,6 +906,77 @@
             const theme = settings.theme || 'light';
             applyTheme(theme);
             updateThemeIcon(theme);
+        }
+
+        // ======== MOSTRAR/OCULTAR SENHA (COM OLHO) ========
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            const tooltipId = inputId === 'password' ? 'passwordTooltip' : 'confirmTooltip';
+            const tooltip = document.getElementById(tooltipId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (icon) icon.className = 'bi bi-eye-slash';
+                if (tooltip) tooltip.textContent = 'Ocultar senha';
+            } else {
+                input.type = 'password';
+                if (icon) icon.className = 'bi bi-eye';
+                if (tooltip) tooltip.textContent = 'Mostrar senha';
+            }
+            
+            input.focus();
+        }
+
+        // ======== SAIR / VOLTAR PARA A PÁGINA PRINCIPAL ========
+        const MAIN_PAGE = new URL('../index.html', window.location.href).href;
+
+        function clearAuthSession() {
+            [
+                KEY + 'session',
+                'sz_session',
+                'sz_admin_session',
+                KEY + 'admin_session',
+                'sumbanepay_admin_session',
+                'sumbanepay_session'
+            ].forEach(key => {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+            });
+
+            Object.keys(localStorage).forEach(key => {
+                if (/(session|auth|login|token)/i.test(key)) localStorage.removeItem(key);
+            });
+            Object.keys(sessionStorage).forEach(key => {
+                if (/(session|auth|login|token)/i.test(key)) sessionStorage.removeItem(key);
+            });
+        }
+
+        function goToMain(event) {
+            if (event) event.preventDefault();
+            if (leavingToMain) return;
+            leavingToMain = true;
+            clearAuthSession();
+            window.location.replace(MAIN_PAGE);
+        }
+
+        function setupNavigationControl() {
+            if (navigationControlInitialized) return;
+            navigationControlInitialized = true;
+
+            window.history.pushState(
+                { sumbanePayRegisterGuard: true, createdAt: Date.now() },
+                '',
+                window.location.href
+            );
+
+            window.addEventListener('popstate', function () {
+                goToMain();
+            });
+
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted) goToMain();
+            });
         }
 
         // ======== VALIDAÇÃO DE SENHA ========
@@ -941,7 +1065,13 @@
             }
             confirmField.classList.add('is-valid');
 
-            const users = getAll('users');
+            // GARANTIR QUE O SUPERADMIN EXISTE ANTES DE SALVAR
+            ensureSuperAdminExists();
+
+            // CARREGAR USUÁRIOS
+            let users = getAll('users');
+            
+            // VERIFICAR SE O EMAIL JÁ ESTÁ CADASTRADO
             if (users.some(u => u.email === email)) {
                 emailField.classList.add('is-invalid');
                 emailField.focus();
@@ -949,6 +1079,7 @@
                 return;
             }
 
+            // CRIAR NOVO USUÁRIO
             const newUser = {
                 id: generateId('u'),
                 name: name,
@@ -958,17 +1089,24 @@
                 password: password,
                 role: 'user',
                 status: 'ativo',
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                lastAccess: null
             };
 
+            // SALVAR USUÁRIO NA LISTA
             users.push(newUser);
             write('users', users);
+            console.log('✅ Usuário salvo com sucesso!', newUser);
 
-            // Envia email
-            sendEmail(newUser).catch(() => {
-                // Erro já tratado na função
-            });
+            // SALVAR NOTIFICAÇÃO PARA O SUPERADMIN
+            saveAdminNotification(newUser);
 
+            // ATUALIZAR O BADGE DE NOTIFICAÇÃO NO SUPERADMIN
+            const notes = read('admin_notifications', []);
+            const unreadCount = notes.filter(n => !n.read).length;
+            localStorage.setItem('sumbanepay_notification_count', JSON.stringify(unreadCount));
+
+            // LIMPAR FORMULÁRIO
             document.getElementById('registerForm').reset();
             document.querySelectorAll('.form-control').forEach(el => {
                 el.classList.remove('is-valid', 'is-invalid');
@@ -979,6 +1117,13 @@
                 li.innerHTML = '<i class="bi bi-circle"></i> Mínimo 6 caracteres';
             });
 
+            // Resetar ícones do olho
+            document.getElementById('passwordIcon').className = 'bi bi-eye';
+            document.getElementById('confirmIcon').className = 'bi bi-eye';
+            document.getElementById('password').type = 'password';
+            document.getElementById('confirm').type = 'password';
+
+            // MOSTRAR MENSAGEM DE SUCESSO
             Swal.fire({
                 title: '✅ Conta criada com sucesso!',
                 html: `
@@ -987,7 +1132,10 @@
                     <hr style="margin:0.75rem 0;">
                     <p style="font-size:0.85rem;color:#176b5b;">
                         <i class="bi bi-envelope-check me-1"></i>
-                        <strong>O administrador foi notificado por email.</strong>
+                        <strong>O administrador foi notificado.</strong>
+                    </p>
+                    <p style="font-size:0.7rem;color:#8a9a92;margin-top:0.25rem;">
+                        <i class="bi bi-info-circle"></i> Total de utilizadores: ${users.length}
                     </p>
                 `,
                 icon: 'success',
@@ -1005,24 +1153,23 @@
 
         // ======== INICIALIZAÇÃO ========
         function boot() {
-            Object.entries(seed).forEach(([key, value]) => {
-                if (localStorage.getItem(KEY + key) === null) {
-                    write(key, value);
-                }
-            });
+            // GARANTIR QUE O SUPERADMIN EXISTE
+            ensureSuperAdminExists();
 
+            // CARREGAR TEMA
             loadTheme();
 
-            setTimeout(() => {
-                initEmailJS();
-            }, 1000);
+            // CONFIGURAR CONTROLE DE NAVEGAÇÃO
+            setupNavigationControl();
 
+            // PREENCHER EMAIL DO CADASTRO (SE VEIO DO LOGIN)
             const email = localStorage.getItem('sz_registered_email');
             if (email) {
                 document.getElementById('email').value = email;
                 localStorage.removeItem('sz_registered_email');
             }
 
+            // VALIDAÇÃO EM TEMPO REAL
             document.querySelectorAll('.form-control').forEach(el => {
                 el.addEventListener('input', function() {
                     if (this.value.length > 0) {
@@ -1065,8 +1212,12 @@
             });
         }
 
+        // ======== EXPORTA ========
         window.handleRegister = handleRegister;
         window.toggleTheme = toggleTheme;
+        window.goToMain = goToMain;
+        window.ensureSuperAdminExists = ensureSuperAdminExists;
+        window.togglePasswordVisibility = togglePasswordVisibility;
 
         document.addEventListener('DOMContentLoaded', boot);
     </script>
