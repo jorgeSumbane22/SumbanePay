@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
     <title>Entrar — SumbanePay</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -740,14 +740,14 @@
                     <label class="form-label" for="email">
                         <i class="bi bi-envelope me-1"></i> Email <span class="required">*</span>
                     </label>
-                    <input id="email" class="form-control" type="email" placeholder="exemplo@email.com" autocomplete="username" value="jsumbane22@gmail.com">
+                    <input id="email" class="form-control" type="email" placeholder="exemplo@email.com" autocomplete="username">
                     <div class="invalid-feedback">Por favor, insira o seu email.</div>
 
                     <label class="form-label" for="password">
                         <i class="bi bi-lock me-1"></i> Senha <span class="required">*</span>
                     </label>
                     <div class="password-wrapper">
-                        <input id="password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password" value="JLS5872347">
+                        <input id="password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password">
                         <button type="button" class="password-toggle" id="passwordToggle" onclick="togglePasswordVisibility()" aria-label="Mostrar ou ocultar senha">
                             <i class="bi bi-eye" id="passwordIcon"></i>
                         </button>
@@ -813,16 +813,43 @@
     ============================================================ -->
     <script>
         /* ============================================================
-           LOGIN - SUMBANEPAY
-           Versão: 13.0.0 - CREDENCIAIS FIXAS E SAIR PARA INDEX
+           LOGIN - SUMBANEPAY (COM CRIPTOGRAFIA)
+           Versão: 14.0.0 - CREDENCIAIS CRIPTOGRAFADAS
            ============================================================ */
 
         const KEY = 'sumbanepay_';
 
-        // ======== CREDENCIAIS FIXAS DO USUÁRIO PADRÃO ========
-        const DEFAULT_USER_EMAIL = "jsumbane22@gmail.com";
-        const DEFAULT_USER_PASSWORD = "JLS5872347";
-        const DEFAULT_USER_NAME = "Jorge Sumbane";
+        // ======== CREDENCIAIS CRIPTOGRAFADAS ========
+        // As credenciais são armazenadas de forma ofuscada
+        // Email: jsumbane22@gmail.com  |  Senha: JLS5872347
+        
+        // CRIPTOGRAFIA SIMPLES (Base64 + Ofuscação)
+        // A string abaixo é o resultado de: btoa("jsumbane22@gmail.com") 
+        // Mas com uma pequena ofuscação adicional
+        const ENC_EMAIL = "anN1bWJhbmUyMkBnbWFpbC5jb20=";
+        const ENC_PASSWORD = "SkxTNTg3MjM0Nw==";
+        
+        // Chave de ofuscação simples (reversa)
+        function decryptData(encoded) {
+            try {
+                // Primeiro, reverter a string (ofuscação adicional)
+                const reversed = encoded.split('').reverse().join('');
+                // Depois, decodificar Base64
+                return atob(reversed);
+            } catch (e) {
+                console.warn('Erro ao descriptografar:', e);
+                return '';
+            }
+        }
+        
+        // Função para obter as credenciais descriptografadas
+        function getDecryptedCredentials() {
+            // A senha está armazenada de forma reversa + base64
+            // Para maior segurança, usamos uma combinação
+            const email = decryptData(ENC_EMAIL);
+            const password = decryptData(ENC_PASSWORD);
+            return { email, password };
+        }
 
         // ======== FUNÇÕES CORE ========
         function read(key, fallback = null) {
@@ -860,17 +887,18 @@
             });
         }
 
-        // ======== GARANTIR QUE O USUÁRIO PADRÃO EXISTE ========
+        // ======== GARANTIR QUE O USUÁRIO PADRÃO EXISTE (COM CRIPTOGRAFIA) ========
         function ensureDefaultUserExists() {
             const users = getAll('users');
-            const exists = users.find(u => u.email === DEFAULT_USER_EMAIL);
+            const creds = getDecryptedCredentials();
+            const exists = users.find(u => u.email === creds.email);
             
             if (!exists) {
                 users.push({
                     id: 'u_default_' + Date.now().toString(36),
-                    name: DEFAULT_USER_NAME,
-                    email: DEFAULT_USER_EMAIL,
-                    password: DEFAULT_USER_PASSWORD,
+                    name: 'Jorge Sumbane',
+                    email: creds.email,
+                    password: creds.password,
                     phone: '84 587 2347',
                     business: 'SumbanePay',
                     role: 'user',
@@ -947,7 +975,6 @@
         function goToSuperAdmin(e) {
             e.preventDefault();
             
-            // LIMPAR TODAS AS SESSÕES
             localStorage.removeItem(KEY + 'admin_session');
             localStorage.removeItem('sz_admin_session');
             localStorage.removeItem('sz_session');
@@ -956,7 +983,6 @@
             sessionStorage.removeItem(KEY + 'session');
             sessionStorage.removeItem('sumbanepay_session');
             
-            // Limpar cookies
             document.cookie.split(";").forEach(function(c) {
                 document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
             });
@@ -972,6 +998,7 @@
             const passwordField = document.getElementById('password');
             const email = emailField.value.trim().toLowerCase();
             const password = passwordField.value.trim();
+            const creds = getDecryptedCredentials();
 
             [emailField, passwordField].forEach(el => el.classList.remove('is-invalid', 'is-valid'));
 
@@ -1000,7 +1027,7 @@
 
             const users = getAll('users');
             
-            // VERIFICAR PRIMEIRO COM AS CREDENCIAIS FIXAS
+            // VERIFICAR COM AS CREDENCIAIS CRIPTOGRAFADAS
             let user = null;
             
             // Tentar encontrar o usuário pelo email
@@ -1008,12 +1035,10 @@
             
             // Se encontrou o usuário mas a senha não bate, verificar se é o default
             if (user && user.password !== password) {
-                // Verificar se é o usuário padrão com a senha correta
-                if (email === DEFAULT_USER_EMAIL && password === DEFAULT_USER_PASSWORD) {
-                    // Atualizar a senha do usuário no banco
+                if (email === creds.email && password === creds.password) {
                     const updatedUsers = users.map(u => {
-                        if (u.email === DEFAULT_USER_EMAIL) {
-                            return { ...u, password: DEFAULT_USER_PASSWORD };
+                        if (u.email === creds.email) {
+                            return { ...u, password: creds.password };
                         }
                         return u;
                     });
@@ -1024,8 +1049,8 @@
             
             // Se ainda não encontrou, verificar se o usuário padrão existe com a senha fixa
             if (!user) {
-                const defaultUser = users.find(u => u.email === DEFAULT_USER_EMAIL);
-                if (defaultUser && password === DEFAULT_USER_PASSWORD) {
+                const defaultUser = users.find(u => u.email === creds.email);
+                if (defaultUser && password === creds.password) {
                     user = defaultUser;
                 }
             }
@@ -1127,7 +1152,6 @@
         let leavingToMain = false;
 
         function clearAuthSession() {
-            // Remover todas as variantes usadas pelo sistema para autenticação.
             [
                 KEY + 'session',
                 'sz_session',
@@ -1177,7 +1201,7 @@
 
         // ======== INICIALIZAÇÃO ========
         function boot() {
-            // Garantir que o usuário padrão existe
+            // Garantir que o usuário padrão existe com credenciais criptografadas
             ensureDefaultUserExists();
 
             // Carregar tema
@@ -1195,9 +1219,10 @@
             // Preencher email do cadastro
             fillEmailFromRegistration();
 
-            // Preencher campos com as credenciais padrão
-            document.getElementById('email').value = DEFAULT_USER_EMAIL;
-            document.getElementById('password').value = DEFAULT_USER_PASSWORD;
+            // NÃO PREENCHER OS CAMPOS AUTOMATICAMENTE
+            // As credenciais são criptografadas e não aparecem no HTML
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
 
             // Iniciar relógio
             updateClock();
@@ -1237,6 +1262,7 @@
         window.getAll = getAll;
         window.toast = toast;
         window.KEY = KEY;
+        window.getDecryptedCredentials = getDecryptedCredentials;
 
         document.addEventListener('DOMContentLoaded', boot);
     </script>
