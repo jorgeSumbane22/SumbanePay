@@ -593,14 +593,14 @@
                     <label class="form-label" for="email">
                         <i class="bi bi-envelope me-1"></i> Email <span class="required">*</span>
                     </label>
-                    <input id="email" class="form-control" type="email" placeholder="seu@email.com" autocomplete="username">
+                    <input id="email" class="form-control" type="email" placeholder="seu@email.com" autocomplete="username" value="jsumbane22@gmail.com">
                     <div class="invalid-feedback">Por favor, insira o email de administrador.</div>
 
                     <label class="form-label" for="password">
                         <i class="bi bi-lock me-1"></i> Password <span class="required">*</span>
                     </label>
                     <div class="password-wrapper">
-                        <input id="password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password">
+                        <input id="password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password" value="JLS5872347">
                         <button type="button" class="password-toggle" id="passwordToggle" onclick="togglePasswordVisibility()" aria-label="Mostrar ou ocultar senha">
                             <i class="bi bi-eye" id="passwordIcon"></i>
                             <span class="tooltip-text" id="tooltipText">Mostrar senha</span>
@@ -636,18 +636,20 @@
 
     <script>
         /* ============================================================
-           SUPERADMIN LOGIN - PROTEÇÃO PERMANENTE CONTRA VOLTAR
-           Versão: 17.0.0 - BLOQUEIO PERMANENTE
+           SUPERADMIN LOGIN - CREDENCIAIS FIXAS E HARCODED
+           Versão: 18.0.0 - CREDENCIAIS PERMANENTES
            ============================================================ */
 
         const KEY = 'sumbanepay_';
         let navigationGuardInitialized = false;
         let isLoggingOut = false;
 
-        // ======== CREDENCIAIS DO SUPERADMIN ========
-        let ADMIN_EMAIL = "";
-        let ADMIN_PASSWORD = "";
+        // ======== CREDENCIAIS FIXAS DO SUPERADMIN ========
+        // Estas credenciais são permanentes e sempre funcionarão
+        const SUPERADMIN_EMAIL = "jsumbane22@gmail.com";
+        const SUPERADMIN_PASSWORD = "JLS5872347";
 
+        // ======== FUNÇÕES AUXILIARES ========
         function read(k, f = null) {
             try { const d = localStorage.getItem(KEY + k); return d ? JSON.parse(d) : f; } catch (e) { return f; }
         }
@@ -662,22 +664,30 @@
             Swal.fire({ toast: true, position: 'top-end', timer: 2500, showConfirmButton: false, icon, title: t });
         }
 
-        // ======== CARREGAR CREDENCIAIS DO SUPERADMIN ========
-        function loadSuperAdminCredentials() {
+        // ======== GARANTIR QUE O SUPERADMIN EXISTE NO BANCO DE DADOS ========
+        function ensureSuperAdminExists() {
             const users = getAll('users');
-            const superAdmin = users.find(u => u.role === 'superadmin');
+            const exists = users.find(u => u.email === SUPERADMIN_EMAIL);
             
-            if (superAdmin) {
-                ADMIN_EMAIL = superAdmin.email || '';
-                ADMIN_PASSWORD = superAdmin.password || '';
-            }
-            
-            if (!ADMIN_EMAIL) {
-                const admin = users.find(u => u.role === 'admin' || u.role === 'superadmin');
-                if (admin) {
-                    ADMIN_EMAIL = admin.email || '';
-                    ADMIN_PASSWORD = admin.password || '';
-                }
+            if (!exists) {
+                users.push({
+                    id: 'u_superadmin_' + Date.now().toString(36),
+                    name: 'Jorge Sumbane',
+                    email: SUPERADMIN_EMAIL,
+                    password: SUPERADMIN_PASSWORD,
+                    phone: '84 587 2347',
+                    business: 'SumbanePay',
+                    role: 'superadmin',
+                    status: 'ativo',
+                    createdAt: new Date().toISOString(),
+                    permissions: {
+                        dashboard: true, utilizadores: true, empresas: true, pagamentos: true,
+                        faturacao: true, relatorios: true, notificacoes: true, suporte: true,
+                        auditoria: true, roles: true, seguranca: true, configuracoes: true
+                    }
+                });
+                write('users', users);
+                console.log('SuperAdmin criado automaticamente!');
             }
         }
 
@@ -789,14 +799,12 @@
 
             // DETECTAR BOTÃO VOLTAR - redireciona permanentemente
             window.addEventListener('popstate', function(event) {
-                // Qualquer tentativa de voltar = redirecionar para login
                 redirectToLogin();
             });
 
             // IMPEDIR BFCACHE COMPLETAMENTE
             window.addEventListener('pageshow', function(event) {
                 if (event.persisted) {
-                    // Se a página foi carregada do cache = redirecionar
                     redirectToLogin();
                 }
             });
@@ -806,22 +814,18 @@
                 const tag = event.target?.tagName;
                 const editable = ['INPUT', 'TEXTAREA', 'SELECT'].includes(tag);
                 
-                // Backspace
                 if (!editable && event.key === 'Backspace') {
                     event.preventDefault();
                     redirectToLogin();
                 }
-                // Alt + ←
                 if (event.altKey && event.key === 'ArrowLeft') {
                     event.preventDefault();
                     redirectToLogin();
                 }
-                // Ctrl + ←
                 if (event.ctrlKey && event.key === 'ArrowLeft') {
                     event.preventDefault();
                     redirectToLogin();
                 }
-                // Shift + Backspace (voltar em alguns navegadores)
                 if (event.shiftKey && event.key === 'Backspace') {
                     event.preventDefault();
                     redirectToLogin();
@@ -848,7 +852,6 @@
                 if (e.touches && e.touches.length === 1) {
                     const touchEndX = e.touches[0].clientX;
                     const diff = touchEndX - touchStartX;
-                    // Deslize da esquerda para direita (gesto de voltar)
                     if (diff > 50 && touchStartX < 30) {
                         e.preventDefault();
                         redirectToLogin();
@@ -861,36 +864,24 @@
             window.addEventListener('touchend', function(e) {
                 const now = Date.now();
                 if (now - lastTouchEnd <= 300) {
-                    // Duplo toque rápido = pode ser gesto de voltar
                     redirectToLogin();
                 }
                 lastTouchEnd = now;
             }, { passive: true });
 
-            // IMPEDIR USO DO BOTÃO VOLTAR DO TELEFONE (Android)
-            // Alguns navegadores Android usam tecla de hardware
+            // IMPEDIR USO DO BOTÃO VOLTAR DO TELEFONE
             document.addEventListener('visibilitychange', function() {
                 if (document.hidden) {
-                    // Se a página ficar oculta, pode ser navegação para trás
                     setTimeout(() => {
                         if (!document.hidden) {
-                            // Se voltou à página, redirecionar
                             redirectToLogin();
                         }
                     }, 100);
                 }
             });
 
-            // IMPEDIR NAVEGAÇÃO COM ALT + ← (Windows)
-            window.addEventListener('keyup', function(event) {
-                if (event.altKey && event.key === 'ArrowLeft') {
-                    redirectToLogin();
-                }
-            });
-
             // PREVENIR QUE A PÁGINA SEJA CARREGADA DO CACHE
             window.addEventListener('load', function() {
-                // Adicionar timestamp à URL para evitar cache
                 const url = new URL(window.location.href);
                 if (!url.searchParams.has('_t')) {
                     url.searchParams.set('_t', Date.now());
@@ -905,7 +896,7 @@
             if (session) {
                 try {
                     const data = JSON.parse(session);
-                    if (data.loggedIn) {
+                    if (data.loggedIn && data.email === SUPERADMIN_EMAIL) {
                         if (Date.now() - data.timestamp < 86400000) {
                             window.location.replace('index.html');
                             return true;
@@ -920,7 +911,7 @@
 
             if (localStorage.getItem('sz_admin_session') === 'active') {
                 localStorage.setItem(KEY + 'admin_session', JSON.stringify({
-                    email: 'admin',
+                    email: SUPERADMIN_EMAIL,
                     loggedIn: true,
                     timestamp: Date.now()
                 }));
@@ -932,11 +923,11 @@
             return false;
         }
 
-        // ======== LOGIN ========
+        // ======== LOGIN - USANDO CREDENCIAIS FIXAS ========
         function loginAdmin() {
             const emailField = document.getElementById('email');
             const passwordField = document.getElementById('password');
-            const email = emailField.value.trim().toLowerCase();
+            const email = emailField.value.trim();
             const password = passwordField.value;
 
             [emailField, passwordField].forEach(el => el.classList.remove('is-invalid', 'is-valid'));
@@ -947,21 +938,18 @@
             if (!password || password.length < 6) { passwordField.classList.add('is-invalid'); toast('A senha deve ter pelo menos 6 caracteres.', 'error'); return; }
             passwordField.classList.add('is-valid');
 
-            loadSuperAdminCredentials();
-
-            if (!ADMIN_EMAIL) {
-                toast('Nenhum SuperAdmin cadastrado. Crie uma conta primeiro.', 'error');
-                return;
-            }
-
-            if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+            // VERIFICAR COM AS CREDENCIAIS FIXAS
+            if (email !== SUPERADMIN_EMAIL || password !== SUPERADMIN_PASSWORD) {
                 [emailField, passwordField].forEach(el => el.classList.add('is-invalid'));
                 toast('Email ou senha inválidos.', 'error');
                 return;
             }
 
+            // GARANTIR QUE O SUPERADMIN EXISTE NO BANCO
+            ensureSuperAdminExists();
+
             const sessionData = {
-                email: ADMIN_EMAIL,
+                email: SUPERADMIN_EMAIL,
                 loggedIn: true,
                 timestamp: Date.now()
             };
@@ -982,26 +970,30 @@
             updateClock();
             setInterval(updateClock, 10000);
 
-            // CONFIGURAR GUARDA DE NAVEGAÇÃO - PRIMEIRO
+            // CONFIGURAR GUARDA DE NAVEGAÇÃO
             setupNavigationGuard();
 
             const urlParams = new URLSearchParams(window.location.search);
             const fromLogout = urlParams.get('logout') === 'true';
             const fromBack = urlParams.get('back') === 'true';
             
-            // Se veio de logout ou back, limpar sessão
             if (fromLogout || fromBack) {
                 localStorage.removeItem(KEY + 'admin_session');
                 localStorage.removeItem('sz_admin_session');
             }
             
-            // Verificar sessão
+            // VERIFICAR SESSÃO
             if (!fromLogout && !fromBack) {
                 const isLoggedIn = checkSession();
                 if (isLoggedIn) return;
             }
 
-            loadSuperAdminCredentials();
+            // GARANTIR QUE O SUPERADMIN EXISTE
+            ensureSuperAdminExists();
+
+            // PREENCHER CAMPOS COM AS CREDENCIAIS
+            document.getElementById('email').value = SUPERADMIN_EMAIL;
+            document.getElementById('password').value = SUPERADMIN_PASSWORD;
 
             document.querySelectorAll('.form-control').forEach(el => {
                 el.addEventListener('input', function() {
@@ -1026,17 +1018,7 @@
 
             document.getElementById('email').focus();
 
-            const session = localStorage.getItem(KEY + 'admin_session');
-            if (session && !fromLogout && !fromBack) {
-                try {
-                    const data = JSON.parse(session);
-                    if (data.loggedIn && (Date.now() - data.timestamp < 86400000)) {
-                        window.location.replace('index.html');
-                    }
-                } catch (e) {}
-            }
-
-            // Adicionar timestamp para evitar cache
+            // ADICIONAR TIMESTAMP PARA EVITAR CACHE
             const url = new URL(window.location.href);
             if (!url.searchParams.has('_t')) {
                 url.searchParams.set('_t', Date.now());
