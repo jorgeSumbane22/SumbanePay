@@ -1,0 +1,2630 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <title>Nova venda — SumbanePay</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 20px rgba(16, 63, 55, 0.06);
+            --sz-shadow-hover: 0 12px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-info: #0dcaf0;
+            --sz-purple: #9b59b6;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --sz-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+            --sz-info: #7cbdda;
+            --sz-purple: #b07cc6;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        .font-display { font-family: 'Playfair Display', 'Georgia', serif; }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sz-paper); }
+        ::-webkit-scrollbar-thumb { background: var(--sz-green); border-radius: 10px; }
+
+        *:focus-visible {
+            outline: 2px solid var(--sz-green);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+        .app-row { display: flex; flex: 1; }
+        .app-main { display: flex; flex-direction: column; flex: 1; min-height: 100vh; }
+        .app-content { flex: 1; padding-bottom: 1rem; }
+        .app-footer { flex-shrink: 0; width: 100%; }
+
+        .brand {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); }
+        .brand b { color: var(--sz-coral); }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+        }
+        .brand:hover .logo-mark { transform: rotate(-3deg) scale(1.05); }
+
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-sm-sz {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            color: var(--sz-muted);
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm-sz:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+        }
+
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: var(--sz-white);
+            border-right: 1px solid var(--sz-line);
+            padding: 1.5rem 1rem;
+            width: 260px;
+            flex-shrink: 0;
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+            max-height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease, background 0.3s ease;
+            z-index: 1040;
+        }
+        .sidebar .nav-link {
+            color: var(--sz-muted);
+            border-radius: 8px;
+            margin: 0.15rem 0;
+            padding: 10px 14px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i { width: 22px; text-align: center; font-size: 1.05rem; }
+
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1039;
+            backdrop-filter: blur(2px);
+        }
+        .sidebar-backdrop.show { display: block; }
+
+        .mobile-menu-toggle {
+            display: none;
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            border: 1.5px solid var(--sz-line);
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .mobile-menu-toggle:hover {
+            background: var(--sz-paper);
+            border-color: var(--sz-green);
+            color: var(--sz-green);
+        }
+
+        /* TOP NAV */
+        .top-nav {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 12px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: relative;
+            z-index: 1030;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.3;
+        }
+
+        .breadcrumb-premium {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--sz-muted);
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+        .breadcrumb-premium .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .breadcrumb-premium .breadcrumb-item a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .breadcrumb-premium .breadcrumb-item a:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+        }
+        .breadcrumb-premium .separator { color: var(--sz-muted-light); font-size: 0.6rem; }
+        .breadcrumb-premium .breadcrumb-item.current {
+            color: var(--sz-ink);
+            font-weight: 600;
+            padding: 4px 8px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: 6px;
+        }
+        .breadcrumb-premium .home-icon { color: var(--sz-green); font-size: 1.1rem; }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            padding: 3px 12px 3px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 1px solid rgba(23, 107, 91, 0.15);
+        }
+        .live-badge .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .user-info-premium {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-info-premium .user-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 2px 12px rgba(23, 107, 91, 0.25);
+            cursor: pointer;
+            user-select: none;
+            overflow: hidden;
+        }
+        .user-info-premium .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-info-premium .user-details {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .user-info-premium .user-details .user-name {
+            font-weight: 600;
+            color: var(--sz-ink);
+            font-size: 0.9rem;
+        }
+        .user-info-premium .user-details .user-role {
+            font-size: 0.65rem;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .user-info-premium .btn-icon-premium {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            position: relative;
+        }
+        .user-info-premium .btn-icon-premium:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+        }
+        .user-info-premium .btn-icon-premium .notif-dot {
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 8px; height: 8px;
+            background: var(--sz-danger);
+            border-radius: 50%;
+            border: 2px solid var(--sz-white);
+            display: none;
+        }
+        .user-info-premium .btn-icon-premium .notif-dot.show { display: block; }
+
+        .btn-icon-premium.btn-logout {
+            color: var(--sz-danger);
+            border-color: var(--sz-danger);
+        }
+        .btn-icon-premium.btn-logout:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            border-color: var(--sz-danger);
+        }
+
+        /* NOTIFICAÇÕES */
+        .notif-dropdown {
+            position: absolute;
+            top: 55px; right: 0;
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            box-shadow: var(--sz-shadow-hover);
+            width: 380px;
+            max-height: 450px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1050;
+            padding: 0.5rem 0;
+        }
+        .notif-dropdown.show { display: block; }
+        .notif-dropdown .notif-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--sz-line);
+            cursor: pointer;
+        }
+        .notif-dropdown .notif-item:hover { background: var(--sz-paper); }
+        .notif-dropdown .notif-item.unread { border-left: 3px solid var(--sz-green); }
+        .notif-dropdown .notif-item.alert { border-left: 3px solid var(--sz-danger); }
+        .notif-dropdown .notif-title { font-weight: 600; font-size: 0.85rem; color: var(--sz-ink); }
+        .notif-dropdown .notif-text { font-size: 0.75rem; color: var(--sz-muted); }
+        .notif-dropdown .notif-time { font-size: 0.6rem; color: var(--sz-muted); }
+        .notif-dropdown .notif-icon { font-size: 1.2rem; margin-right: 8px; }
+        .notif-dropdown .notif-empty {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--sz-muted);
+        }
+        .notif-dropdown .notif-empty i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            opacity: 0.3;
+        }
+        .notif-dropdown .notif-header {
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid var(--sz-line);
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--sz-muted);
+        }
+
+        /* QUICK ACTIONS */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .quick-action-item {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            padding: 1rem 0.75rem;
+            text-align: center;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--sz-muted);
+            box-shadow: var(--sz-shadow);
+        }
+        .quick-action-item:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-green);
+            color: var(--sz-ink);
+        }
+        .quick-action-item i {
+            font-size: 1.5rem;
+            color: var(--sz-green);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .quick-action-item span { font-size: 0.7rem; font-weight: 600; }
+
+        /* STAT MINI */
+        .stat-mini {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            background: var(--sz-white);
+            border-radius: var(--sz-radius-sm);
+            border: 1px solid var(--sz-line);
+            transition: var(--transition);
+        }
+        .stat-mini:hover { border-color: var(--sz-green); }
+        .stat-mini .stat-mini-icon {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .stat-mini .stat-mini-icon.green { background: rgba(23, 107, 91, 0.12); color: var(--sz-green); }
+        .stat-mini .stat-mini-icon.coral { background: rgba(239, 109, 78, 0.12); color: var(--sz-coral); }
+        .stat-mini .stat-mini-icon.gold { background: rgba(232, 179, 91, 0.12); color: var(--sz-gold); }
+        .stat-mini .stat-mini-icon.blue { background: rgba(124, 157, 181, 0.12); color: #7c9db5; }
+
+        /* CARD PREMIUM */
+        .card-premium {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            border: 1px solid var(--sz-line);
+            box-shadow: var(--sz-shadow);
+            overflow: hidden;
+        }
+        .card-premium:hover { box-shadow: var(--sz-shadow-hover); }
+        .card-premium .card-body-premium { padding: 1.5rem; }
+
+        .card-premium .form-label {
+            color: var(--sz-ink);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .card-premium .form-label .required { color: var(--sz-danger); }
+        .card-premium .form-label small { color: var(--sz-muted); font-weight: 400; font-size: 0.75rem; }
+        .card-premium .form-control,
+        .card-premium .form-select {
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            padding: 8px 14px;
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            transition: var(--transition);
+        }
+        .card-premium .form-control:focus,
+        .card-premium .form-select:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
+            outline: none;
+        }
+        .card-premium .form-control.is-invalid {
+            border-color: var(--sz-danger);
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        /* ✅ AUTO-PREENCHIMENTO VISUAL DO VALOR PAGO */
+        #paidAmount.auto-filled {
+            background: linear-gradient(135deg, rgba(23, 107, 91, 0.06), rgba(23, 107, 91, 0.02)) !important;
+            border-color: rgba(23, 107, 91, 0.35) !important;
+            font-weight: 600;
+            color: var(--sz-green) !important;
+        }
+        #paidAmount.manually-edited {
+            background: var(--sz-paper) !important;
+            border-color: var(--sz-gold) !important;
+            font-weight: 700;
+            color: var(--sz-ink) !important;
+        }
+
+        /* ✅ AUTO-PREENCHIMENTO VISUAL DO VALOR EM FALTA */
+        #balanceInput.auto-filled {
+            background: linear-gradient(135deg, rgba(239, 109, 78, 0.06), rgba(239, 109, 78, 0.02)) !important;
+            border-color: rgba(239, 109, 78, 0.35) !important;
+            font-weight: 600;
+            color: var(--sz-coral) !important;
+        }
+        #balanceInput.manually-edited {
+            background: var(--sz-paper) !important;
+            border-color: var(--sz-gold) !important;
+            font-weight: 700;
+            color: var(--sz-ink) !important;
+        }
+
+        [data-theme="dark"] #paidAmount.auto-filled {
+            background: linear-gradient(135deg, rgba(42, 157, 143, 0.12), rgba(42, 157, 143, 0.04)) !important;
+            border-color: rgba(42, 157, 143, 0.4) !important;
+            color: var(--sz-green-light) !important;
+        }
+        [data-theme="dark"] #paidAmount.manually-edited {
+            background: #162f27 !important;
+            border-color: var(--sz-gold) !important;
+        }
+        [data-theme="dark"] #balanceInput.auto-filled {
+            background: linear-gradient(135deg, rgba(242, 138, 113, 0.12), rgba(242, 138, 113, 0.04)) !important;
+            border-color: rgba(242, 138, 113, 0.4) !important;
+            color: var(--sz-coral) !important;
+        }
+        [data-theme="dark"] #balanceInput.manually-edited {
+            background: #162f27 !important;
+            border-color: var(--sz-gold) !important;
+        }
+
+        /* ITEMS LIST */
+        .items-list {
+            border: 2px solid var(--sz-line);
+            border-radius: var(--sz-radius-sm);
+            padding: 0.5rem;
+            min-height: 80px;
+            background: var(--sz-paper);
+        }
+        .items-list.has-items {
+            border-color: var(--sz-green);
+            background: var(--sz-white);
+        }
+        .sale-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.25rem;
+            border-bottom: 1px solid var(--sz-line);
+            color: var(--sz-ink);
+        }
+        .sale-item:last-child { border-bottom: none; }
+        .sale-item .item-name { font-weight: 500; color: var(--sz-ink); }
+        .sale-item .item-name small {
+            display: block;
+            font-weight: 400;
+            color: var(--sz-muted);
+            font-size: 0.75rem;
+        }
+        .sale-item .item-total { font-weight: 700; color: var(--sz-ink); }
+        .empty-items {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--sz-muted);
+        }
+        .empty-items i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            opacity: 0.3;
+        }
+        .empty-items strong { color: var(--sz-ink); }
+
+        /* TOTALS */
+        .totals-box {
+            background: var(--sz-paper);
+            border-radius: var(--sz-radius-sm);
+            padding: 1rem;
+            border: 2px solid var(--sz-line);
+        }
+        .totals-box .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            color: var(--sz-muted);
+            font-size: 0.9rem;
+        }
+        .totals-box .total-row strong { color: var(--sz-ink); }
+        .totals-box .total-row.final {
+            border-top: 2px solid var(--sz-green);
+            padding-top: 0.75rem;
+            margin-top: 0.25rem;
+            font-size: 1.2rem;
+        }
+        .totals-box .total-row.final span:last-child {
+            color: var(--sz-green);
+            font-weight: 700;
+        }
+        .totals-box .total-row.balance-row {
+            border-top: 2px dashed var(--sz-coral);
+            padding-top: 0.6rem;
+            margin-top: 0.4rem;
+            font-size: 1.05rem;
+        }
+        .totals-box .total-row.balance-row span:last-child {
+            color: var(--sz-coral);
+            font-weight: 700;
+        }
+
+        /* CODE EXAMPLE */
+        .code-example {
+            background: var(--sz-paper);
+            border: 1px solid var(--sz-line);
+            padding: 0.75rem 1rem;
+            border-radius: var(--sz-radius-sm);
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: var(--sz-ink);
+        }
+
+        /* ALERTS */
+        .alert-custom {
+            border-radius: var(--sz-radius-sm);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-custom.success {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.15);
+        }
+        .alert-custom.info {
+            background: rgba(13, 202, 240, 0.08);
+            color: var(--sz-info);
+            border: 1px solid rgba(13, 202, 240, 0.15);
+        }
+
+        /* TOAST */
+        .toast-container-custom {
+            position: fixed;
+            top: 80px; right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            width: calc(100% - 40px);
+        }
+        .toast-custom {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            padding: 14px 18px;
+            box-shadow: var(--sz-shadow-hover);
+            border-left: 4px solid var(--sz-green);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--sz-line);
+            color: var(--sz-ink);
+            animation: slideInRight 0.4s ease;
+        }
+        .toast-custom .toast-close {
+            background: none;
+            border: none;
+            color: var(--sz-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideOutRight {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(40px); }
+        }
+
+        /* FOOTER */
+        .app-footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 0.75rem 2rem;
+            margin-top: 1.5rem;
+        }
+        .app-footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .app-footer .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-footer .footer-brand .footer-logo {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.6rem;
+        }
+        .app-footer .footer-brand .footer-company {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .app-footer .footer-brand .footer-company b { color: var(--sz-coral); }
+        .app-footer .footer-brand .footer-version {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            background: var(--sz-paper);
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+        .app-footer .footer-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .app-footer .footer-user-info .user-data-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-data-item i {
+            color: var(--sz-green);
+            font-size: 0.85rem;
+            width: 16px;
+            text-align: center;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value {
+            color: var(--sz-ink);
+            font-weight: 500;
+        }
+        .app-footer .footer-user-info .user-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        .app-footer .footer-user-info .user-status .status-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        /* DARK MODE */
+        [data-theme="dark"] .sidebar { background: #0a1a14; border-color: #2a4a3e; }
+        [data-theme="dark"] .sidebar .brand { color: #f0efe8 !important; }
+        [data-theme="dark"] .sidebar .nav-link { color: #b8c5bf !important; }
+        [data-theme="dark"] .sidebar .nav-link:hover,
+        [data-theme="dark"] .sidebar .nav-link.active {
+            background: rgba(42, 157, 143, 0.15) !important;
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .top-nav { background: #0a1a14; border-color: #2a4a3e; }
+        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-name { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer { background: #0a1a14; border-color: #2a4a3e; }
+        [data-theme="dark"] .app-footer .footer-brand .footer-company { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .card-premium { background: var(--sz-white); border-color: var(--sz-line); }
+        [data-theme="dark"] .card-premium .form-label { color: #f0efe8 !important; }
+        [data-theme="dark"] .card-premium .form-control,
+        [data-theme="dark"] .card-premium .form-select {
+            background: #162f27 !important;
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .stat-mini { background: #162f27; border-color: #2a4a3e; }
+        [data-theme="dark"] .items-list { background: #162f27; border-color: #2a4a3e; }
+        [data-theme="dark"] .items-list.has-items { background: var(--sz-white); border-color: #2a9d8f; }
+        [data-theme="dark"] .sale-item { color: #f0efe8 !important; border-color: #2a4a3e; }
+        [data-theme="dark"] .sale-item .item-name { color: #f0efe8 !important; }
+        [data-theme="dark"] .sale-item .item-name small { color: #a0b0a8 !important; }
+        [data-theme="dark"] .sale-item .item-total { color: #f0efe8 !important; }
+        [data-theme="dark"] .empty-items { color: #a0b0a8 !important; }
+        [data-theme="dark"] .empty-items strong { color: #f0efe8 !important; }
+        [data-theme="dark"] .totals-box { background: #162f27; border-color: #2a4a3e; }
+        [data-theme="dark"] .totals-box .total-row { color: #a0b0a8; }
+        [data-theme="dark"] .totals-box .total-row strong { color: #f0efe8; }
+        [data-theme="dark"] .code-example { background: #162f27; border-color: #2a4a3e; color: #f0efe8; }
+        [data-theme="dark"] .alert-custom.success { background: rgba(42, 157, 143, 0.12); color: var(--sz-green-light); }
+        [data-theme="dark"] .alert-custom.info { background: rgba(124, 189, 218, 0.12); color: #7cbdda; }
+        [data-theme="dark"] .btn-sm-sz { color: #a0b0a8 !important; border-color: #2a4a3e !important; }
+        [data-theme="dark"] .notif-dropdown { background: var(--sz-white); border-color: var(--sz-line); }
+        [data-theme="dark"] .notif-dropdown .notif-item { border-color: var(--sz-line); }
+        [data-theme="dark"] .notif-dropdown .notif-title { color: #f0efe8; }
+        [data-theme="dark"] .notif-dropdown .notif-text { color: #a0b0a8; }
+        [data-theme="dark"] .mobile-menu-toggle { background: #162f27; color: #f0efe8; border-color: #2a4a3e; }
+        [data-theme="dark"] .text-muted { color: #a0b0a8 !important; }
+
+        /* RESPONSIVE */
+        @media (max-width: 992px) {
+            .app-row { flex-direction: column; }
+            .sidebar {
+                position: fixed;
+                top: 0; left: 0;
+                height: 100vh;
+                width: 280px;
+                max-width: 85vw;
+                transform: translateX(-100%);
+                box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+                max-height: 100vh;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .mobile-menu-toggle { display: inline-flex; }
+            .top-nav { padding: 12px 16px; }
+            .top-nav .user-info-premium .user-details { display: none; }
+            .notif-dropdown {
+                width: calc(100vw - 24px);
+                max-width: 380px;
+                right: -10px;
+            }
+            .app-footer .footer-content { flex-direction: column; text-align: center; }
+            .app-footer .footer-user-info { justify-content: center; }
+        }
+
+        @media (max-width: 768px) {
+            .top-nav { padding: 10px 14px; gap: 8px; }
+            .breadcrumb-premium { font-size: 0.72rem; gap: 4px; }
+            .breadcrumb-premium .breadcrumb-item a,
+            .breadcrumb-premium .breadcrumb-item.current { padding: 2px 6px; }
+            .live-badge { font-size: 0.5rem; padding: 2px 8px 2px 6px; }
+            .user-info-premium { gap: 8px; }
+            .user-info-premium .user-avatar { width: 32px; height: 32px; font-size: 0.8rem; }
+            .user-info-premium .btn-icon-premium { width: 34px; height: 34px; font-size: 0.95rem; }
+            .quick-actions { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .quick-action-item { padding: 0.75rem 0.5rem; }
+            .quick-action-item i { font-size: 1.2rem; margin-bottom: 4px; }
+            .quick-action-item span { font-size: 0.62rem; }
+            .card-premium .card-body-premium { padding: 1rem; }
+            .app-content { padding: 1rem 0.75rem !important; }
+            .app-footer { padding: 0.6rem 1rem; }
+            .app-footer .footer-user-info { gap: 0.5rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.62rem; }
+            .app-footer .footer-user-info .user-status { font-size: 0.55rem; }
+            .toast-container-custom { top: 70px; right: 10px; left: 10px; width: auto; max-width: none; }
+            .stat-mini { padding: 0.6rem 0.75rem; gap: 8px; }
+            .stat-mini .stat-mini-icon { width: 32px; height: 32px; font-size: 0.9rem; }
+            .stat-mini .text-muted.small { font-size: 0.62rem; }
+            .stat-mini .fw-bold { font-size: 0.85rem; }
+        }
+
+        @media (max-width: 576px) {
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+            .code-example { font-size: 0.75rem; padding: 0.5rem 0.75rem; }
+            .totals-box .total-row { font-size: 0.82rem; }
+            .totals-box .total-row.final { font-size: 1.05rem; }
+            .btn-sz, .btn-outline-sz { font-size: 0.82rem; padding: 9px 16px; }
+            .card-premium .form-label { font-size: 0.8rem; }
+            .card-premium .form-label small { font-size: 0.68rem; }
+        }
+
+        @media (max-width: 380px) {
+            .brand { font-size: 1rem; }
+            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
+            .breadcrumb-premium { font-size: 0.62rem; }
+            .breadcrumb-premium .breadcrumb-item .separator { display: none; }
+            .quick-actions { gap: 6px; }
+            .quick-action-item { padding: 0.6rem 0.4rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <div class="toast-container-custom" id="toastContainer"></div>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+    <div class="app-wrapper">
+        <div class="app-row">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" id="sidebar" role="navigation">
+                <div class="mb-4">
+                    <a class="brand" href="../index.html">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <div class="small text-muted mt-2" style="font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> Balcão Digital
+                    </div>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="./dashboard.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="./vendas.html"><i class="bi bi-bag me-2"></i>Vendas</a>
+                    <a class="nav-link active" href="./nova-venda.html"><i class="bi bi-plus-circle me-2"></i>Nova venda</a>
+                    <a class="nav-link" href="./faturas.html"><i class="bi bi-receipt me-2"></i>Facturas</a>
+                    <a class="nav-link" href="./clientes.html"><i class="bi bi-people me-2"></i>Clientes</a>
+                    <a class="nav-link" href="./produtos.html"><i class="bi bi-box-seam me-2"></i>Produtos</a>
+                    <a class="nav-link" href="./pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos</a>
+                    <a class="nav-link" href="./relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link" href="./configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                    <a class="nav-link" href="./perfil.html"><i class="bi bi-person me-2"></i>Perfil</a>
+                </nav>
+                <div class="mt-4 d-flex flex-column gap-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
+                        <i class="bi bi-circle-half me-2"></i>Tema
+                    </button>
+                    <button class="btn btn-sm w-100" onclick="logout()" style="border:2px solid var(--sz-danger);color:var(--sz-danger);background:transparent;padding:6px 16px;border-radius:8px;font-weight:600;font-size:0.8rem;">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sair
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="app-main">
+
+                <!-- TOP NAV -->
+                <div class="top-nav">
+                    <div class="d-flex align-items-center gap-2 flex-grow-1">
+                        <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Abrir menu">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <div class="breadcrumb-premium">
+                            <span class="breadcrumb-item">
+                                <i class="bi bi-house-fill home-icon"></i>
+                                <a href="./dashboard.html">Dashboard</a>
+                            </span>
+                            <span class="separator">›</span>
+                            <span class="breadcrumb-item current">
+                                <i class="bi bi-plus-circle me-1"></i> Nova venda
+                            </span>
+                            <span class="live-badge ms-2 d-none d-md-inline-flex">
+                                <span class="dot"></span>
+                                AO VIVO
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="user-info-premium">
+                        <div class="user-details text-end">
+                            <span class="user-name" id="userDisplay">
+                                <i class="bi bi-person-circle me-1"></i> Carregando...
+                            </span>
+                            <span class="user-role" id="userRole">Vendedor</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">S</div>
+                        <button class="btn-icon-premium" onclick="toggleNotifDropdown()" title="Lembretes" id="notifBtn">
+                            <i class="bi bi-bell"></i>
+                            <span class="notif-dot" id="notifDot"></span>
+                        </button>
+                        <button class="btn-icon-premium" onclick="toggleTheme()" title="Alternar tema">
+                            <i class="bi bi-circle-half"></i>
+                        </button>
+                        <button class="btn-icon-premium btn-logout" onclick="logout()" title="Sair da conta">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- NOTIFICAÇÕES -->
+                <div style="position:relative;">
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-header">
+                            <i class="bi bi-clock-history me-1"></i> LEMBRETES
+                        </div>
+                        <div id="notifList">
+                            <div class="notif-empty" id="notifEmpty">
+                                <i class="bi bi-inbox"></i>
+                                Nenhum lembrete no momento
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTEÚDO -->
+                <div class="app-content container-fluid p-3 p-lg-4">
+
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+                        <div>
+                            <div class="eyebrow"><i class="bi bi-plus-circle me-1"></i> FLUXO DE VENDA</div>
+                            <h1 class="font-display" style="font-size:clamp(1.5rem,3vw,2.5rem);margin:0;">
+                                Nova venda <em style="color:var(--sz-coral);font-style:normal;">✦</em>
+                            </h1>
+                            <p class="text-muted mt-1" style="font-size:0.85rem;">
+                                Registe uma venda de forma rápida e intuitiva
+                                <span class="badge bg-success ms-2" style="font-size:0.55rem;font-weight:500;">
+                                    <i class="bi bi-circle-fill me-1" style="font-size:0.3rem;"></i> Dados pessoais
+                                </span>
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn-outline-sz btn-sm" onclick="window.location.reload()">
+                                <i class="bi bi-arrow-clockwise"></i> Actualizar
+                            </button>
+                            <a class="btn-outline-sz btn-sm" href="./vendas.html">
+                                <i class="bi bi-list"></i> Ver vendas
+                            </a>
+                            <a class="btn-sz" href="./nova-venda.html">
+                                <i class="bi bi-plus-lg"></i> Nova venda
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- QUICK ACTIONS -->
+                    <div class="quick-actions">
+                        <a href="./nova-venda.html" class="quick-action-item">
+                            <i class="bi bi-plus-circle"></i>
+                            <span>Nova Venda</span>
+                        </a>
+                        <a href="./clientes.html" class="quick-action-item">
+                            <i class="bi bi-person-plus"></i>
+                            <span>Novo Cliente</span>
+                        </a>
+                        <a href="./produtos.html" class="quick-action-item">
+                            <i class="bi bi-box-plus"></i>
+                            <span>Novo Produto</span>
+                        </a>
+                        <a href="./faturas.html" class="quick-action-item">
+                            <i class="bi bi-receipt"></i>
+                            <span>Facturas</span>
+                        </a>
+                        <a href="./relatorios.html" class="quick-action-item">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span>Relatórios</span>
+                        </a>
+                        <a href="./configuracoes.html" class="quick-action-item">
+                            <i class="bi bi-gear"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </div>
+
+                    <!-- STATS MINI -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-3 col-6">
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon green"><i class="bi bi-box"></i></div>
+                                <div>
+                                    <div class="text-muted small">Produtos</div>
+                                    <div class="fw-bold" id="productCount">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon blue"><i class="bi bi-people"></i></div>
+                                <div>
+                                    <div class="text-muted small">Clientes</div>
+                                    <div class="fw-bold" id="clientCount">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon gold"><i class="bi bi-receipt"></i></div>
+                                <div>
+                                    <div class="text-muted small">Vendas hoje</div>
+                                    <div class="fw-bold" id="salesToday">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-mini">
+                                <div class="stat-mini-icon coral"><i class="bi bi-cash"></i></div>
+                                <div>
+                                    <div class="text-muted small">Receita hoje</div>
+                                    <div class="fw-bold" id="revenueToday">0 MT</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORM PRINCIPAL -->
+                    <div class="row g-3">
+                        <div class="col-lg-7">
+                            <div class="card-premium">
+                                <div class="card-body-premium">
+
+                                    <div class="mb-3">
+                                        <h6 class="text-muted mb-2" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">
+                                            <i class="bi bi-person me-1"></i> Dados do Cliente
+                                            <span class="badge bg-success ms-2" style="font-size:0.55rem;">auto-complete</span>
+                                        </h6>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label" for="clientName">
+                                                <i class="bi bi-person me-1"></i> Nome <span class="required">*</span>
+                                                <small class="text-muted">(digite para pesquisar clientes)</small>
+                                            </label>
+                                            <input type="text" id="clientName" class="form-control" 
+                                                list="clientList" 
+                                                placeholder="Digite o nome do cliente..."
+                                                autocomplete="off"
+                                                style="font-weight:500;"
+                                                oninput="fillClientFields()"
+                                                onchange="fillClientFields()">
+                                            <datalist id="clientList"></datalist>
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle me-1"></i>
+                                                Clientes cadastrados aparecem automaticamente.
+                                            </small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="clientPhone"><i class="bi bi-phone me-1"></i> Telefone</label>
+                                            <input type="text" id="clientPhone" class="form-control" placeholder="84 123 4567">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="clientEmail"><i class="bi bi-envelope me-1"></i> Email</label>
+                                            <input type="email" id="clientEmail" class="form-control" placeholder="cliente@email.com">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="clientCity"><i class="bi bi-geo-alt me-1"></i> Cidade</label>
+                                            <input type="text" id="clientCity" class="form-control" placeholder="Maputo">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="clientAddress"><i class="bi bi-house me-1"></i> Endereço</label>
+                                            <input type="text" id="clientAddress" class="form-control" placeholder="Rua, número, bairro">
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-3" style="border-color:var(--sz-line);">
+
+                                    <div class="mb-3">
+                                        <h6 class="text-muted mb-2" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">
+                                            <i class="bi bi-receipt me-1"></i> Itens da Venda
+                                        </h6>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="saleText">
+                                            <i class="bi bi-pencil me-1"></i> Itens da venda <span class="required">*</span>
+                                            <small class="d-block fw-normal">Uma linha por item: quantidade descrição preço</small>
+                                        </label>
+                                        <textarea id="saleText" class="form-control" rows="4" 
+                                            placeholder="2 calças 1000
+1 barba 300
+3 cervejas 150" oninput="parseText()" style="font-family:'Courier New',monospace;font-size:0.9rem;"></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label"><i class="bi bi-list-check me-1"></i> Itens interpretados</label>
+                                        <div class="items-list" id="itemsContainer">
+                                            <div class="empty-items">
+                                                <i class="bi bi-receipt"></i>
+                                                Escreva linhas como: <strong>2 calças 1000</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 mt-3">
+                                        <h6 class="text-muted mb-2" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">
+                                            <i class="bi bi-wallet2 me-1"></i> Pagamento
+                                        </h6>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="discount"><i class="bi bi-tag me-1"></i> Desconto (MT)</label>
+                                            <input id="discount" class="form-control" type="number" min="0" step="0.01" value="0" oninput="updateTotals()">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="method"><i class="bi bi-wallet2 me-1"></i> Método</label>
+                                            <select id="method" class="form-select">
+                                                <option value="M-Pesa">M-Pesa</option>
+                                                <option value="e-Mola">e-Mola</option>
+                                                <option value="Dinheiro">Dinheiro</option>
+                                                <option value="Transferência">Transferência</option>
+                                                <option value="Outro">Outro</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="saleStatus"><i class="bi bi-tag me-1"></i> Estado</label>
+                                            <select id="saleStatus" class="form-select">
+                                                <option value="Pendente">Pendente</option>
+                                                <option value="Pago">Pago</option>
+                                                <option value="Parcial">Parcial</option>
+                                                <option value="Cancelado">Cancelado</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="depositAmount">
+                                                <i class="bi bi-piggy-bank me-1"></i> Valor de Depósito (MT)
+                                            </label>
+                                            <input id="depositAmount" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" value="0"
+                                                oninput="updateTotals()"
+                                                title="Ex: cliente deposita 500 MT. O sistema calcula o que falta automaticamente.">
+                                            <small class="text-muted" style="font-size:0.7rem;">
+                                                <i class="bi bi-info-circle me-1"></i> Entrada/sinal pago antecipadamente
+                                            </small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="balanceInput">
+                                                <i class="bi bi-exclamation-circle me-1" style="color:var(--sz-coral);"></i> Valor em Falta (MT)
+                                                <span class="badge ms-1" style="background:rgba(239,109,78,0.12);color:var(--sz-coral);font-size:0.55rem;font-weight:600;">editável</span>
+                                            </label>
+                                            <input id="balanceInput" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" value="0"
+                                                oninput="markBalanceManuallyEdited(); updateTotals();"
+                                                title="Preenchido automaticamente com o total − depósito. Edite se necessário.">
+                                            <small class="text-muted" style="font-size:0.7rem;" id="balanceHint">
+                                                <i class="bi bi-magic me-1"></i> Calculado: Total − Depósito
+                                            </small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="paidAmount">
+                                                <i class="bi bi-cash me-1"></i> Valor Pago (MT)
+                                                <span class="badge ms-1" style="background:rgba(23,107,91,0.12);color:var(--sz-green);font-size:0.55rem;font-weight:600;">auto</span>
+                                            </label>
+                                            <input id="paidAmount" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" value="0"
+                                                oninput="markPaidManuallyEdited(); updateTotals();"
+                                                title="Preenchido automaticamente com o depósito. Edite se necessário.">
+                                            <small class="text-muted" style="font-size:0.7rem;" id="paidHint">
+                                                <i class="bi bi-magic me-1"></i> Igual ao depósito (ou editado manualmente)
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 mt-3">
+                                        <h6 class="text-muted mb-2" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">
+                                            <i class="bi bi-calendar me-1"></i> Data e Hora
+                                        </h6>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="saleDate"><i class="bi bi-calendar me-1"></i> Data</label>
+                                            <input type="date" id="saleDate" class="form-control">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="saleTime"><i class="bi bi-clock me-1"></i> Hora</label>
+                                            <input type="time" id="saleTime" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 mt-3">
+                                        <h6 class="text-muted mb-2" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">
+                                            <i class="bi bi-chat me-1"></i> Observações
+                                        </h6>
+                                        <textarea id="saleNotes" class="form-control" rows="2" placeholder="Notas adicionais sobre esta venda..."></textarea>
+                                    </div>
+
+                                    <button class="btn-sz w-100 mt-2" onclick="createSale()" id="createSaleBtn">
+                                        <i class="bi bi-check-lg"></i> Criar venda e factura
+                                        <i class="bi bi-file-pdf ms-1"></i>
+                                    </button>
+
+                                    <div class="text-center mt-2">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            A factura será baixada automaticamente em PDF. clique em cima para criar.
+                                        </small>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RESUMO / TOTAIS -->
+                        <div class="col-lg-5">
+                            <div class="card-premium">
+                                <div class="card-body-premium">
+
+                                    <div class="eyebrow"><i class="bi bi-lightbulb me-1"></i> DICA</div>
+                                    <h4 class="font-display mt-1" style="font-size:1.2rem;">Venda rápida.</h4>
+                                    <p class="text-muted" style="font-size:0.85rem;">Use uma linha por item. O sistema interpreta quantidade, descrição e preço automaticamente.</p>
+
+                                    <div class="code-example">
+                                        <div>2 calças 1000</div>
+                                        <div>1 barba 300</div>
+                                        <div>3 cervejas 150</div>
+                                    </div>
+
+                                    <div class="alert-custom success mt-3">
+                                        <i class="bi bi-calculator"></i>
+                                        <span style="font-size:0.82rem;">Escreve o depósito — o sistema calcula o em falta e o pago automaticamente.</span>
+                                    </div>
+
+                                    <div class="mt-3 p-2" style="background:var(--sz-paper);border-radius:var(--sz-radius-sm);border:1px solid var(--sz-line);">
+                                        <span class="text-muted small"><i class="bi bi-receipt me-1"></i> Próxima factura:</span>
+                                        <span id="previewInvoice" class="fw-bold" style="color:var(--sz-green);font-size:0.9rem;">FT-0001</span>
+                                    </div>
+
+                                    <div class="totals-box mt-3">
+                                        <div class="total-row">
+                                            <span>Subtotal</span>
+                                            <span id="subtotalDisplay">0 MT</span>
+                                        </div>
+                                        <div class="total-row">
+                                            <span>Desconto</span>
+                                            <span id="discountDisplay" style="color:var(--sz-danger);">0 MT</span>
+                                        </div>
+                                        <div class="total-row">
+                                            <span><i class="bi bi-piggy-bank me-1"></i>Depósito</span>
+                                            <span id="depositDisplay" style="color:var(--sz-info);">0 MT</span>
+                                        </div>
+                                        <div class="total-row">
+                                            <span>Valor Pago</span>
+                                            <span id="paidDisplay" style="color:var(--sz-success);">0 MT</span>
+                                        </div>
+                                        <div class="total-row final">
+                                            <span><strong>Total</strong></span>
+                                            <span id="totalDisplay">0 MT</span>
+                                        </div>
+                                        <div class="total-row balance-row">
+                                            <span><strong><i class="bi bi-exclamation-circle me-1" style="color:var(--sz-coral);"></i>Em Falta</strong></span>
+                                            <span id="balanceDisplay">0 MT</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3 pt-3" style="border-top:1px solid var(--sz-line);">
+                                        <span class="text-muted small"><i class="bi bi-clock-history me-1"></i> Últimas vendas</span>
+                                        <div id="lastSales" class="mt-2"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <button class="btn-outline-sz btn-sm" onclick="window.location.reload()">
+                            <i class="bi bi-arrow-clockwise"></i> Actualizar
+                        </button>
+                        <span class="text-muted small ms-auto" style="font-size:0.7rem;">
+                            <i class="bi bi-database"></i> Dados locais · 
+                            <span id="lastUpdate">agora</span>
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">Pay</div>
+                            <span class="footer-company">Sumbane<b>Pay</b></span>
+                            <span class="footer-version">v17.4.0</span>
+                        </div>
+                        <div class="footer-user-info">
+                            <span class="user-data-item">
+                                <i class="bi bi-person"></i>
+                                <span class="data-value" id="footerUserName">Carregando...</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-envelope"></i>
+                                <span class="data-value email-value" id="footerUserEmail">carregando@email.com</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-shield-check"></i>
+                                <span class="data-value" id="footerUserRole">Vendedor</span>
+                            </span>
+                            <span class="user-status">
+                                <span class="status-dot"></span>
+                                Online
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    /* ============================================================
+       NOVA VENDA — SUMBANEPAY v17.4.0
+       • Depósito → calcula Em Falta e Pago automaticamente
+       • IVA removido
+       • Modos:
+         - Auto (padrão): Depósito > 0 → Em Falta = Total − Depósito, Pago = Depósito
+         - Manual "Em Falta": escreves → Pago = Total − Depósito − Em Falta
+         - Manual "Pago": escreves → Em Falta = Total − Depósito − Pago
+       • Voltar no browser → termina sessão → login.html
+       ============================================================ */
+
+    'use strict';
+
+    const KEY = 'sumbanepay_';
+    let currentItems = [];
+    let autoRefreshInterval = null;
+    let notifDropdownOpen = false;
+    let _isLoggingOut = false;
+    let _navigationSetup = false;
+
+    let _paidManuallyEdited = false;
+    let _balanceManuallyEdited = false;
+
+    const currentUser = { id: null, name: null, email: null, role: null };
+
+    function userKey(suffix) {
+        if (!currentUser.id) return KEY + suffix;
+        return KEY + 'data_' + currentUser.id + '_' + suffix;
+    }
+
+    function readUser(k, fallback) {
+        try {
+            const d = localStorage.getItem(userKey(k));
+            return d ? JSON.parse(d) : fallback;
+        } catch (e) { return fallback; }
+    }
+
+    function writeUser(k, v) {
+        localStorage.setItem(userKey(k), JSON.stringify(v));
+        return v;
+    }
+
+    function getUserAll(key) { return readUser(key, []); }
+
+    function userSeed() {
+        return {
+            sales: [], clients: [], products: [], invoices: [], payments: [],
+            company: {
+                name: 'SumbanePay', business: '', nuit: '', phone: '', email: '',
+                website: '', address: '', city: 'Maputo', logo: '',
+                invoicePrefix: 'FT', currency: 'MZN', currencySymbol: 'MT',
+                showTaxOnInvoice: false,
+                footer: 'Obrigado pela preferência!', paymentTerms: 30
+            },
+            settings: { theme: 'light' },
+            invoiceCounter: 0,
+            reminders: []
+        };
+    }
+
+    function bootUserData() {
+        if (!currentUser.id) return;
+        const seed = userSeed();
+        Object.entries(seed).forEach(([k, v]) => {
+            if (localStorage.getItem(userKey(k)) === null) writeUser(k, v);
+        });
+    }
+
+    function generateId(prefix = '') {
+        return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    }
+
+    function money(n) {
+        return new Intl.NumberFormat('pt-PT', {
+            minimumFractionDigits: 2, maximumFractionDigits: 2
+        }).format(Number(n) || 0) + ' MT';
+    }
+
+    function formatDate(d) {
+        if (!d) return '-';
+        return new Date(d).toLocaleString('pt-PT', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    function formatDateTime(d) {
+        if (!d) return '-';
+        return new Date(d).toLocaleString('pt-PT', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    function formatDateShort(d) {
+        if (!d) return '-';
+        return new Date(d).toLocaleDateString('pt-PT', {
+            day: '2-digit', month: '2-digit', year: 'numeric'
+        });
+    }
+
+    function toast(msg, icon = 'success') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const colors = { success: '#198754', error: '#dc3545', warning: '#ffc107', info: '#0dcaf0' };
+        const icons = { success: 'bi-check-circle-fill', error: 'bi-x-circle-fill', warning: 'bi-exclamation-triangle-fill', info: 'bi-info-circle-fill' };
+        const el = document.createElement('div');
+        el.className = 'toast-custom';
+        el.style.borderLeftColor = colors[icon] || colors.success;
+        el.innerHTML = `
+            <span style="font-size:1.2rem;color:${colors[icon] || colors.success};">
+                <i class="bi ${icons[icon] || icons.success}"></i>
+            </span>
+            <span style="flex:1;">${msg}</span>
+            <button class="toast-close" onclick="this.closest('.toast-custom').remove()">×</button>
+        `;
+        container.appendChild(el);
+        setTimeout(() => {
+            if (el.parentNode) {
+                el.style.animation = 'slideOutRight 0.3s ease forwards';
+                setTimeout(() => el.remove(), 300);
+            }
+        }, 4000);
+    }
+
+    function confirmAction(title, text, confirmText = 'Sim, confirmar') {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        return Swal.fire({
+            title, text, icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#176b5b',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Cancelar',
+            background: isDark ? '#162f27' : '#ffffff',
+            color: isDark ? '#f0efe8' : '#19362e'
+        });
+    }
+
+    function toggleSidebar() {
+        const s = document.getElementById('sidebar');
+        const b = document.getElementById('sidebarBackdrop');
+        if (s) s.classList.toggle('open');
+        if (b) b.classList.toggle('show', s.classList.contains('open'));
+    }
+    function closeSidebar() {
+        const s = document.getElementById('sidebar');
+        const b = document.getElementById('sidebarBackdrop');
+        if (s) s.classList.remove('open');
+        if (b) b.classList.remove('show');
+    }
+
+    function clearAuthentication() {
+        [KEY + 'session', KEY + 'admin_session', 'sz_session', 'sz_admin_session',
+         'sumbanepay_session', 'sumbanepay_admin_session'].forEach(k => {
+            localStorage.removeItem(k);
+            sessionStorage.removeItem(k);
+        });
+        Object.keys(localStorage).forEach(k => {
+            if (/(session|auth|login|token)/i.test(k)) localStorage.removeItem(k);
+        });
+        Object.keys(sessionStorage).forEach(k => {
+            if (/(session|auth|login|token)/i.test(k)) sessionStorage.removeItem(k);
+        });
+    }
+
+    function performLogout() {
+        if (_isLoggingOut) return;
+        _isLoggingOut = true;
+        clearAuthentication();
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+        }
+        window.location.replace('./login.html?logout=' + Date.now());
+    }
+
+    function logout() {
+        if (_isLoggingOut) return;
+        confirmAction('Terminar sessão?', 'Deseja sair da sua conta agora?', 'Sim, sair')
+            .then(r => { if (r.isConfirmed) performLogout(); });
+    }
+
+    function setupNavigationControl() {
+        if (_navigationSetup) return;
+        _navigationSetup = true;
+
+        window.history.pushState({ guard: true, t: Date.now() }, '', window.location.href);
+        window.history.pushState({ guard: true, t: Date.now() + 1 }, '', window.location.href);
+
+        window.addEventListener('popstate', function () {
+            if (_isLoggingOut) return;
+            performLogout();
+        });
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) performLogout();
+        });
+        document.addEventListener('keydown', function (event) {
+            const tag = event.target && event.target.tagName;
+            const editable = ['INPUT', 'TEXTAREA', 'SELECT'].indexOf(tag) !== -1 ||
+                             (event.target && event.target.isContentEditable);
+            if (!editable && event.key === 'Backspace') { event.preventDefault(); performLogout(); }
+            if (event.altKey && event.key === 'ArrowLeft') { event.preventDefault(); performLogout(); }
+            if (event.ctrlKey && event.key === 'ArrowLeft') { event.preventDefault(); performLogout(); }
+        });
+        window.addEventListener('mouseup', function (event) {
+            if (event.button === 3) { event.preventDefault(); performLogout(); }
+        });
+    }
+
+    function requireSession() {
+        if (_isLoggingOut) return false;
+        try {
+            if (window.performance) {
+                const nav = window.performance.getEntriesByType && window.performance.getEntriesByType('navigation')[0];
+                if (nav && nav.type === 'back_forward') { performLogout(); return false; }
+                if (window.performance.navigation && window.performance.navigation.type === 2) { performLogout(); return false; }
+            }
+        } catch (e) {}
+
+        try {
+            const sessionData = sessionStorage.getItem(KEY + 'session') || localStorage.getItem(KEY + 'session');
+            if (!sessionData) { performLogout(); return false; }
+
+            const session = JSON.parse(sessionData);
+            if (session.expiresAt && Date.now() > new Date(session.expiresAt).getTime()) {
+                performLogout(); return false;
+            }
+            if (!session.userId) { performLogout(); return false; }
+
+            currentUser.id = session.userId;
+            currentUser.name = session.name || 'Utilizador';
+            currentUser.email = session.email || '';
+            currentUser.role = session.role || 'Vendedor';
+
+            const users = JSON.parse(localStorage.getItem(KEY + 'users') || '[]');
+            const user = users.find(u => u.id === session.userId) || {
+                id: session.userId, name: currentUser.name,
+                email: currentUser.email, role: currentUser.role, status: 'ativo'
+            };
+
+            const elName = document.getElementById('userDisplay');
+            if (elName) elName.innerHTML = '<i class="bi bi-person-circle me-1"></i> ' + user.name;
+            const elAvatar = document.getElementById('userAvatar');
+            if (elAvatar) {
+                if (user.photo) {
+                    elAvatar.innerHTML = `<img src="${user.photo}" alt="${user.name}">`;
+                } else {
+                    elAvatar.textContent = (user.name || 'U').charAt(0).toUpperCase();
+                }
+            }
+            const elRole = document.getElementById('userRole');
+            if (elRole) {
+                const roles = { 'admin': 'Administrador', 'user': 'Vendedor', 'superadmin': 'SuperAdmin' };
+                elRole.textContent = roles[user.role] || 'Vendedor';
+            }
+            const fName = document.getElementById('footerUserName');
+            if (fName) fName.textContent = user.name;
+            const fEmail = document.getElementById('footerUserEmail');
+            if (fEmail) fEmail.textContent = user.email || 'sem-email@cadastrado.com';
+            const fRole = document.getElementById('footerUserRole');
+            if (fRole) {
+                const roles = { 'admin': 'Administrador', 'user': 'Vendedor', 'superadmin': 'SuperAdmin' };
+                fRole.textContent = roles[user.role] || 'Vendedor';
+            }
+
+            setupNavigationControl();
+            return true;
+        } catch (e) {
+            console.error('Erro sessão:', e);
+            performLogout();
+            return false;
+        }
+    }
+
+    function nextInvoiceNumber() {
+        const counter = (readUser('invoiceCounter', 0) || 0) + 1;
+        writeUser('invoiceCounter', counter);
+        const company = readUser('company', {});
+        const prefix = company.invoicePrefix || 'FT';
+        return prefix + '-' + String(counter).padStart(4, '0');
+    }
+
+    function updatePreviewInvoice() {
+        const preview = document.getElementById('previewInvoice');
+        if (preview) {
+            const counter = (readUser('invoiceCounter', 0) || 0) + 1;
+            const company = readUser('company', {});
+            const prefix = company.invoicePrefix || 'FT';
+            preview.textContent = prefix + '-' + String(counter).padStart(4, '0');
+        }
+    }
+
+    function markPaidManuallyEdited() {
+        _paidManuallyEdited = true;
+        _balanceManuallyEdited = false;
+        const paidInput = document.getElementById('paidAmount');
+        if (paidInput) {
+            paidInput.classList.remove('auto-filled');
+            paidInput.classList.add('manually-edited');
+        }
+        const hint = document.getElementById('paidHint');
+        if (hint) {
+            hint.innerHTML = '<i class="bi bi-pencil me-1"></i> Valor editado manualmente';
+            hint.style.color = 'var(--sz-gold)';
+        }
+    }
+
+    function resetPaidAuto() {
+        _paidManuallyEdited = false;
+        const paidInput = document.getElementById('paidAmount');
+        if (paidInput) {
+            paidInput.classList.remove('manually-edited');
+            paidInput.classList.add('auto-filled');
+        }
+        const hint = document.getElementById('paidHint');
+        if (hint) {
+            hint.innerHTML = '<i class="bi bi-magic me-1"></i> Igual ao depósito (ou editado manualmente)';
+            hint.style.color = '';
+        }
+    }
+
+    function markBalanceManuallyEdited() {
+        _balanceManuallyEdited = true;
+        _paidManuallyEdited = false;
+        const el = document.getElementById('balanceInput');
+        if (el) {
+            el.classList.remove('auto-filled');
+            el.classList.add('manually-edited');
+        }
+        const hint = document.getElementById('balanceHint');
+        if (hint) {
+            hint.innerHTML = '<i class="bi bi-pencil me-1"></i> Valor em falta editado manualmente';
+            hint.style.color = 'var(--sz-gold)';
+        }
+        const paidInput = document.getElementById('paidAmount');
+        if (paidInput) {
+            paidInput.classList.remove('manually-edited');
+            paidInput.classList.add('auto-filled');
+        }
+        const paidHint = document.getElementById('paidHint');
+        if (paidHint) {
+            paidHint.innerHTML = '<i class="bi bi-magic me-1"></i> Calculado: Total − Depósito − Em Falta';
+            paidHint.style.color = '';
+        }
+    }
+
+    function resetBalanceAuto() {
+        _balanceManuallyEdited = false;
+        const el = document.getElementById('balanceInput');
+        if (el) {
+            el.classList.remove('manually-edited');
+            el.classList.add('auto-filled');
+        }
+        const hint = document.getElementById('balanceHint');
+        if (hint) {
+            hint.innerHTML = '<i class="bi bi-magic me-1"></i> Calculado: Total − Depósito';
+            hint.style.color = '';
+        }
+    }
+
+    function parseText() {
+        const text = document.getElementById('saleText').value.trim();
+        const lines = text.split('\n')
+            .map(x => x.trim())
+            .filter(Boolean)
+            .map(line => {
+                const match = line.match(/^(\d+)\s+(.+?)\s+(\d+(?:[.,]\d+)?)$/);
+                if (match) {
+                    return {
+                        id: 'item_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                        name: match[2].trim(),
+                        qty: Number(match[1]),
+                        price: Number(match[3].replace(',', '.'))
+                    };
+                }
+                return null;
+            })
+            .filter(Boolean);
+
+        currentItems = lines;
+
+        const container = document.getElementById('itemsContainer');
+        if (lines.length === 0) {
+            container.className = 'items-list';
+            container.innerHTML = `
+                <div class="empty-items">
+                    <i class="bi bi-receipt"></i>
+                    Escreva linhas como: <strong>2 calças 1000</strong>
+                </div>
+            `;
+            updateTotals();
+            return;
+        }
+
+        container.className = 'items-list has-items';
+        const subtotal = lines.reduce((sum, x) => sum + (x.qty * x.price), 0);
+
+        container.innerHTML = lines.map(x => `
+            <div class="sale-item">
+                <span class="item-name">
+                    ${x.name}
+                    <small>${x.qty} × ${money(x.price)}</small>
+                </span>
+                <span class="item-total">${money(x.qty * x.price)}</span>
+            </div>
+        `).join('') + `
+            <div class="sale-item" style="border-top:2px solid var(--sz-green);padding-top:0.75rem;margin-top:0.25rem;">
+                <span class="item-name" style="font-weight:700;">Subtotal</span>
+                <span class="item-total" style="color:var(--sz-green);font-size:1.1rem;">${money(subtotal)}</span>
+            </div>
+        `;
+
+        updateTotals();
+    }
+
+    function updateTotals() {
+        const discount = Number(document.getElementById('discount').value || 0);
+        const deposit = Number(document.getElementById('depositAmount').value || 0);
+        const balanceInput = document.getElementById('balanceInput');
+        const paidInput = document.getElementById('paidAmount');
+        const subtotal = currentItems.reduce((sum, x) => sum + (x.qty * x.price), 0);
+        const total = Math.max(0, subtotal - discount);
+
+        let paidAmount, balance;
+
+        if (_balanceManuallyEdited) {
+            // ✅ O utilizador escreveu o "Em Falta" manualmente
+            // → Pago = Total − Depósito − Em Falta
+            balance = Math.max(0, Number(balanceInput.value || 0));
+            paidAmount = Math.max(0, total - deposit - balance);
+            paidInput.value = paidAmount > 0 ? paidAmount.toFixed(2) : '';
+            paidInput.classList.add('auto-filled');
+            paidInput.classList.remove('manually-edited');
+        } else if (_paidManuallyEdited) {
+            // ✅ O utilizador escreveu o "Pago" manualmente
+            // → Em Falta = Total − Depósito − Pago
+            paidAmount = Math.max(0, Number(paidInput.value || 0));
+            balance = Math.max(0, total - deposit - paidAmount);
+            balanceInput.value = balance > 0 ? balance.toFixed(2) : '0';
+            balanceInput.classList.add('auto-filled');
+            balanceInput.classList.remove('manually-edited');
+        } else {
+            // ✅ MODO AUTO (novo comportamento):
+            // Se há depósito → Em Falta = Total − Depósito, Pago = Depósito
+            // Se não há depósito → Pago = Total, Em Falta = 0
+            if (deposit > 0) {
+                balance = Math.max(0, total - deposit);
+                paidAmount = deposit;
+            } else {
+                paidAmount = total;
+                balance = 0;
+            }
+            paidInput.value = paidAmount > 0 ? paidAmount.toFixed(2) : '';
+            balanceInput.value = balance > 0 ? balance.toFixed(2) : '0';
+            paidInput.classList.add('auto-filled');
+            paidInput.classList.remove('manually-edited');
+            balanceInput.classList.add('auto-filled');
+            balanceInput.classList.remove('manually-edited');
+        }
+
+        document.getElementById('subtotalDisplay').textContent = money(subtotal);
+        document.getElementById('discountDisplay').textContent = money(discount);
+        document.getElementById('depositDisplay').textContent = money(deposit);
+        document.getElementById('paidDisplay').textContent = money(paidAmount);
+        document.getElementById('balanceDisplay').textContent = money(balance);
+        document.getElementById('totalDisplay').textContent = money(total);
+
+        const totalEl = document.getElementById('totalDisplay');
+        totalEl.style.color = total > 0 ? 'var(--sz-green)' : 'var(--sz-muted)';
+
+        const statusSelect = document.getElementById('saleStatus');
+        const totalPago = deposit + paidAmount;
+        if (total > 0 && totalPago >= total) {
+            statusSelect.value = 'Pago';
+        } else if (totalPago > 0 && totalPago < total) {
+            statusSelect.value = 'Parcial';
+        } else if (totalPago === 0 && total > 0) {
+            statusSelect.value = 'Pendente';
+        }
+    }
+
+    function updateClientDatalist() {
+        const clients = getUserAll('clients');
+        const datalist = document.getElementById('clientList');
+        datalist.innerHTML = '';
+        clients.forEach(c => {
+            const option = document.createElement('option');
+            option.value = c.name;
+            datalist.appendChild(option);
+        });
+    }
+
+    function fillClientFields() {
+        const name = document.getElementById('clientName').value.trim();
+        const phoneEl = document.getElementById('clientPhone');
+        const emailEl = document.getElementById('clientEmail');
+        const cityEl = document.getElementById('clientCity');
+        const addressEl = document.getElementById('clientAddress');
+        const nameEl = document.getElementById('clientName');
+
+        if (!name) {
+            phoneEl.value = '';
+            emailEl.value = '';
+            cityEl.value = '';
+            addressEl.value = '';
+            nameEl.style.borderColor = '';
+            return;
+        }
+
+        const clients = getUserAll('clients');
+        const client = clients.find(c => c.name.toLowerCase() === name.toLowerCase());
+
+        if (client) {
+            phoneEl.value = client.phone || '';
+            emailEl.value = client.email || '';
+            cityEl.value = client.city || '';
+            addressEl.value = client.address || '';
+            nameEl.style.borderColor = 'var(--sz-success)';
+        } else {
+            phoneEl.value = '';
+            emailEl.value = '';
+            cityEl.value = '';
+            addressEl.value = '';
+            nameEl.style.borderColor = '';
+        }
+    }
+
+    function generateInvoicePDF(sale) {
+        try {
+            if (!window.jspdf || !window.jspdf.jsPDF) throw new Error('jsPDF indisponível');
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const company = readUser('company', {}) || {};
+            const logo = company.logo || '';
+
+            const companyName = String(company.business || company.name || 'SumbanePay').trim();
+            const companyNuit = String(company.nuit || '').trim();
+            const companyPhone = String(company.phone || '').trim();
+            const companyEmail = String(company.email || '').trim();
+            const companyWebsite = String(company.website || '').trim();
+            const companyAddress = String(company.address || '').trim();
+            const companyCity = String(company.city || '').trim();
+            const currencySymbol = String(company.currencySymbol || 'MT').trim();
+
+            const green = [23, 107, 91];
+            const dark = [16, 63, 55];
+            const muted = [105, 118, 111];
+            const line = [225, 227, 218];
+            const light = [247, 246, 241];
+            const coral = [239, 109, 78];
+            const blue = [40, 140, 200];
+
+            const pageWidth = 210;
+            const pageHeight = 297;
+            const left = 20;
+            const right = 190;
+            const contentWidth = right - left;
+
+            const safeNumber = v => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
+            const fmtMoney = v => new Intl.NumberFormat('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(safeNumber(v)) + ' ' + currencySymbol;
+            const fmt = v => v === null || v === undefined ? '' : String(v).trim();
+            const sanitize = v => fmt(v).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]+/g, '_').replace(/^_+|_+$/g, '') || 'cliente';
+            const imgFmt = d => {
+                if (!d || typeof d !== 'string') return null;
+                const v = d.toLowerCase();
+                if (v.startsWith('data:image/png')) return 'PNG';
+                if (v.startsWith('data:image/jpeg') || v.startsWith('data:image/jpg')) return 'JPEG';
+                if (v.startsWith('data:image/webp')) return 'WEBP';
+                if (v.startsWith('data:image/gif')) return 'GIF';
+                return null;
+            };
+            const wrap = (t, w) => { const v = fmt(t); return v ? doc.splitTextToSize(v, w) : []; };
+            const drawLV = (label, value, x, y, maxW = 75) => {
+                const t = fmt(value);
+                if (!t) return y;
+                doc.setFont('helvetica', 'bold'); doc.setTextColor(...dark); doc.setFontSize(8.5); doc.text(label, x, y);
+                const lw = doc.getTextWidth(label) + 1.5;
+                doc.setFont('helvetica', 'normal'); doc.setTextColor(...muted);
+                const lines = wrap(t, Math.max(20, maxW - lw));
+                lines.forEach((lt, i) => doc.text(lt, x + lw, y + i * 4.2));
+                return y + Math.max(4.5, lines.length * 4.2);
+            };
+
+            let y = 16;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(companyName.length > 32 ? 16 : 19);
+            doc.setTextColor(...green);
+            const nameLines = wrap(companyName, 105);
+            nameLines.slice(0, 2).forEach((lt, i) => doc.text(lt, left, y + i * 7));
+            y += Math.max(10, nameLines.slice(0, 2).length * 7 + 2);
+
+            let logoAdded = false;
+            if (logo && logo.length > 50) {
+                try {
+                    doc.addImage(logo, imgFmt(logo) || 'PNG', left, y, 32, 32, undefined, 'FAST');
+                    logoAdded = true;
+                    y += 36;
+                } catch (e) { console.warn('Logo falhou:', e); }
+            }
+            if (!logoAdded) {
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...muted);
+                doc.text('Documento comercial', left, y);
+                y += 8;
+            }
+
+            const infoX = 122;
+            let infoY = 18;
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...dark);
+            doc.text('DADOS DA EMPRESA', infoX, infoY);
+            infoY += 6;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...muted);
+            const info = [];
+            if (companyNuit) info.push('NUIT: ' + companyNuit);
+            if (companyPhone) info.push('Telefone: ' + companyPhone);
+            if (companyEmail) info.push('Email: ' + companyEmail);
+            if (companyAddress) info.push('Endereço: ' + companyAddress);
+            if (companyCity) info.push('Cidade: ' + companyCity);
+            if (companyWebsite) info.push('Web: ' + companyWebsite);
+            info.forEach(i => {
+                wrap(i, 68).slice(0, 2).forEach(lt => { doc.text(lt, infoX, infoY); infoY += 4.5; });
+            });
+
+            const invTitleY = Math.max(y + 2, infoY + 4);
+            doc.setFillColor(...green);
+            doc.roundedRect(122, invTitleY - 7, 68, 14, 3, 3, 'F');
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(255, 255, 255);
+            doc.text('FACTURA', 126, invTitleY + 1);
+            doc.setFontSize(8.5);
+            doc.text(fmt(sale.invoiceNo || 'FT-0000'), 186, invTitleY + 1, { align: 'right' });
+            doc.setDrawColor(...green); doc.setLineWidth(0.5);
+            doc.line(left, invTitleY + 10, right, invTitleY + 10);
+
+            const invDate = sale.date || sale.createdAt || new Date().toISOString();
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...muted);
+            doc.text('Data: ' + formatDateShort(invDate), right, invTitleY + 16, { align: 'right' });
+
+            let secY = invTitleY + 25;
+            doc.setFillColor(...light); doc.setDrawColor(...line);
+            doc.roundedRect(left, secY - 5, contentWidth, 31, 3, 3, 'FD');
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(...dark);
+            doc.text('DADOS DO CLIENTE', left + 5, secY + 1);
+
+            let cly = secY + 8;
+            let cry = secY + 8;
+            cly = drawLV('Nome:', sale.clientName || 'Cliente não informado', left + 5, cly, 75);
+            if (sale.clientPhone) cly = drawLV('Telefone:', sale.clientPhone, left + 5, cly, 75);
+            if (sale.clientEmail) cry = drawLV('Email:', sale.clientEmail, 105, cry, 80);
+            if (sale.clientCity) cry = drawLV('Cidade:', sale.clientCity, 105, cry, 80);
+            if (sale.clientAddress) cry = drawLV('Endereço:', sale.clientAddress, 105, cry, 80);
+            secY += 36;
+
+            const items = Array.isArray(sale.items) ? sale.items : [];
+            const rows = items.length
+                ? items.map(i => {
+                    const qty = Math.max(0, safeNumber(i.qty || 1));
+                    const price = Math.max(0, safeNumber(i.price || 0));
+                    return [fmt(i.name || 'Item'), String(qty), fmtMoney(price), fmtMoney(qty * price)];
+                })
+                : [['Nenhum item', '-', '-', '-']];
+
+            if (typeof doc.autoTable === 'function') {
+                doc.autoTable({
+                    startY: secY,
+                    head: [['Descrição', 'Qtd.', 'Preço unit.', 'Total']],
+                    body: rows,
+                    theme: 'grid',
+                    margin: { left, right: pageWidth - right },
+                    styles: { font: 'helvetica', fontSize: 8, cellPadding: 3, textColor: dark, lineColor: line, lineWidth: 0.2 },
+                    headStyles: { fillColor: green, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8 },
+                    alternateRowStyles: { fillColor: [250, 250, 247] },
+                    columnStyles: {
+                        0: { cellWidth: 78 },
+                        1: { cellWidth: 20, halign: 'center' },
+                        2: { cellWidth: 36, halign: 'right' },
+                        3: { cellWidth: 36, halign: 'right' }
+                    }
+                });
+            } else {
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...dark);
+                let rowY = secY;
+                doc.text('Descrição', left, rowY);
+                doc.text('Qtd.', 115, rowY);
+                doc.text('Preço', 140, rowY);
+                doc.text('Total', 170, rowY);
+                rowY += 6;
+                doc.setFont('helvetica', 'normal');
+                rows.forEach(r => {
+                    doc.text(String(r[0]).slice(0, 45), left, rowY);
+                    doc.text(String(r[1]), 115, rowY);
+                    doc.text(String(r[2]), 140, rowY);
+                    doc.text(String(r[3]), 170, rowY);
+                    rowY += 6;
+                });
+                doc.lastAutoTable = { finalY: rowY };
+            }
+
+            const tableEnd = doc.lastAutoTable && Number.isFinite(doc.lastAutoTable.finalY)
+                ? doc.lastAutoTable.finalY
+                : secY + 20;
+
+            const subtotal = safeNumber(sale.subtotal !== undefined ? sale.subtotal : items.reduce((s, i) => s + safeNumber(i.qty || 1) * safeNumber(i.price || 0), 0));
+            const discount = Math.max(0, safeNumber(sale.discount));
+            const deposit = Math.max(0, safeNumber(sale.deposit));
+            const total = sale.total !== undefined ? Math.max(0, safeNumber(sale.total)) : Math.max(0, subtotal - discount);
+            const paid = Math.max(0, safeNumber(sale.paid));
+            const balance = Math.max(0, safeNumber(sale.balance !== undefined ? sale.balance : total - deposit - paid));
+            const change = Math.max(0, paid - total);
+
+            let totY = tableEnd + 9;
+            if (totY > 230) { doc.addPage(); totY = 20; }
+
+            const totX = 122;
+            const totW = 68;
+            doc.setFillColor(...light); doc.setDrawColor(...line);
+            doc.roundedRect(totX, totY - 5, totW, 52, 3, 3, 'FD');
+
+            let ty = totY + 2;
+            const totalLine = (label, value, bold = false, color = muted) => {
+                doc.setFont('helvetica', bold ? 'bold' : 'normal');
+                doc.setFontSize(bold ? 9.5 : 8.5);
+                doc.setTextColor(...color);
+                doc.text(label, totX + 5, ty);
+                doc.text(value, totX + totW - 5, ty, { align: 'right' });
+                ty += bold ? 7 : 5.5;
+            };
+            totalLine('Subtotal', fmtMoney(subtotal));
+            if (discount > 0) totalLine('Desconto', '- ' + fmtMoney(discount), false, [190, 70, 80]);
+            doc.setDrawColor(...green); doc.setLineWidth(0.35);
+            doc.line(totX + 5, ty - 2, totX + totW - 5, ty - 2);
+            totalLine('TOTAL', fmtMoney(total), true, green);
+            if (deposit > 0) totalLine('Depósito', fmtMoney(deposit), false, blue);
+            totalLine('Pago', fmtMoney(paid), false, [25, 135, 90]);
+            if (change > 0) totalLine('Troco', fmtMoney(change), false, green);
+            doc.setDrawColor(...coral); doc.setLineWidth(0.4);
+            doc.line(totX + 5, ty - 2, totX + totW - 5, ty - 2);
+            totalLine('EM FALTA', fmtMoney(balance), true, coral);
+
+            const pX = left;
+            let pY = totY + 3;
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(...dark);
+            doc.text('PAGAMENTO', pX, pY);
+            pY += 7;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...muted);
+            doc.text('Método: ' + fmt(sale.method || 'Não informado'), pX, pY);
+            pY += 5;
+            doc.text('Estado: ' + fmt(sale.status || 'Pendente'), pX, pY);
+            pY += 5;
+            if (deposit > 0) {
+                doc.text('Depósito: ' + fmtMoney(deposit), pX, pY);
+                pY += 5;
+            }
+            if (balance > 0) {
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(...coral);
+                doc.text('Em falta: ' + fmtMoney(balance), pX, pY);
+                pY += 5;
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(...muted);
+            }
+            pY += 3;
+
+            if (sale.notes) {
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...dark);
+                doc.text('OBSERVAÇÕES', pX, pY);
+                pY += 5;
+                doc.setFont('helvetica', 'normal'); doc.setTextColor(...muted);
+                wrap(sale.notes, 88).slice(0, 5).forEach(lt => { doc.text(lt, pX, pY); pY += 4.2; });
+            }
+
+            const fTop = Math.min(pageHeight - 38, Math.max(245, Math.max(pY + 8, ty + 8)));
+            doc.setDrawColor(...line); doc.setLineWidth(0.3);
+            doc.line(left, fTop, right, fTop);
+            let fy = fTop + 6;
+            if (company.footer) {
+                doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(...green);
+                wrap(company.footer, contentWidth).slice(0, 2).forEach(lt => { doc.text(lt, left, fy); fy += 4.2; });
+            }
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...muted);
+            const footerC = [companyName, companyPhone, companyEmail].filter(Boolean).join(' | ');
+            if (footerC) { doc.text(footerC, left, fy); fy += 4; }
+            if (companyNuit) { doc.text('NUIT: ' + companyNuit, left, fy); fy += 4; }
+            doc.text('Documento gerado em ' + new Date().toLocaleString('pt-PT'), left, fy);
+            doc.text('SumbanePay', right, pageHeight - 8, { align: 'right' });
+
+            doc.save('Factura_' + sanitize(sale.invoiceNo || 'FT-0000') + '_' + sanitize(sale.clientName || 'cliente') + '.pdf');
+            return true;
+        } catch (e) {
+            console.error('Erro PDF:', e);
+            toast('A venda foi criada, mas o PDF falhou.', 'error');
+            return false;
+        }
+    }
+
+    function createSale() {
+        const clientName = document.getElementById('clientName').value.trim();
+        const clientPhone = document.getElementById('clientPhone').value.trim();
+        const clientEmail = document.getElementById('clientEmail').value.trim();
+        const clientCity = document.getElementById('clientCity').value.trim();
+        const clientAddress = document.getElementById('clientAddress').value.trim();
+        const discount = Number(document.getElementById('discount').value || 0);
+        const deposit = Number(document.getElementById('depositAmount').value || 0);
+        const method = document.getElementById('method').value;
+        const status = document.getElementById('saleStatus').value;
+        const paid = Number(document.getElementById('paidAmount').value || 0);
+        const balance = Number(document.getElementById('balanceInput').value || 0);
+        const notes = document.getElementById('saleNotes').value.trim();
+
+        let saleDate = new Date().toISOString();
+        const dateVal = document.getElementById('saleDate').value;
+        const timeVal = document.getElementById('saleTime').value;
+        if (dateVal && timeVal) saleDate = new Date(dateVal + 'T' + timeVal + ':00').toISOString();
+        else if (dateVal) saleDate = new Date(dateVal + 'T00:00:00').toISOString();
+
+        const items = currentItems;
+
+        if (!clientName) {
+            toast('Por favor, digite o nome do cliente.', 'error');
+            document.getElementById('clientName').classList.add('is-invalid');
+            document.getElementById('clientName').focus();
+            return;
+        }
+        document.getElementById('clientName').classList.remove('is-invalid');
+
+        if (items.length === 0) {
+            toast('Adicione pelo menos um item. Formato: 2 calças 1000', 'error');
+            document.getElementById('saleText').classList.add('is-invalid');
+            document.getElementById('saleText').focus();
+            return;
+        }
+        document.getElementById('saleText').classList.remove('is-invalid');
+
+        const subtotal = items.reduce((sum, x) => sum + (x.qty * x.price), 0);
+        const totalWithTax = Math.max(0, subtotal - discount);
+        const invoiceNo = nextInvoiceNumber();
+
+        const clients = getUserAll('clients');
+        let clientId = null;
+        const existingClient = clients.find(c => c.name.toLowerCase() === clientName.toLowerCase());
+
+        if (existingClient) {
+            clientId = existingClient.id;
+            const updates = {};
+            if (clientPhone && clientPhone !== existingClient.phone) updates.phone = clientPhone;
+            if (clientEmail && clientEmail !== existingClient.email) updates.email = clientEmail;
+            if (clientCity && clientCity !== existingClient.city) updates.city = clientCity;
+            if (clientAddress && clientAddress !== existingClient.address) updates.address = clientAddress;
+            if (Object.keys(updates).length > 0) {
+                const i = clients.findIndex(c => c.id === clientId);
+                clients[i] = Object.assign({}, clients[i], updates);
+                writeUser('clients', clients);
+                toast('Dados do cliente actualizados.', 'info');
+            }
+        } else {
+            const newClient = {
+                id: generateId('c_'), name: clientName,
+                phone: clientPhone || '', email: clientEmail || '',
+                city: clientCity || '', address: clientAddress || '',
+                createdAt: new Date().toISOString(), status: 'ativo'
+            };
+            clients.unshift(newClient);
+            writeUser('clients', clients);
+            clientId = newClient.id;
+            toast('Cliente cadastrado automaticamente.', 'success');
+        }
+        updateClientDatalist();
+
+        const sale = {
+            id: generateId('s_'),
+            invoiceNo, clientId, clientName, clientPhone, clientEmail, clientCity, clientAddress,
+            items, subtotal, discount, deposit, paid, balance,
+            total: totalWithTax, method, status, notes,
+            date: saleDate, createdAt: new Date().toISOString()
+        };
+
+        const sales = getUserAll('sales');
+        sales.unshift(sale);
+        writeUser('sales', sales);
+
+        const invoices = getUserAll('invoices');
+        invoices.unshift(sale);
+        writeUser('invoices', invoices);
+
+        const payment = {
+            id: generateId('pay_'), saleId: sale.id, invoiceNo, clientName,
+            value: paid, deposit: deposit, balance: balance, method,
+            status: status === 'Pago' ? 'Pago' : (paid > 0 || deposit > 0 ? 'Parcial' : 'Pendente'),
+            date: saleDate, createdAt: new Date().toISOString()
+        };
+        const payments = getUserAll('payments');
+        payments.push(payment);
+        writeUser('payments', payments);
+
+        generateInvoicePDF(sale);
+
+        currentItems = [];
+        document.getElementById('saleText').value = '';
+        document.getElementById('discount').value = 0;
+        document.getElementById('depositAmount').value = 0;
+        document.getElementById('balanceInput').value = 0;
+        document.getElementById('paidAmount').value = 0;
+        document.getElementById('clientName').value = '';
+        document.getElementById('clientPhone').value = '';
+        document.getElementById('clientEmail').value = '';
+        document.getElementById('clientCity').value = '';
+        document.getElementById('clientAddress').value = '';
+        document.getElementById('saleNotes').value = '';
+        document.getElementById('itemsContainer').className = 'items-list';
+        document.getElementById('itemsContainer').innerHTML = `
+            <div class="empty-items">
+                <i class="bi bi-receipt"></i>
+                Escreva linhas como: <strong>2 calças 1000</strong>
+            </div>
+        `;
+        document.getElementById('saleStatus').value = 'Pendente';
+        document.getElementById('clientName').style.borderColor = '';
+
+        resetPaidAuto();
+        resetBalanceAuto();
+
+        updateTotals();
+        updatePreviewInvoice();
+        loadLastSales();
+        loadStats();
+        generateAutoReminders();
+
+        toast('Venda ' + invoiceNo + ' criada com sucesso!');
+        setTimeout(() => document.getElementById('clientName').focus(), 300);
+    }
+
+    function loadStats() {
+        const clients = getUserAll('clients');
+        const products = getUserAll('products');
+        const sales = getUserAll('sales');
+
+        document.getElementById('clientCount').textContent = clients.length;
+        document.getElementById('productCount').textContent = products.length;
+
+        const today = new Date().toISOString().slice(0, 10);
+        const todaySales = sales.filter(s => (s.createdAt || s.date || '').slice(0, 10) === today);
+        const todayRevenue = todaySales.reduce((sum, s) => sum + (s.total || 0), 0);
+
+        document.getElementById('salesToday').textContent = todaySales.length;
+        document.getElementById('revenueToday').textContent = money(todayRevenue);
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('pt-PT');
+
+        generateAutoReminders();
+    }
+
+    function loadLastSales() {
+        const sales = getUserAll('sales');
+        const last = sales.slice(0, 3);
+        const container = document.getElementById('lastSales');
+        if (last.length === 0) {
+            container.innerHTML = '<span class="text-muted small">Nenhuma venda registada</span>';
+            return;
+        }
+        container.innerHTML = last.map(s => `
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;padding:4px 0;border-bottom:1px solid var(--sz-line);flex-wrap:wrap;gap:4px;">
+                <span style="font-weight:500;">${s.invoiceNo}</span>
+                <span style="font-weight:600;color:var(--sz-green);">${money(s.total)}</span>
+            </div>
+        `).join('');
+    }
+
+    function addReminder(type, title, message, icon = 'bi-info-circle') {
+        const notifs = readUser('reminders', []);
+        const today = new Date().toISOString().slice(0, 10);
+        if (notifs.some(n => n.type === type && n.date.slice(0, 10) === today)) return;
+        notifs.unshift({
+            id: 'rem_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+            type, title, message, icon, read: false,
+            date: new Date().toISOString()
+        });
+        writeUser('reminders', notifs);
+        updateNotifDot();
+    }
+    function getNotifications() { return readUser('reminders', []); }
+    function markNotifRead(id) {
+        const n = readUser('reminders', []).map(x => x.id === id ? { ...x, read: true } : x);
+        writeUser('reminders', n);
+        renderNotifications();
+        updateNotifDot();
+    }
+    function clearReminders() {
+        confirmAction('Limpar lembretes?', 'Todos os lembretes serão eliminados.', 'Sim, limpar')
+            .then(r => {
+                if (r.isConfirmed) {
+                    writeUser('reminders', []);
+                    renderNotifications();
+                    updateNotifDot();
+                    toast('Lembretes limpos.', 'info');
+                }
+            });
+    }
+    function updateNotifDot() {
+        const unread = getNotifications().filter(n => !n.read).length;
+        const dot = document.getElementById('notifDot');
+        if (dot) dot.classList.toggle('show', unread > 0);
+    }
+    function generateAutoReminders() {
+        const sales = getUserAll('sales');
+        const products = getUserAll('products');
+
+        const withBalance = sales.filter(s => (s.balance || 0) > 0);
+        if (withBalance.length > 0) {
+            const t = withBalance.reduce((s, x) => s + (x.balance || 0), 0);
+            addReminder('pending_balance', '💸 Valores em Falta', withBalance.length + ' factura(s) com saldo em falta, total ' + money(t), 'bi-exclamation-triangle');
+        }
+
+        const pending = sales.filter(s => s.status === 'Pendente' || s.status === 'Parcial');
+        if (pending.length > 0) {
+            const t = pending.reduce((s, x) => s + (x.balance || 0), 0);
+            addReminder('pending_sales', '⚠️ Vendas Pendentes', pending.length + ' venda(s) pendente(s), saldo ' + money(t), 'bi-exclamation-triangle');
+        }
+        const lowStock = products.filter(p => (p.stock || 0) <= (p.stock_min || 3) && p.status === 'ativo');
+        if (lowStock.length > 0) {
+            addReminder('low_stock', '📦 Stock Baixo', lowStock.length + ' produto(s) com stock baixo.', 'bi-box-seam');
+        }
+    }
+    function toggleNotifDropdown() {
+        notifDropdownOpen = !notifDropdownOpen;
+        document.getElementById('notifDropdown').classList.toggle('show', notifDropdownOpen);
+        if (notifDropdownOpen) renderNotifications();
+    }
+    function renderNotifications() {
+        const list = getNotifications();
+        const c = document.getElementById('notifList');
+        if (list.length === 0) {
+            c.innerHTML = '<div class="notif-empty"><i class="bi bi-inbox"></i>Nenhum lembrete no momento</div>';
+            return;
+        }
+        c.innerHTML = list.slice(0, 10).map(n => `
+            <div class="notif-item ${!n.read ? 'unread' : ''} ${n.type === 'low_stock' || n.type === 'pending_sales' || n.type === 'pending_balance' ? 'alert' : ''}" onclick="markNotifRead('${n.id}')">
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <span class="notif-icon" style="color:${n.type === 'low_stock' || n.type === 'pending_sales' || n.type === 'pending_balance' ? 'var(--sz-danger)' : 'var(--sz-green)'}">
+                        <i class="${n.icon || 'bi-info-circle'}"></i>
+                    </span>
+                    <div>
+                        <div class="notif-title">${n.title}</div>
+                        <div class="notif-text">${n.message}</div>
+                        <div class="notif-time">${formatDateTime(n.date)}</div>
+                    </div>
+                </div>
+            </div>
+        `).join('') + `
+            <div style="padding:0.5rem 1rem;border-top:1px solid var(--sz-line);text-align:center;">
+                <button class="btn-sm-sz" onclick="event.stopPropagation();clearReminders()" style="width:100%;">
+                    <i class="bi bi-check-all me-1"></i> Limpar lembretes
+                </button>
+            </div>`;
+        updateNotifDot();
+    }
+
+    function toggleTheme() {
+        const cur = localStorage.getItem('sumbanepay_theme') || 'light';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('sumbanepay_theme', next);
+        localStorage.setItem('theme', next);
+        localStorage.setItem('sz_theme', next);
+        localStorage.setItem('darkMode', next === 'dark' ? 'true' : 'false');
+        applyTheme(next);
+        setTimeout(parseText, 50);
+    }
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            document.body.classList.add('dark-mode', 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            document.documentElement.setAttribute('data-bs-theme', 'light');
+            document.body.classList.remove('dark-mode', 'dark');
+        }
+    }
+    function loadTheme() {
+        const t = localStorage.getItem('sumbanepay_theme') || localStorage.getItem('theme') || 'light';
+        applyTheme(t);
+    }
+
+    function boot() {
+        loadTheme();
+
+        const now = new Date();
+        const dateStr = now.getFullYear() + '-' +
+            String(now.getMonth() + 1).padStart(2, '0') + '-' +
+            String(now.getDate()).padStart(2, '0');
+        const timeStr = String(now.getHours()).padStart(2, '0') + ':' +
+            String(now.getMinutes()).padStart(2, '0');
+
+        document.getElementById('saleDate').value = dateStr;
+        document.getElementById('saleTime').value = timeStr;
+        updatePreviewInvoice();
+
+        resetPaidAuto();
+        resetBalanceAuto();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        boot();
+        if (!requireSession()) return;
+
+        bootUserData();
+        updateClientDatalist();
+        loadLastSales();
+        loadStats();
+        parseText();
+        updateTotals();
+
+        document.getElementById('clientName').addEventListener('input', fillClientFields);
+        document.getElementById('clientName').addEventListener('change', fillClientFields);
+        document.getElementById('paidAmount').addEventListener('input', function () {
+            markPaidManuallyEdited();
+            updateTotals();
+        });
+        document.getElementById('balanceInput').addEventListener('input', function () {
+            markBalanceManuallyEdited();
+            updateTotals();
+        });
+        document.getElementById('discount').addEventListener('input', updateTotals);
+        document.getElementById('depositAmount').addEventListener('input', updateTotals);
+
+        document.getElementById('clientName').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('saleText').focus();
+            }
+        });
+        document.getElementById('saleText').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && e.shiftKey) {
+                e.preventDefault();
+                createSale();
+            }
+        });
+
+        document.querySelectorAll('.sidebar .nav-link').forEach(l => l.addEventListener('click', closeSidebar));
+
+        document.addEventListener('click', function (e) {
+            const d = document.getElementById('notifDropdown');
+            const b = document.getElementById('notifBtn');
+            if (d && b && !d.contains(e.target) && !b.contains(e.target)) {
+                d.classList.remove('show');
+                notifDropdownOpen = false;
+            }
+        });
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 992) closeSidebar();
+        });
+
+        window.addEventListener('storage', function (e) {
+            if (e.key && e.key.indexOf(KEY) === 0) {
+                updateClientDatalist();
+                loadStats();
+                loadLastSales();
+            }
+        });
+
+        autoRefreshInterval = setInterval(function () {
+            const session = sessionStorage.getItem(KEY + 'session') || localStorage.getItem(KEY + 'session');
+            if (!session) {
+                if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+                performLogout();
+            } else {
+                updateClientDatalist();
+                loadStats();
+                loadLastSales();
+            }
+        }, 30000);
+    });
+
+    Object.assign(window, {
+        logout, toggleTheme, parseText, createSale, updateTotals,
+        generateInvoicePDF, updateClientDatalist, fillClientFields,
+        toggleNotifDropdown, markNotifRead, clearReminders,
+        toggleSidebar, closeSidebar,
+        markPaidManuallyEdited, resetPaidAuto,
+        markBalanceManuallyEdited, resetBalanceAuto
+    });
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

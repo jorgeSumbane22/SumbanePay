@@ -1,0 +1,2346 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <title>Perfil — SumbanePay</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 20px rgba(16, 63, 55, 0.06);
+            --sz-shadow-hover: 0 12px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-info: #0dcaf0;
+            --sz-purple: #9b59b6;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --sz-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+            --sz-info: #7cbdda;
+            --sz-purple: #b07cc6;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        .font-display { font-family: 'Playfair Display', 'Georgia', serif; }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sz-paper); }
+        ::-webkit-scrollbar-thumb { background: var(--sz-green); border-radius: 10px; }
+
+        *:focus-visible {
+            outline: 2px solid var(--sz-green);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+        .app-row { display: flex; flex: 1; }
+        .app-main { display: flex; flex-direction: column; flex: 1; min-height: 100vh; }
+        .app-content { flex: 1; padding-bottom: 1rem; }
+        .app-footer { flex-shrink: 0; width: 100%; }
+
+        .brand {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); }
+        .brand b { color: var(--sz-coral); }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            transition: var(--transition);
+        }
+        .brand:hover .logo-mark { transform: rotate(-3deg) scale(1.05); }
+
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-danger-sz {
+            border: 2px solid var(--sz-danger);
+            color: var(--sz-danger);
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-danger-sz:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-light-sz {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-outline-light-sz:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.6);
+            color: #fff;
+        }
+
+        .btn-sm-sz {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            color: var(--sz-muted);
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm-sz:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+        }
+        .btn-sm-sz.danger:hover { background: var(--sz-danger); color: #fff; border-color: var(--sz-danger); }
+
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: var(--sz-white);
+            border-right: 1px solid var(--sz-line);
+            padding: 1.5rem 1rem;
+            width: 260px;
+            flex-shrink: 0;
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+            max-height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease, background 0.3s ease;
+            z-index: 1040;
+        }
+        .sidebar .nav-link {
+            color: var(--sz-muted);
+            border-radius: 8px;
+            margin: 0.15rem 0;
+            padding: 10px 14px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i { width: 22px; text-align: center; font-size: 1.05rem; }
+
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1039;
+            backdrop-filter: blur(2px);
+        }
+        .sidebar-backdrop.show { display: block; }
+
+        .mobile-menu-toggle {
+            display: none;
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            border: 1.5px solid var(--sz-line);
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .mobile-menu-toggle:hover {
+            background: var(--sz-paper);
+            border-color: var(--sz-green);
+            color: var(--sz-green);
+        }
+
+        /* TOP NAV */
+        .top-nav {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 12px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: relative;
+            z-index: 1030;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.3;
+        }
+
+        .breadcrumb-premium {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--sz-muted);
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+        .breadcrumb-premium .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .breadcrumb-premium .breadcrumb-item a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .breadcrumb-premium .breadcrumb-item a:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+        }
+        .breadcrumb-premium .separator { color: var(--sz-muted-light); font-size: 0.6rem; }
+        .breadcrumb-premium .breadcrumb-item.current {
+            color: var(--sz-ink);
+            font-weight: 600;
+            padding: 4px 8px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: 6px;
+        }
+        .breadcrumb-premium .home-icon { color: var(--sz-green); font-size: 1.1rem; }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            padding: 3px 12px 3px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(23, 107, 91, 0.15);
+        }
+        .live-badge .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .user-info-premium {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-info-premium .user-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 2px 12px rgba(23, 107, 91, 0.25);
+            cursor: pointer;
+            user-select: none;
+            overflow: hidden;
+        }
+        .user-info-premium .user-avatar img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .user-info-premium .user-details {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .user-info-premium .user-details .user-name {
+            font-weight: 600;
+            color: var(--sz-ink);
+            font-size: 0.9rem;
+        }
+        .user-info-premium .user-details .user-role {
+            font-size: 0.65rem;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .user-info-premium .btn-icon-premium {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            position: relative;
+        }
+        .user-info-premium .btn-icon-premium:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+        }
+        .user-info-premium .btn-icon-premium .notif-dot {
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 8px; height: 8px;
+            background: var(--sz-danger);
+            border-radius: 50%;
+            border: 2px solid var(--sz-white);
+            display: none;
+        }
+        .user-info-premium .btn-icon-premium .notif-dot.show { display: block; }
+
+        .btn-icon-premium.btn-logout {
+            color: var(--sz-danger);
+            border-color: var(--sz-danger);
+        }
+        .btn-icon-premium.btn-logout:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            border-color: var(--sz-danger);
+        }
+
+        /* NOTIFICAÇÕES */
+        .notif-dropdown {
+            position: absolute;
+            top: 55px; right: 0;
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            box-shadow: var(--sz-shadow-hover);
+            width: 380px;
+            max-height: 450px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1050;
+            padding: 0.5rem 0;
+        }
+        .notif-dropdown.show { display: block; }
+        .notif-dropdown .notif-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--sz-line);
+            cursor: pointer;
+        }
+        .notif-dropdown .notif-item:hover { background: var(--sz-paper); }
+        .notif-dropdown .notif-item.unread { border-left: 3px solid var(--sz-green); }
+        .notif-dropdown .notif-item.alert { border-left: 3px solid var(--sz-danger); }
+        .notif-dropdown .notif-title { font-weight: 600; font-size: 0.85rem; color: var(--sz-ink); }
+        .notif-dropdown .notif-text { font-size: 0.75rem; color: var(--sz-muted); }
+        .notif-dropdown .notif-time { font-size: 0.6rem; color: var(--sz-muted); }
+        .notif-dropdown .notif-icon { font-size: 1.2rem; margin-right: 8px; }
+        .notif-dropdown .notif-empty {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--sz-muted);
+        }
+        .notif-dropdown .notif-empty i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            opacity: 0.3;
+        }
+        .notif-dropdown .notif-header {
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid var(--sz-line);
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--sz-muted);
+        }
+
+        /* QUICK ACTIONS */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .quick-action-item {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            padding: 1rem 0.75rem;
+            text-align: center;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--sz-muted);
+            box-shadow: var(--sz-shadow);
+        }
+        .quick-action-item:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-green);
+            color: var(--sz-ink);
+        }
+        .quick-action-item i {
+            font-size: 1.5rem;
+            color: var(--sz-green);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .quick-action-item span { font-size: 0.7rem; font-weight: 600; }
+
+        /* PROFILE CARD */
+        .profile-container { max-width: 1000px; margin: 0 auto; }
+
+        .profile-card {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            border: 1px solid var(--sz-line);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        .profile-card:hover { box-shadow: var(--sz-shadow-hover); }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+            padding: 2rem 2rem 0 2rem;
+            color: #fff;
+            position: relative;
+        }
+        .profile-header .profile-cover {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-avatar-wrapper { position: relative; flex-shrink: 0; }
+        .profile-avatar-wrapper .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-coral));
+            position: relative;
+        }
+        .profile-avatar-wrapper .profile-avatar img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .profile-avatar-wrapper .profile-avatar .avatar-letter {
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .profile-avatar-wrapper .profile-avatar:hover { transform: scale(1.02); }
+        .profile-avatar-wrapper .avatar-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background: var(--sz-coral);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            border: 2px solid #fff;
+            color: #fff;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 2;
+        }
+        .profile-avatar-wrapper .avatar-badge:hover {
+            transform: scale(1.1);
+            background: var(--sz-gold);
+        }
+
+        .avatar-remove-btn {
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--sz-danger);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: #fff;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 3;
+        }
+        .avatar-remove-btn.show { display: flex; }
+        .avatar-remove-btn:hover {
+            transform: translateX(-50%) scale(1.1);
+            background: #c0392b;
+        }
+
+        #photoInput { display: none; }
+
+        .profile-header .profile-info { flex: 1; padding-bottom: 1rem; min-width: 0; }
+        .profile-header .profile-info h2 {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1.6rem;
+            margin: 0;
+        }
+        .profile-header .profile-info .profile-role {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .profile-header .profile-info .profile-role .badge-status {
+            font-size: 0.6rem;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .profile-header .profile-info .profile-role .badge-status.active {
+            background: rgba(78, 205, 196, 0.35);
+            color: #fff;
+        }
+        .profile-header .profile-info .profile-role .badge-status.inactive {
+            background: rgba(240, 106, 122, 0.35);
+            color: #fff;
+        }
+        .profile-header .profile-info .profile-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .profile-header .profile-info .profile-stats .stat-item {
+            font-size: 0.8rem;
+            opacity: 0.85;
+        }
+        .profile-header .profile-info .profile-stats .stat-item strong {
+            font-size: 1.1rem;
+            opacity: 1;
+            display: block;
+        }
+        .profile-header .profile-actions-top {
+            display: flex;
+            gap: 0.5rem;
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-body { padding: 1.5rem 2rem 2rem 2rem; }
+
+        .profile-body .section-title {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--sz-ink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-body .section-title i { color: var(--sz-coral); }
+
+        .profile-body .form-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .profile-body .form-control,
+        .profile-body .form-select {
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            padding: 10px 14px;
+            transition: var(--transition);
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .profile-body .form-control:focus,
+        .profile-body .form-select:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 4px rgba(23, 107, 91, 0.08);
+        }
+        .profile-body .form-control::placeholder { color: var(--sz-muted-light); }
+        .profile-body .form-text { font-size: 0.7rem; color: var(--sz-muted); }
+
+        .profile-body .preference-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .profile-body .preference-group .pref-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--sz-paper);
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            transition: var(--transition);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--sz-muted);
+        }
+        .profile-body .preference-group .pref-item:hover {
+            border-color: var(--sz-green);
+            color: var(--sz-ink);
+        }
+        .profile-body .preference-group .pref-item.active {
+            border-color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+            color: var(--sz-green);
+        }
+        .profile-body .preference-group .pref-item .pref-icon { font-size: 1.1rem; }
+
+        .profile-body .profile-divider {
+            border-color: var(--sz-line);
+            margin: 1.5rem 0;
+            opacity: 0.5;
+        }
+
+        .profile-body .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .profile-body .activity-list .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0.9rem;
+            background: var(--sz-paper);
+            border-radius: var(--sz-radius-sm);
+            font-size: 0.9rem;
+            border-left: 3px solid var(--sz-green);
+            color: var(--sz-ink);
+        }
+        .profile-body .activity-list .activity-item .activity-icon {
+            color: var(--sz-green);
+            margin-right: 8px;
+        }
+        .profile-body .activity-list .activity-item .activity-value {
+            font-weight: 600;
+            color: var(--sz-ink);
+        }
+
+        /* TOGGLE SWITCH */
+        .form-check-input[type="checkbox"] {
+            background-color: var(--sz-line);
+            border-color: var(--sz-line);
+        }
+        .form-check-input:checked {
+            background-color: var(--sz-green);
+            border-color: var(--sz-green);
+        }
+
+        /* TOAST */
+        .toast-container-custom {
+            position: fixed;
+            top: 80px; right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            width: calc(100% - 40px);
+        }
+        .toast-custom {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            padding: 14px 18px;
+            box-shadow: var(--sz-shadow-hover);
+            border-left: 4px solid var(--sz-green);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--sz-line);
+            color: var(--sz-ink);
+            animation: slideInRight 0.4s ease;
+        }
+        .toast-custom .toast-close {
+            background: none; border: none;
+            color: var(--sz-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideOutRight {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(40px); }
+        }
+
+        /* FOOTER */
+        .app-footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 0.75rem 2rem;
+            margin-top: 1.5rem;
+        }
+        .app-footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .app-footer .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-footer .footer-brand .footer-logo {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.6rem;
+        }
+        .app-footer .footer-brand .footer-company {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .app-footer .footer-brand .footer-company b { color: var(--sz-coral); }
+        .app-footer .footer-brand .footer-version {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            background: var(--sz-paper);
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+        .app-footer .footer-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .app-footer .footer-user-info .user-data-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--sz-muted);
+        }
+        .app-footer .footer-user-info .user-data-item i {
+            color: var(--sz-green);
+            font-size: 0.85rem;
+            width: 16px;
+            text-align: center;
+        }
+        .app-footer .footer-user-info .user-data-item .data-value {
+            color: var(--sz-ink);
+            font-weight: 500;
+        }
+        .app-footer .footer-user-info .user-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        .app-footer .footer-user-info .user-status .status-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        /* DARK MODE */
+        [data-theme="dark"] .sidebar { background: #0a1a14; border-color: #2a4a3e; }
+        [data-theme="dark"] .sidebar .brand { color: #f0efe8 !important; }
+        [data-theme="dark"] .sidebar .nav-link { color: #b8c5bf !important; }
+        [data-theme="dark"] .sidebar .nav-link:hover,
+        [data-theme="dark"] .sidebar .nav-link.active {
+            background: rgba(42, 157, 143, 0.15) !important;
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .top-nav { background: #0a1a14; border-color: #2a4a3e; }
+        [data-theme="dark"] .top-nav .user-info-premium .user-details .user-name { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer { background: #0a1a14; border-color: #2a4a3e; }
+        [data-theme="dark"] .app-footer .footer-brand .footer-company { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .footer-user-info .user-data-item .data-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .profile-card { background: var(--sz-white); border-color: var(--sz-line); }
+        [data-theme="dark"] .profile-header { background: linear-gradient(135deg, #0a1a14, #1a6b5e); }
+        [data-theme="dark"] .profile-body .section-title { color: #f0efe8; }
+        [data-theme="dark"] .profile-body .form-label { color: #a0b0a8; }
+        [data-theme="dark"] .profile-body .form-control,
+        [data-theme="dark"] .profile-body .form-select {
+            background: #162f27 !important;
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .profile-body .form-control:focus,
+        [data-theme="dark"] .profile-body .form-select:focus {
+            border-color: #f0c97a !important;
+            box-shadow: 0 0 0 4px rgba(240, 201, 122, 0.12) !important;
+        }
+        [data-theme="dark"] .profile-body .preference-group .pref-item {
+            background: #162f27;
+            border-color: #2a4a3e;
+            color: #a0b0a8;
+        }
+        [data-theme="dark"] .profile-body .preference-group .pref-item:hover {
+            border-color: #f0c97a;
+            color: #f0efe8;
+        }
+        [data-theme="dark"] .profile-body .preference-group .pref-item.active {
+            border-color: #f0c97a;
+            background: rgba(240, 201, 122, 0.08);
+            color: #f0c97a;
+        }
+        [data-theme="dark"] .profile-body .activity-list .activity-item {
+            background: #162f27;
+            color: #f0efe8;
+        }
+        [data-theme="dark"] .profile-body .activity-list .activity-item .activity-value { color: #f0efe8; }
+        [data-theme="dark"] .btn-sm-sz { color: #a0b0a8 !important; border-color: #2a4a3e !important; }
+        [data-theme="dark"] .btn-sm-sz:hover { background: rgba(255, 255, 255, 0.06) !important; color: #f0efe8 !important; }
+        [data-theme="dark"] .notif-dropdown { background: var(--sz-white); border-color: var(--sz-line); }
+        [data-theme="dark"] .notif-dropdown .notif-item { border-color: var(--sz-line); }
+        [data-theme="dark"] .notif-dropdown .notif-title { color: #f0efe8; }
+        [data-theme="dark"] .notif-dropdown .notif-text { color: #a0b0a8; }
+        [data-theme="dark"] .mobile-menu-toggle { background: #162f27; color: #f0efe8; border-color: #2a4a3e; }
+        [data-theme="dark"] .profile-avatar-wrapper .profile-avatar { border-color: #2a4a3e; }
+        [data-theme="dark"] .avatar-remove-btn { border-color: #2a4a3e; }
+
+        /* RESPONSIVE */
+        @media (max-width: 992px) {
+            .app-row { flex-direction: column; }
+            .sidebar {
+                position: fixed;
+                top: 0; left: 0;
+                height: 100vh;
+                width: 280px;
+                max-width: 85vw;
+                transform: translateX(-100%);
+                box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+                max-height: 100vh;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .mobile-menu-toggle { display: inline-flex; }
+            .top-nav { padding: 12px 16px; }
+            .top-nav .user-info-premium .user-details { display: none; }
+            .notif-dropdown { width: calc(100vw - 24px); max-width: 380px; right: -10px; }
+            .app-footer .footer-content { flex-direction: column; text-align: center; }
+            .app-footer .footer-user-info { justify-content: center; }
+        }
+
+        @media (max-width: 768px) {
+            .top-nav { padding: 10px 14px; gap: 8px; }
+            .breadcrumb-premium { font-size: 0.72rem; gap: 4px; }
+            .breadcrumb-premium .breadcrumb-item a,
+            .breadcrumb-premium .breadcrumb-item.current { padding: 2px 6px; }
+            .live-badge { font-size: 0.5rem; padding: 2px 8px 2px 6px; }
+            .user-info-premium { gap: 8px; }
+            .user-info-premium .user-avatar { width: 32px; height: 32px; font-size: 0.8rem; }
+            .user-info-premium .btn-icon-premium { width: 34px; height: 34px; font-size: 0.95rem; }
+            .quick-actions { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .quick-action-item { padding: 0.75rem 0.5rem; }
+            .quick-action-item i { font-size: 1.2rem; margin-bottom: 4px; }
+            .quick-action-item span { font-size: 0.62rem; }
+            .app-content { padding: 1rem 0.75rem !important; }
+            .app-footer { padding: 0.6rem 1rem; }
+            .app-footer .footer-user-info { gap: 0.5rem; }
+            .app-footer .footer-user-info .user-data-item { font-size: 0.62rem; }
+            .app-footer .footer-user-info .user-status { font-size: 0.55rem; }
+            .toast-container-custom { top: 70px; right: 10px; left: 10px; width: auto; max-width: none; }
+            .profile-header { padding: 1.5rem 1.5rem 0 1.5rem; }
+            .profile-body { padding: 1rem 1.5rem 1.5rem 1.5rem; }
+            .profile-header .profile-cover { flex-direction: column; align-items: center; text-align: center; }
+            .profile-header .profile-info .profile-stats { justify-content: center; }
+            .profile-header .profile-actions-top { justify-content: center; width: 100%; }
+            .profile-avatar-wrapper .profile-avatar { width: 80px; height: 80px; font-size: 2.2rem; }
+            .profile-avatar-wrapper .profile-avatar .avatar-letter { font-size: 2.2rem; }
+            .profile-body .preference-group { justify-content: center; }
+            .profile-body .activity-list .activity-item { flex-direction: column; align-items: flex-start; gap: 4px; }
+        }
+
+        @media (max-width: 576px) {
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+            .card-sz .d-flex.justify-content-between { flex-direction: column; gap: 8px; align-items: stretch !important; }
+            .btn-sz, .btn-outline-sz { font-size: 0.78rem; padding: 8px 14px; }
+            .d-flex.justify-content-between.align-items-end { gap: 12px; }
+            .d-flex.justify-content-between.align-items-end > div:first-child { flex: 1 1 100%; }
+            .d-flex.justify-content-between.align-items-end > div:last-child { flex: 1 1 100%; }
+            .profile-header .profile-info h2 { font-size: 1.3rem; }
+        }
+
+        @media (max-width: 380px) {
+            .brand { font-size: 1rem; }
+            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
+            .breadcrumb-premium { font-size: 0.62rem; }
+            .breadcrumb-premium .breadcrumb-item .separator { display: none; }
+            .quick-actions { gap: 6px; }
+            .quick-action-item { padding: 0.6rem 0.4rem; }
+            .btn-sm-sz { padding: 3px 8px; font-size: 0.62rem; }
+            .profile-header { padding: 1rem 1rem 0 1rem; }
+            .profile-body { padding: 0.75rem 1rem 1rem 1rem; }
+            .profile-avatar-wrapper .profile-avatar { width: 60px; height: 60px; font-size: 1.6rem; }
+            .profile-avatar-wrapper .profile-avatar .avatar-letter { font-size: 1.6rem; }
+            .profile-header .profile-info h2 { font-size: 1.1rem; }
+            .profile-body .preference-group .pref-item { font-size: 0.75rem; padding: 6px 12px; }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <div class="toast-container-custom" id="toastContainer"></div>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+    <div class="app-wrapper">
+        <div class="app-row">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" id="sidebar" role="navigation">
+                <div class="mb-4">
+                    <a class="brand" href="../index.html">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <div class="small text-muted mt-2" style="font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> Balcão Digital
+                    </div>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="./dashboard.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="./vendas.html"><i class="bi bi-bag me-2"></i>Vendas</a>
+                    <a class="nav-link" href="./nova-venda.html"><i class="bi bi-plus-circle me-2"></i>Nova venda</a>
+                    <a class="nav-link" href="./faturas.html"><i class="bi bi-receipt me-2"></i>Facturas</a>
+                    <a class="nav-link" href="./clientes.html"><i class="bi bi-people me-2"></i>Clientes</a>
+                    <a class="nav-link" href="./produtos.html"><i class="bi bi-box-seam me-2"></i>Produtos</a>
+                    <a class="nav-link" href="./pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos</a>
+                    <a class="nav-link" href="./relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link" href="./configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                    <a class="nav-link active" href="./perfil.html"><i class="bi bi-person me-2"></i>Perfil</a>
+                </nav>
+                <div class="mt-4 d-flex flex-column gap-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
+                        <i class="bi bi-circle-half me-2"></i>Tema
+                    </button>
+                    <button class="btn btn-sm w-100" onclick="logout()" style="border:2px solid var(--sz-danger);color:var(--sz-danger);background:transparent;padding:6px 16px;border-radius:8px;font-weight:600;font-size:0.8rem;">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sair
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="app-main">
+
+                <!-- TOP NAV -->
+                <div class="top-nav">
+                    <div class="d-flex align-items-center gap-2 flex-grow-1">
+                        <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Abrir menu">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <div class="breadcrumb-premium">
+                            <span class="breadcrumb-item">
+                                <i class="bi bi-house-fill home-icon"></i>
+                                <a href="./dashboard.html">Dashboard</a>
+                            </span>
+                            <span class="separator">›</span>
+                            <span class="breadcrumb-item current">
+                                <i class="bi bi-person me-1"></i> Perfil
+                            </span>
+                            <span class="live-badge ms-2 d-none d-md-inline-flex">
+                                <span class="dot"></span>
+                                AO VIVO
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="user-info-premium">
+                        <div class="user-details text-end">
+                            <span class="user-name" id="userDisplay">
+                                <i class="bi bi-person-circle me-1"></i> Carregando...
+                            </span>
+                            <span class="user-role" id="userRole">Vendedor</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">S</div>
+                        <button class="btn-icon-premium" onclick="toggleNotifDropdown()" title="Lembretes" id="notifBtn">
+                            <i class="bi bi-bell"></i>
+                            <span class="notif-dot" id="notifDot"></span>
+                        </button>
+                        <button class="btn-icon-premium" onclick="toggleTheme()" title="Alternar tema">
+                            <i class="bi bi-circle-half"></i>
+                        </button>
+                        <button class="btn-icon-premium btn-logout" onclick="logout()" title="Sair da conta">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- NOTIFICAÇÕES -->
+                <div style="position:relative;">
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-header">
+                            <i class="bi bi-clock-history me-1"></i> LEMBRETES
+                        </div>
+                        <div id="notifList">
+                            <div class="notif-empty" id="notifEmpty">
+                                <i class="bi bi-inbox"></i>
+                                Nenhum lembrete no momento
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTEÚDO -->
+                <div class="app-content container-fluid p-3 p-lg-4">
+
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+                        <div>
+                            <div class="eyebrow"><i class="bi bi-person me-1"></i> A SUA CONTA</div>
+                            <h1 class="font-display" style="font-size:clamp(1.5rem,3vw,2.5rem);margin:0;">
+                                Perfil <em style="color:var(--sz-coral);font-style:normal;">✦</em>
+                            </h1>
+                            <p class="text-muted mt-1" style="font-size:0.85rem;">
+                                Gerencie os seus dados, segurança e preferências
+                                <span class="badge bg-success ms-2" style="font-size:0.55rem;font-weight:500;">
+                                    <i class="bi bi-circle-fill me-1" style="font-size:0.3rem;"></i> Dados pessoais
+                                </span>
+                            </p>
+                        </div>
+                        <button class="btn-outline-sz btn-sm" onclick="loadProfile()">
+                            <i class="bi bi-arrow-clockwise"></i> Actualizar
+                        </button>
+                    </div>
+
+                    <!-- QUICK ACTIONS -->
+                    <div class="quick-actions">
+                        <a href="./nova-venda.html" class="quick-action-item">
+                            <i class="bi bi-plus-circle"></i>
+                            <span>Nova Venda</span>
+                        </a>
+                        <a href="./clientes.html" class="quick-action-item">
+                            <i class="bi bi-person-plus"></i>
+                            <span>Novo Cliente</span>
+                        </a>
+                        <a href="./produtos.html" class="quick-action-item">
+                            <i class="bi bi-box-plus"></i>
+                            <span>Novo Produto</span>
+                        </a>
+                        <a href="./faturas.html" class="quick-action-item">
+                            <i class="bi bi-receipt"></i>
+                            <span>Facturas</span>
+                        </a>
+                        <a href="./relatorios.html" class="quick-action-item">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span>Relatórios</span>
+                        </a>
+                        <a href="./configuracoes.html" class="quick-action-item">
+                            <i class="bi bi-gear"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </div>
+
+                    <!-- PROFILE CARD -->
+                    <div class="profile-container">
+                        <div class="profile-card">
+
+                            <!-- HEADER -->
+                            <div class="profile-header">
+                                <div class="profile-cover">
+                                    <div class="profile-avatar-wrapper">
+                                        <div class="profile-avatar" id="avatarContainer" onclick="document.getElementById('photoInput').click()">
+                                            <span class="avatar-letter" id="avatarLetter">A</span>
+                                        </div>
+                                        <div class="avatar-badge" onclick="event.stopPropagation();document.getElementById('photoInput').click()">
+                                            <i class="bi bi-camera"></i>
+                                        </div>
+                                        <div class="avatar-remove-btn" id="removePhotoBtn" onclick="event.stopPropagation();removePhoto()" title="Remover foto">
+                                            <i class="bi bi-x"></i>
+                                        </div>
+                                        <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)">
+                                    </div>
+
+                                    <div class="profile-info">
+                                        <h2 id="profileName">Carregando...</h2>
+                                        <div class="profile-role">
+                                            <span id="profileType"><i class="bi bi-person-badge"></i> Utilizador</span>
+                                            <span class="badge-status active" id="profileStatus">Ativo</span>
+                                            <span style="opacity:0.3;">|</span>
+                                            <span style="font-size:0.7rem;opacity:0.7;" id="profileSince">Desde —</span>
+                                        </div>
+                                        <div class="profile-stats">
+                                            <div class="stat-item">
+                                                <strong id="statSales">0</strong>
+                                                Vendas
+                                            </div>
+                                            <div class="stat-item">
+                                                <strong id="statInvoices">0</strong>
+                                                Faturas
+                                            </div>
+                                            <div class="stat-item">
+                                                <strong id="statClients">0</strong>
+                                                Clientes
+                                            </div>
+                                            <div class="stat-item">
+                                                <strong id="statLastAccess">—</strong>
+                                                Último acesso
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile-actions-top">
+                                        <button class="btn-outline-light-sz" onclick="editProfile()">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </button>
+                                        <button class="btn-outline-light-sz" onclick="logout()">
+                                            <i class="bi bi-box-arrow-right"></i> Sair
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BODY -->
+                            <div class="profile-body">
+
+                                <div class="section-title"><i class="bi bi-person"></i> Dados Pessoais</div>
+                                <form id="profileForm" onsubmit="handleUpdateProfile(event)">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="u_name">Nome completo</label>
+                                            <input id="u_name" class="form-control" type="text" placeholder="Seu nome" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="u_email">Email</label>
+                                            <input id="u_email" class="form-control" type="email" placeholder="seu@email.com" required>
+                                            <div class="form-text">Este email será usado para login.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="u_phone">Telefone</label>
+                                            <input id="u_phone" class="form-control" type="text" placeholder="84 000 0000">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="u_business">Empresa / Negócio</label>
+                                            <input id="u_business" class="form-control" type="text" placeholder="Nome do seu negócio">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="u_city">Cidade</label>
+                                            <input id="u_city" class="form-control" type="text" placeholder="Maputo">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="u_address">Endereço</label>
+                                            <input id="u_address" class="form-control" type="text" placeholder="Av. Julius Nyerere, 123">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="u_gender">Género</label>
+                                            <select id="u_gender" class="form-select">
+                                                <option value="">Não especificado</option>
+                                                <option value="Masculino">Masculino</option>
+                                                <option value="Feminino">Feminino</option>
+                                                <option value="Outro">Outro</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="u_birthdate">Data de nascimento</label>
+                                            <input id="u_birthdate" class="form-control" type="date">
+                                        </div>
+                                    </div>
+
+                                    <hr class="profile-divider">
+
+                                    <div class="section-title"><i class="bi bi-shield-lock"></i> Segurança</div>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="u_password">Nova senha</label>
+                                            <input id="u_password" class="form-control" type="password" placeholder="••••••••" minlength="6">
+                                            <div class="form-text">Deixe em branco para manter a senha atual.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="u_confirm">Confirmar nova senha</label>
+                                            <input id="u_confirm" class="form-control" type="password" placeholder="••••••••">
+                                        </div>
+                                    </div>
+
+                                    <hr class="profile-divider">
+
+                                    <div class="section-title"><i class="bi bi-toggle-on"></i> Estado da Conta</div>
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="statusToggle" checked style="width:48px;height:24px;cursor:pointer;">
+                                                <label class="form-check-label" for="statusToggle" style="font-weight:500;font-size:0.95rem;">
+                                                    <span id="statusLabel">Conta activa</span>
+                                                </label>
+                                                <div class="form-text">Desactive a conta para suspender temporariamente o acesso.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="profile-divider">
+
+                                    <div class="section-title"><i class="bi bi-sliders2"></i> Preferências</div>
+                                    <div class="preference-group">
+                                        <div class="pref-item" id="themeLight" onclick="setTheme('light')">
+                                            <span class="pref-icon"><i class="bi bi-sun"></i></span>
+                                            <span class="pref-label">Claro</span>
+                                        </div>
+                                        <div class="pref-item" id="themeDark" onclick="setTheme('dark')">
+                                            <span class="pref-icon"><i class="bi bi-moon"></i></span>
+                                            <span class="pref-label">Escuro</span>
+                                        </div>
+                                        <div class="pref-item active" id="langPt" onclick="setLanguage('pt')">
+                                            <span class="pref-icon"><i class="bi bi-flag"></i></span>
+                                            <span class="pref-label">Português</span>
+                                        </div>
+                                        <div class="pref-item active" id="currencyMZN" onclick="setCurrency('MZN')">
+                                            <span class="pref-icon"><i class="bi bi-cash"></i></span>
+                                            <span class="pref-label">MZN (MT)</span>
+                                        </div>
+                                        <div class="pref-item active" id="notifOn" onclick="toggleNotifications()">
+                                            <span class="pref-icon"><i class="bi bi-bell-fill"></i></span>
+                                            <span class="pref-label">Notificações</span>
+                                        </div>
+                                    </div>
+
+                                    <hr class="profile-divider">
+
+                                    <div class="section-title"><i class="bi bi-clock-history"></i> Actividade</div>
+                                    <div class="activity-list" id="activityList">
+                                        <div class="activity-item">
+                                            <span><span class="activity-icon"><i class="bi bi-box-arrow-in-right"></i></span> Último acesso</span>
+                                            <span class="activity-value" id="actLastLogin">—</span>
+                                        </div>
+                                        <div class="activity-item">
+                                            <span><span class="activity-icon"><i class="bi bi-bag"></i></span> Total de vendas</span>
+                                            <span class="activity-value" id="actSales">0</span>
+                                        </div>
+                                        <div class="activity-item">
+                                            <span><span class="activity-icon"><i class="bi bi-receipt"></i></span> Total de faturas</span>
+                                            <span class="activity-value" id="actInvoices">0</span>
+                                        </div>
+                                        <div class="activity-item">
+                                            <span><span class="activity-icon"><i class="bi bi-people"></i></span> Total de clientes</span>
+                                            <span class="activity-value" id="actClients">0</span>
+                                        </div>
+                                        <div class="activity-item">
+                                            <span><span class="activity-icon"><i class="bi bi-calendar-check"></i></span> Membro desde</span>
+                                            <span class="activity-value" id="actMemberSince">—</span>
+                                        </div>
+                                    </div>
+
+                                    <hr class="profile-divider">
+                                    <div class="section-title"><i class="bi bi-tools"></i> Ferramentas</div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn-outline-sz btn-sm" onclick="exportUserData()">
+                                            <i class="bi bi-download"></i> Exportar dados
+                                        </button>
+                                        <button type="button" class="btn-outline-sz btn-sm" onclick="changeAvatarColor()">
+                                            <i class="bi bi-palette"></i> Trocar cor do avatar
+                                        </button>
+                                        <button type="button" class="btn-outline-danger-sz btn-sm" onclick="deleteAccount()">
+                                            <i class="bi bi-person-x"></i> Eliminar conta
+                                        </button>
+                                    </div>
+
+                                    <hr class="profile-divider">
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <button type="submit" class="btn-sz">
+                                            <i class="bi bi-check-lg"></i> Guardar perfil
+                                        </button>
+                                        <button type="button" class="btn-outline-sz" onclick="editProfile()">
+                                            <i class="bi bi-pencil"></i> Editar perfil
+                                        </button>
+                                        <button type="button" class="btn-outline-danger-sz" onclick="logout()">
+                                            <i class="bi bi-box-arrow-right"></i> Terminar sessão
+                                        </button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">Pay</div>
+                            <span class="footer-company">Sumbane<b>Pay</b></span>
+                            <span class="footer-version">v10.0.0</span>
+                        </div>
+                        <div class="footer-user-info">
+                            <span class="user-data-item">
+                                <i class="bi bi-person"></i>
+                                <span class="data-value" id="footerUserName">Carregando...</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-envelope"></i>
+                                <span class="data-value email-value" id="footerUserEmail">carregando@email.com</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-shield-check"></i>
+                                <span class="data-value" id="footerUserRole">Vendedor</span>
+                            </span>
+                            <span class="user-status">
+                                <span class="status-dot"></span>
+                                Online
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    /* ============================================================
+       PERFIL — SUMBANEPAY v10.0.0
+       • Voltar no browser → termina sessão → login.html
+       • Dados isolados por utilizador
+       • Botão Sair no topo
+       • Totalmente responsivo mobile
+       • Sem auth-shared.js
+       ============================================================ */
+
+    'use strict';
+
+    const KEY = 'sumbanepay_';
+    let _isLoggingOut = false;
+    let _navigationSetup = false;
+    let autoUpdateInterval = null;
+    let notifDropdownOpen = false;
+
+    const currentUser = { id: null, name: null, email: null, role: null };
+
+    const avatarColors = ['#176b5b', '#ef6d4e', '#e8b35b', '#7c9db5', '#9b59b6', '#2ecc71', '#e74c3c', '#f39c12', '#1abc9c', '#3498db'];
+
+    // ============================================================
+    // DADOS ISOLADOS POR UTILIZADOR
+    // ============================================================
+    function userKey(suffix) {
+        if (!currentUser.id) return KEY + suffix;
+        return KEY + 'data_' + currentUser.id + '_' + suffix;
+    }
+
+    function readUser(k, fallback) {
+        try {
+            const d = localStorage.getItem(userKey(k));
+            return d ? JSON.parse(d) : fallback;
+        } catch (e) { return fallback; }
+    }
+
+    function writeUser(k, v) {
+        localStorage.setItem(userKey(k), JSON.stringify(v));
+        return v;
+    }
+
+    function getUserAll(key) { return readUser(key, []); }
+
+    function userSeed() {
+        return {
+            sales: [], invoices: [], clients: [], products: [], payments: [],
+            company: {
+                business: '', name: 'SumbanePay', nuit: '', phone: '', email: '',
+                website: '', address: '', city: 'Maputo', logo: '',
+                invoicePrefix: 'FT', currency: 'MZN', currencySymbol: 'MT',
+                taxRate: 16, showTaxOnInvoice: true,
+                footer: 'Obrigado pela preferência!', paymentTerms: 30
+            },
+            settings: { theme: 'light', language: 'pt', notifications: true, currency: 'MZN' },
+            invoiceCounter: 0,
+            reminders: []
+        };
+    }
+
+    function bootUserData() {
+        if (!currentUser.id) return;
+        const seed = userSeed();
+        Object.entries(seed).forEach(([k, v]) => {
+            if (localStorage.getItem(userKey(k)) === null) writeUser(k, v);
+        });
+    }
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    function generateId(prefix) {
+        return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    }
+
+    function money(n) {
+        return new Intl.NumberFormat('pt-PT', {
+            minimumFractionDigits: 2, maximumFractionDigits: 2
+        }).format(Number(n) || 0) + ' MT';
+    }
+
+    function formatDate(d) {
+        if (!d) return '-';
+        return new Date(d).toLocaleDateString('pt-PT', {
+            day: '2-digit', month: '2-digit', year: 'numeric'
+        });
+    }
+
+    function formatDateTime(d) {
+        if (!d) return '-';
+        return new Date(d).toLocaleString('pt-PT', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    function toast(msg, icon = 'success') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const colors = { success: '#198754', error: '#dc3545', warning: '#ffc107', info: '#0dcaf0' };
+        const icons = { success: 'bi-check-circle-fill', error: 'bi-x-circle-fill', warning: 'bi-exclamation-triangle-fill', info: 'bi-info-circle-fill' };
+        const el = document.createElement('div');
+        el.className = 'toast-custom';
+        el.style.borderLeftColor = colors[icon] || colors.success;
+        el.innerHTML = `
+            <span style="font-size:1.2rem;color:${colors[icon] || colors.success};">
+                <i class="bi ${icons[icon] || icons.success}"></i>
+            </span>
+            <span style="flex:1;">${msg}</span>
+            <button class="toast-close" onclick="this.closest('.toast-custom').remove()">×</button>
+        `;
+        container.appendChild(el);
+        setTimeout(() => {
+            if (el.parentNode) {
+                el.style.animation = 'slideOutRight 0.3s ease forwards';
+                setTimeout(() => el.remove(), 300);
+            }
+        }, 3500);
+    }
+
+    function confirmAction(title, text, confirmText = 'Sim, confirmar') {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        return Swal.fire({
+            title, text, icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#176b5b',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Cancelar',
+            background: isDark ? '#162f27' : '#ffffff',
+            color: isDark ? '#f0efe8' : '#19362e'
+        });
+    }
+
+    function animateNumber(el, target) {
+        if (!el) return;
+        const start = 0;
+        const duration = 700;
+        const startTime = performance.now();
+        function tick(now) {
+            const progress = Math.min((now - startTime) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const val = start + (target - start) * eased;
+            el.textContent = Math.round(val);
+            if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+    }
+
+    // ============================================================
+    // SIDEBAR MOBILE
+    // ============================================================
+    function toggleSidebar() {
+        const s = document.getElementById('sidebar');
+        const b = document.getElementById('sidebarBackdrop');
+        if (s) s.classList.toggle('open');
+        if (b) b.classList.toggle('show', s.classList.contains('open'));
+    }
+    function closeSidebar() {
+        const s = document.getElementById('sidebar');
+        const b = document.getElementById('sidebarBackdrop');
+        if (s) s.classList.remove('open');
+        if (b) b.classList.remove('show');
+    }
+
+    // ============================================================
+    // SESSÃO — Voltar no browser termina sessão
+    // ============================================================
+    function clearAuthentication() {
+        [KEY + 'session', KEY + 'admin_session', 'sz_session', 'sz_admin_session',
+         'sumbanepay_session', 'sumbanepay_admin_session'].forEach(k => {
+            localStorage.removeItem(k);
+            sessionStorage.removeItem(k);
+        });
+        Object.keys(localStorage).forEach(k => {
+            if (/(session|auth|login|token)/i.test(k)) localStorage.removeItem(k);
+        });
+        Object.keys(sessionStorage).forEach(k => {
+            if (/(session|auth|login|token)/i.test(k)) sessionStorage.removeItem(k);
+        });
+    }
+
+    function performLogout() {
+        if (_isLoggingOut) return;
+        _isLoggingOut = true;
+        clearAuthentication();
+        window.location.replace('./login.html?logout=' + Date.now());
+    }
+
+    function logout() {
+        if (_isLoggingOut) return;
+        confirmAction('Terminar sessão?', 'Deseja sair da sua conta agora?', 'Sim, sair')
+            .then(r => { if (r.isConfirmed) performLogout(); });
+    }
+
+    function setupNavigationControl() {
+        if (_navigationSetup) return;
+        _navigationSetup = true;
+
+        window.history.pushState({ guard: true, t: Date.now() }, '', window.location.href);
+        window.history.pushState({ guard: true, t: Date.now() + 1 }, '', window.location.href);
+
+        window.addEventListener('popstate', function () {
+            if (_isLoggingOut) return;
+            performLogout();
+        });
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) performLogout();
+        });
+        document.addEventListener('keydown', function (event) {
+            const tag = event.target && event.target.tagName;
+            const editable = ['INPUT', 'TEXTAREA', 'SELECT'].indexOf(tag) !== -1 ||
+                             (event.target && event.target.isContentEditable);
+            if (!editable && event.key === 'Backspace') { event.preventDefault(); performLogout(); }
+            if (event.altKey && event.key === 'ArrowLeft') { event.preventDefault(); performLogout(); }
+            if (event.ctrlKey && event.key === 'ArrowLeft') { event.preventDefault(); performLogout(); }
+        });
+        window.addEventListener('mouseup', function (event) {
+            if (event.button === 3) { event.preventDefault(); performLogout(); }
+        });
+    }
+
+    function requireSession() {
+        if (_isLoggingOut) return false;
+        try {
+            if (window.performance) {
+                const nav = window.performance.getEntriesByType && window.performance.getEntriesByType('navigation')[0];
+                if (nav && nav.type === 'back_forward') { performLogout(); return false; }
+                if (window.performance.navigation && window.performance.navigation.type === 2) { performLogout(); return false; }
+            }
+        } catch (e) {}
+
+        try {
+            const sessionData = sessionStorage.getItem(KEY + 'session') || localStorage.getItem(KEY + 'session');
+            if (!sessionData) { performLogout(); return false; }
+
+            const session = JSON.parse(sessionData);
+            if (session.expiresAt && Date.now() > new Date(session.expiresAt).getTime()) {
+                performLogout(); return false;
+            }
+            if (!session.userId) { performLogout(); return false; }
+
+            currentUser.id = session.userId;
+            currentUser.name = session.name || 'Utilizador';
+            currentUser.email = session.email || '';
+            currentUser.role = session.role || 'Vendedor';
+
+            const users = JSON.parse(localStorage.getItem(KEY + 'users') || '[]');
+            const user = users.find(u => u.id === session.userId) || {
+                id: session.userId, name: currentUser.name,
+                email: currentUser.email, role: currentUser.role, status: 'ativo'
+            };
+            currentUser.full = user;
+
+            const elName = document.getElementById('userDisplay');
+            if (elName) elName.innerHTML = '<i class="bi bi-person-circle me-1"></i> ' + user.name;
+            const elAvatar = document.getElementById('userAvatar');
+            if (elAvatar) {
+                if (user.photo) {
+                    elAvatar.innerHTML = `<img src="${user.photo}" alt="${user.name}">`;
+                } else {
+                    elAvatar.textContent = (user.name || 'U').charAt(0).toUpperCase();
+                }
+            }
+            const elRole = document.getElementById('userRole');
+            if (elRole) {
+                const roles = { 'admin': 'Administrador', 'user': 'Vendedor', 'superadmin': 'SuperAdmin' };
+                elRole.textContent = roles[user.role] || 'Vendedor';
+            }
+            const fName = document.getElementById('footerUserName');
+            if (fName) fName.textContent = user.name;
+            const fEmail = document.getElementById('footerUserEmail');
+            if (fEmail) fEmail.textContent = user.email || 'sem-email@cadastrado.com';
+            const fRole = document.getElementById('footerUserRole');
+            if (fRole) {
+                const roles = { 'admin': 'Administrador', 'user': 'Vendedor', 'superadmin': 'SuperAdmin' };
+                fRole.textContent = roles[user.role] || 'Vendedor';
+            }
+
+            setupNavigationControl();
+            return true;
+        } catch (e) {
+            console.error('Erro sessão:', e);
+            performLogout();
+            return false;
+        }
+    }
+
+    // ============================================================
+    // FOTO DE PERFIL
+    // ============================================================
+    function resizeImage(file, maxWidth = 300, maxHeight = 300) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > maxWidth || height > maxHeight) {
+                        const ratio = Math.min(maxWidth / width, maxHeight / height);
+                        width = Math.round(width * ratio);
+                        height = Math.round(height * ratio);
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.8));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function handlePhotoUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            toast('Por favor, selecione uma imagem.', 'error');
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            toast('A imagem não pode ter mais de 2MB.', 'error');
+            return;
+        }
+
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        Swal.fire({
+            title: 'A processar imagem...',
+            text: 'Por favor aguarde',
+            allowOutsideClick: false,
+            background: isDark ? '#162f27' : '#ffffff',
+            color: isDark ? '#f0efe8' : '#19362e',
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        resizeImage(file, 300, 300).then((imageData) => {
+            const users = JSON.parse(localStorage.getItem(KEY + 'users') || '[]');
+            const updatedUsers = users.map(u => u.id === currentUser.id ? { ...u, photo: imageData } : u);
+            localStorage.setItem(KEY + 'users', JSON.stringify(updatedUsers));
+            currentUser.full = { ...currentUser.full, photo: imageData };
+            writeUser('user', currentUser.full);
+            Swal.close();
+            updateAvatarUI();
+            toast('Foto de perfil actualizada!');
+        }).catch((err) => {
+            Swal.close();
+            toast('Erro ao processar a imagem.', 'error');
+            console.error(err);
+        });
+    }
+
+    function updateAvatarUI() {
+        const avatarContainer = document.getElementById('avatarContainer');
+        const avatarLetter = document.getElementById('avatarLetter');
+        const removeBtn = document.getElementById('removePhotoBtn');
+        const headerAvatar = document.getElementById('userAvatar');
+        const user = currentUser.full || {};
+
+        if (user.photo) {
+            avatarLetter.style.display = 'none';
+            avatarContainer.innerHTML = `<img src="${user.photo}" alt="Foto de perfil">`;
+            if (headerAvatar) headerAvatar.innerHTML = `<img src="${user.photo}" alt="${user.name}">`;
+            removeBtn.classList.add('show');
+        } else {
+            avatarContainer.innerHTML = `<span class="avatar-letter" id="avatarLetter">${(user.name || '?').charAt(0).toUpperCase()}</span>`;
+            if (headerAvatar) headerAvatar.textContent = (user.name || 'U').charAt(0).toUpperCase();
+            removeBtn.classList.remove('show');
+        }
+    }
+
+    function removePhoto() {
+        confirmAction('Remover foto?', 'A foto de perfil será removida.', 'Remover')
+            .then(result => {
+                if (result.isConfirmed) {
+                    const users = JSON.parse(localStorage.getItem(KEY + 'users') || '[]');
+                    const updatedUsers = users.map(u => {
+                        if (u.id === currentUser.id) {
+                            const { photo, ...rest } = u;
+                            return rest;
+                        }
+                        return u;
+                    });
+                    localStorage.setItem(KEY + 'users', JSON.stringify(updatedUsers));
+                    const { photo, ...rest } = currentUser.full || {};
+                    currentUser.full = rest;
+                    writeUser('user', currentUser.full);
+                    updateAvatarUI();
+                    toast('Foto removida!', 'info');
+                }
+            });
+    }
+
+    function changeAvatarColor() {
+        const randomColor = avatarColors[Math.floor(Math.random() * avatarColors.length)];
+        const avatarContainer = document.getElementById('avatarContainer');
+        avatarContainer.style.background = randomColor;
+        toast('Cor do avatar alterada!', 'info');
+    }
+
+    // ============================================================
+    // CARREGAR PERFIL
+    // ============================================================
+    function loadProfile() {
+        if (_isLoggingOut) return;
+        if (!currentUser.id) return;
+        const user = currentUser.full || {};
+        const sales = getUserAll('sales');
+        const invoices = getUserAll('invoices');
+        const clients = getUserAll('clients');
+        const settings = readUser('settings', {});
+
+        updateAvatarUI();
+
+        document.getElementById('profileName').textContent = user.name || 'Utilizador';
+
+        const statusEl = document.getElementById('profileStatus');
+        const statusToggle = document.getElementById('statusToggle');
+        if (user.status === 'inativo') {
+            statusEl.className = 'badge-status inactive';
+            statusEl.textContent = 'Inativo';
+            if (statusToggle) statusToggle.checked = false;
+            document.getElementById('statusLabel').textContent = 'Conta inactiva';
+        } else {
+            statusEl.className = 'badge-status active';
+            statusEl.textContent = 'Ativo';
+            if (statusToggle) statusToggle.checked = true;
+            document.getElementById('statusLabel').textContent = 'Conta activa';
+        }
+
+        document.getElementById('profileSince').textContent = user.createdAt ?
+            `Desde ${formatDate(user.createdAt)}` : 'Desde —';
+
+        animateNumber(document.getElementById('statSales'), sales.length);
+        animateNumber(document.getElementById('statInvoices'), invoices.length);
+        animateNumber(document.getElementById('statClients'), clients.length);
+        document.getElementById('statLastAccess').textContent = user.lastAccess ?
+            formatDate(user.lastAccess) : 'Primeiro acesso';
+
+        ['name', 'business', 'email', 'phone', 'city', 'address', 'gender', 'birthdate'].forEach(field => {
+            const el = document.getElementById('u_' + field);
+            if (el) el.value = user[field] || '';
+        });
+
+        document.getElementById('actLastLogin').textContent = user.lastAccess ? formatDateTime(user.lastAccess) : '—';
+        document.getElementById('actSales').textContent = sales.length;
+        document.getElementById('actInvoices').textContent = invoices.length;
+        document.getElementById('actClients').textContent = clients.length;
+        document.getElementById('actMemberSince').textContent = user.createdAt ? formatDate(user.createdAt) : '—';
+
+        const theme = settings.theme || 'light';
+        updateThemeUI(theme);
+
+        const notifOn = settings.notifications !== false;
+        updateNotificationUI(notifOn);
+
+        const lang = settings.language || 'pt';
+        document.getElementById('langPt').classList.toggle('active', lang === 'pt');
+
+        const currency = settings.currency || 'MZN';
+        document.getElementById('currencyMZN').classList.toggle('active', currency === 'MZN');
+
+        generateAutoReminders();
+    }
+
+    // ============================================================
+    // ATUALIZAR PERFIL
+    // ============================================================
+    function handleUpdateProfile(event) {
+        event.preventDefault();
+
+        if (!currentUser.id) { toast('Utilizador não encontrado.', 'error'); return; }
+
+        const name = document.getElementById('u_name').value.trim();
+        const email = document.getElementById('u_email').value.trim().toLowerCase();
+        const phone = document.getElementById('u_phone').value.trim();
+        const business = document.getElementById('u_business').value.trim();
+        const city = document.getElementById('u_city').value.trim();
+        const address = document.getElementById('u_address').value.trim();
+        const gender = document.getElementById('u_gender').value;
+        const birthdate = document.getElementById('u_birthdate').value;
+        const password = document.getElementById('u_password').value;
+        const confirm = document.getElementById('u_confirm').value;
+        const statusToggle = document.getElementById('statusToggle').checked;
+
+        if (!name || !email) { toast('Nome e email são obrigatórios.', 'error'); return; }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            toast('Insira um email válido.', 'error');
+            document.getElementById('u_email').classList.add('is-invalid');
+            return;
+        }
+        document.getElementById('u_email').classList.remove('is-invalid');
+
+        const users = JSON.parse(localStorage.getItem(KEY + 'users') || '[]');
+        const emailExists = users.some(u => u.email === email && u.id !== currentUser.id);
+        if (emailExists) { toast('Este email já está em uso.', 'error'); return; }
+
+        if (password && password.length < 6) { toast('A nova senha deve ter pelo menos 6 caracteres.', 'error'); return; }
+        if (password && password !== confirm) { toast('As senhas não coincidem.', 'error'); return; }
+
+        const newStatus = statusToggle ? 'ativo' : 'inativo';
+        const now = new Date().toISOString();
+
+        const updatedUsers = users.map(u => {
+            if (u.id === currentUser.id) {
+                const updated = {
+                    ...u, name, email,
+                    phone: phone || u.phone,
+                    business: business || u.business,
+                    city: city || u.city,
+                    address: address || u.address,
+                    gender: gender || u.gender,
+                    birthdate: birthdate || u.birthdate,
+                    status: newStatus,
+                    lastAccess: now
+                };
+                if (password) updated.password = password;
+                return updated;
+            }
+            return u;
+        });
+
+        localStorage.setItem(KEY + 'users', JSON.stringify(updatedUsers));
+
+        currentUser.full = { ...currentUser.full, name, email, phone, business, city, address, gender, birthdate, status: newStatus, lastAccess: now };
+        writeUser('user', currentUser.full);
+
+        const session = JSON.parse(sessionStorage.getItem(KEY + 'session'));
+        if (session) {
+            session.name = name;
+            sessionStorage.setItem(KEY + 'session', JSON.stringify(session));
+        }
+
+        document.getElementById('profileName').textContent = name;
+        document.getElementById('userDisplay').innerHTML = '<i class="bi bi-person-circle me-1"></i> ' + name;
+        document.getElementById('footerUserName').textContent = name;
+        document.getElementById('footerUserEmail').textContent = email;
+        document.getElementById('actLastLogin').textContent = formatDateTime(now);
+
+        const statusEl = document.getElementById('profileStatus');
+        if (newStatus === 'inativo') {
+            statusEl.className = 'badge-status inactive';
+            statusEl.textContent = 'Inativo';
+            document.getElementById('statusLabel').textContent = 'Conta inactiva';
+        } else {
+            statusEl.className = 'badge-status active';
+            statusEl.textContent = 'Ativo';
+            document.getElementById('statusLabel').textContent = 'Conta activa';
+        }
+
+        document.getElementById('u_password').value = '';
+        document.getElementById('u_confirm').value = '';
+
+        toast('Perfil actualizado com sucesso!');
+    }
+
+    function editProfile() {
+        document.getElementById('u_name').focus();
+        document.getElementById('u_name').select();
+        toast('Edite os campos e clique em "Guardar perfil".', 'info');
+    }
+
+    // ============================================================
+    // EXPORTAR DADOS
+    // ============================================================
+    function exportUserData() {
+        if (!currentUser.id) { toast('Utilizador não encontrado.', 'error'); return; }
+        const user = currentUser.full || {};
+        const sales = getUserAll('sales');
+        const clients = getUserAll('clients');
+        const products = getUserAll('products');
+        const payments = getUserAll('payments');
+
+        const data = {
+            user: {
+                name: user.name, email: user.email, phone: user.phone,
+                business: user.business, city: user.city, address: user.address,
+                gender: user.gender, birthdate: user.birthdate, status: user.status,
+                createdAt: user.createdAt, lastAccess: user.lastAccess
+            },
+            stats: {
+                sales: sales.length,
+                clients: clients.length,
+                products: products.length,
+                payments: payments.length,
+                totalSalesValue: sales.reduce((s, x) => s + (x.total || 0), 0)
+            },
+            sales: sales.map(s => ({ invoiceNo: s.invoiceNo, clientName: s.clientName, total: s.total, method: s.method, status: s.status, date: s.date })),
+            clients: clients.map(c => ({ name: c.name, phone: c.phone, email: c.email, address: c.address, city: c.city, status: c.status })),
+            products: products.map(p => ({ name: p.name, category: p.category, price: p.price, stock: p.stock, status: p.status }))
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `dados_utilizador_${new Date().toISOString().slice(0, 10)}.json`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        toast('Dados exportados!');
+    }
+
+    // ============================================================
+    // ELIMINAR CONTA
+    // ============================================================
+    function deleteAccount() {
+        if (!currentUser.id) { toast('Utilizador não encontrado.', 'error'); return; }
+        const user = currentUser.full || {};
+
+        confirmAction(
+            '⚠️ Eliminar conta permanentemente?',
+            `Tem certeza que deseja eliminar a sua conta "${user.name}"? Todas as suas vendas, clientes, produtos e dados serão permanentemente removidos. Esta acção não pode ser desfeita.`,
+            'Sim, eliminar conta'
+        ).then(result => {
+            if (result.isConfirmed) {
+                let users = JSON.parse(localStorage.getItem(KEY + 'users') || '[]');
+                users = users.filter(u => u.id !== currentUser.id);
+                localStorage.setItem(KEY + 'users', JSON.stringify(users));
+
+                const keys = ['company', 'settings', 'clients', 'products', 'sales', 'invoices', 'payments', 'invoiceCounter', 'reminders', 'user'];
+                keys.forEach(k => localStorage.removeItem(userKey(k)));
+
+                toast('Conta eliminada!', 'success');
+                setTimeout(() => performLogout(), 800);
+            }
+        });
+    }
+
+    // ============================================================
+    // TEMA
+    // ============================================================
+    function toggleTheme() {
+        const cur = localStorage.getItem('sumbanepay_theme') || 'light';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('sumbanepay_theme', next);
+        localStorage.setItem('theme', next);
+        localStorage.setItem('sz_theme', next);
+        localStorage.setItem('darkMode', next === 'dark' ? 'true' : 'false');
+        applyTheme(next);
+        updateThemeUI(next);
+    }
+
+    function setTheme(theme) {
+        localStorage.setItem('sumbanepay_theme', theme);
+        localStorage.setItem('theme', theme);
+        localStorage.setItem('sz_theme', theme);
+        localStorage.setItem('darkMode', theme === 'dark' ? 'true' : 'false');
+        const settings = readUser('settings', {});
+        settings.theme = theme;
+        writeUser('settings', settings);
+        applyTheme(theme);
+        updateThemeUI(theme);
+        toast(`Tema ${theme === 'dark' ? 'escuro' : 'claro'} activado!`);
+    }
+
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            document.body.classList.add('dark-mode', 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            document.documentElement.setAttribute('data-bs-theme', 'light');
+            document.body.classList.remove('dark-mode', 'dark');
+        }
+    }
+
+    function updateThemeUI(theme) {
+        const light = document.getElementById('themeLight');
+        const dark = document.getElementById('themeDark');
+        if (light) light.classList.toggle('active', theme === 'light');
+        if (dark) dark.classList.toggle('active', theme === 'dark');
+    }
+
+    function loadTheme() {
+        const t = localStorage.getItem('sumbanepay_theme') || localStorage.getItem('theme') || 'light';
+        applyTheme(t);
+    }
+
+    function setLanguage(lang) {
+        const settings = readUser('settings', {});
+        settings.language = lang;
+        writeUser('settings', settings);
+        const el = document.getElementById('langPt');
+        if (el) el.classList.toggle('active', lang === 'pt');
+        toast('Idioma alterado para Português!');
+    }
+
+    function setCurrency(currency) {
+        const settings = readUser('settings', {});
+        settings.currency = currency;
+        writeUser('settings', settings);
+        const el = document.getElementById('currencyMZN');
+        if (el) el.classList.toggle('active', currency === 'MZN');
+        toast('Moeda alterada para Metical (MT)!');
+    }
+
+    function toggleNotifications() {
+        const settings = readUser('settings', {});
+        settings.notifications = settings.notifications === false ? true : false;
+        writeUser('settings', settings);
+        updateNotificationUI(settings.notifications);
+        toast(`Notificações ${settings.notifications ? 'activadas' : 'desactivadas'}!`);
+    }
+
+    function updateNotificationUI(enabled) {
+        const el = document.getElementById('notifOn');
+        if (!el) return;
+        el.classList.toggle('active', enabled);
+        el.innerHTML = `
+            <span class="pref-icon"><i class="bi bi-bell${enabled ? '-fill' : ''}"></i></span>
+            <span class="pref-label">Notificações ${enabled ? 'On' : 'Off'}</span>
+        `;
+    }
+
+    // ============================================================
+    // LEMBRETES
+    // ============================================================
+    function addReminder(type, title, message, icon = 'bi-info-circle') {
+        const notifs = readUser('reminders', []);
+        notifs.unshift({
+            id: 'rem_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+            type, title, message, icon, read: false,
+            date: new Date().toISOString()
+        });
+        writeUser('reminders', notifs);
+        updateNotifDot();
+    }
+    function getNotifications() { return readUser('reminders', []); }
+    function markNotifRead(id) {
+        const n = readUser('reminders', []).map(x => x.id === id ? { ...x, read: true } : x);
+        writeUser('reminders', n);
+        renderNotifications();
+        updateNotifDot();
+    }
+    function clearReminders() {
+        confirmAction('Limpar lembretes?', 'Todos os lembretes serão eliminados.', 'Sim, limpar')
+            .then(r => {
+                if (r.isConfirmed) {
+                    writeUser('reminders', []);
+                    renderNotifications();
+                    updateNotifDot();
+                    toast('Lembretes limpos.', 'info');
+                }
+            });
+    }
+    function updateNotifDot() {
+        const unread = getNotifications().filter(n => !n.read).length;
+        const dot = document.getElementById('notifDot');
+        if (dot) dot.classList.toggle('show', unread > 0);
+    }
+    function generateAutoReminders() {
+        const sales = getUserAll('sales');
+        const payments = getUserAll('payments');
+        const notifs = getNotifications();
+        const user = currentUser.full || {};
+
+        const pendingSales = sales.filter(s => s.status === 'Pendente' || s.status === 'Parcial');
+        if (pendingSales.length > 0 && !notifs.some(n => n.type === 'pending_sales')) {
+            const totalPending = pendingSales.reduce((sum, s) => sum + (s.total || 0), 0);
+            addReminder('pending_sales', '⚠️ Vendas Pendentes',
+                pendingSales.length + ' venda(s) pendente(s): ' + money(totalPending) + '.',
+                'bi-exclamation-triangle');
+        }
+
+        const pendingPayments = payments.filter(p => p.status === 'Pendente' || p.status === 'Parcial');
+        if (pendingPayments.length > 0 && !notifs.some(n => n.type === 'pending_payments')) {
+            const totalPendingPay = pendingPayments.reduce((sum, p) => sum + (p.value || 0), 0);
+            addReminder('pending_payments', '⚠️ Pagamentos Pendentes',
+                pendingPayments.length + ' pagamento(s) pendente(s): ' + money(totalPendingPay) + '.',
+                'bi-exclamation-triangle');
+        }
+
+        if ((!user.phone || !user.address) && !notifs.some(n => n.type === 'profile_incomplete')) {
+            addReminder('profile_incomplete', '📋 Perfil Incompleto',
+                'Complete o seu perfil adicionando telefone e endereço.',
+                'bi-person-plus');
+        }
+    }
+    function toggleNotifDropdown() {
+        notifDropdownOpen = !notifDropdownOpen;
+        document.getElementById('notifDropdown').classList.toggle('show', notifDropdownOpen);
+        if (notifDropdownOpen) renderNotifications();
+    }
+    function renderNotifications() {
+        const list = getNotifications();
+        const c = document.getElementById('notifList');
+        if (list.length === 0) {
+            c.innerHTML = '<div class="notif-empty"><i class="bi bi-inbox"></i>Nenhum lembrete no momento</div>';
+            return;
+        }
+        c.innerHTML = list.slice(0, 10).map(n => `
+            <div class="notif-item ${!n.read ? 'unread' : ''} ${n.type === 'pending_sales' || n.type === 'pending_payments' ? 'alert' : ''}" onclick="markNotifRead('${n.id}')">
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <span class="notif-icon" style="color:${n.type === 'pending_sales' || n.type === 'pending_payments' ? 'var(--sz-danger)' : 'var(--sz-green)'}">
+                        <i class="${n.icon || 'bi-info-circle'}"></i>
+                    </span>
+                    <div>
+                        <div class="notif-title">${n.title}</div>
+                        <div class="notif-text">${n.message}</div>
+                        <div class="notif-time">${formatDateTime(n.date)}</div>
+                    </div>
+                </div>
+            </div>
+        `).join('') + `
+            <div style="padding:0.5rem 1rem;border-top:1px solid var(--sz-line);text-align:center;">
+                <button class="btn-sm-sz" onclick="event.stopPropagation();clearReminders()" style="width:100%;">
+                    <i class="bi bi-check-all me-1"></i> Limpar lembretes
+                </button>
+            </div>`;
+        updateNotifDot();
+    }
+
+    // ============================================================
+    // BOOT
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function () {
+        loadTheme();
+        if (!requireSession()) return;
+        bootUserData();
+        loadProfile();
+
+        // Toggle status
+        const toggle = document.getElementById('statusToggle');
+        if (toggle) {
+            toggle.addEventListener('change', function () {
+                const label = document.getElementById('statusLabel');
+                label.textContent = this.checked ? 'Conta activa' : 'Conta inactiva';
+            });
+        }
+
+        document.querySelectorAll('.sidebar .nav-link').forEach(l => l.addEventListener('click', closeSidebar));
+
+        document.addEventListener('click', function (e) {
+            const d = document.getElementById('notifDropdown');
+            const b = document.getElementById('notifBtn');
+            if (d && b && !d.contains(e.target) && !b.contains(e.target)) {
+                d.classList.remove('show');
+                notifDropdownOpen = false;
+            }
+        });
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 992) closeSidebar();
+        });
+
+        window.addEventListener('storage', function (e) {
+            if (e.key && e.key.indexOf(userKey('')) === 0) loadProfile();
+        });
+
+        autoUpdateInterval = setInterval(function () {
+            const session = sessionStorage.getItem(KEY + 'session') || localStorage.getItem(KEY + 'session');
+            if (!session) {
+                if (autoUpdateInterval) clearInterval(autoUpdateInterval);
+                performLogout();
+            } else {
+                generateAutoReminders();
+            }
+        }, 30000);
+    });
+
+    // ============================================================
+    // EXPORTAR
+    // ============================================================
+    Object.assign(window, {
+        logout, toggleTheme, setTheme, setLanguage, setCurrency, toggleNotifications,
+        editProfile, handlePhotoUpload, removePhoto, changeAvatarColor,
+        handleUpdateProfile, exportUserData, deleteAccount, loadProfile,
+        toggleNotifDropdown, markNotifRead, clearReminders,
+        toggleSidebar, closeSidebar
+    });
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,2105 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <title>Utilizadores — SumbanePay SuperAdmin</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <!-- ✅ AUTH-GUARD — sempre primeiro -->
+    <script src="../../core/security-utils.js"></script>
+    <script src="../../core/storage-core.js"></script>
+    <script src="../../core/pbkdf2-fallback.js"></script>
+    <script src="../../core/auth-core.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore-compat.js"></script>
+    <script src="../../core/firebase-init.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 20px rgba(16, 63, 55, 0.06);
+            --sz-shadow-hover: 0 12px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-info: #0dcaf0;
+            --sz-purple: #9b59b6;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+            --sz-focus: #0b5ed7;
+            --sz-surface-2: #f0efe8;
+            --sz-input-bg: #ffffff;
+            --sz-on-accent: #ffffff;
+            --sz-table-bg: #ffffff;
+            --sz-table-head-bg: #f7f6f1;
+            --sz-table-row-even: #faf9f5;
+            --sz-table-row-hover: rgba(23, 107, 91, 0.06);
+            color-scheme: light;
+        }
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --sz-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+            --sz-info: #7cbdda;
+            --sz-purple: #b07cc6;
+            --sz-focus: #8fc7ff;
+            --sz-surface-2: #1d3b31;
+            --sz-input-bg: #10271f;
+            --sz-on-accent: #07130f;
+            --sz-table-bg: #0f2620;
+            --sz-table-head-bg: #0a1a14;
+            --sz-table-row-even: #132e26;
+            --sz-table-row-hover: rgba(42, 157, 143, 0.15);
+            color-scheme: dark;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+        [data-theme="dark"] body { background: #0d1c17 !important; color: #f0efe8 !important; }
+        [data-theme="dark"] .app-wrapper,
+        [data-theme="dark"] .app-main,
+        [data-theme="dark"] .app-content { background: #0d1c17 !important; }
+        .font-display { font-family: 'Playfair Display', 'Georgia', serif; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sz-paper); }
+        ::-webkit-scrollbar-thumb { background: var(--sz-green); border-radius: 10px; }
+
+        .text-muted { color: var(--sz-muted) !important; opacity: 1 !important; }
+        [data-theme="dark"] .text-muted,
+        [data-theme="dark"] .text-muted * { color: #c0d0c8 !important; opacity: 1 !important; }
+
+        .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+        .app-row { display: flex; flex: 1; position: relative; }
+        .app-main { display: flex; flex-direction: column; flex: 1; min-height: 100vh; width: 100%; }
+        .app-content { flex: 1; padding-bottom: 1rem; }
+        .app-footer { flex-shrink: 0; width: 100%; }
+
+        .brand {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); transform: translateY(-1px); }
+        .brand b { color: var(--sz-coral); }
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+        }
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(23, 107, 91, 0.4);
+        }
+        [data-theme="dark"] .brand { color: #f0efe8 !important; }
+        [data-theme="dark"] .brand b { color: #f28a71 !important; }
+        [data-theme="dark"] .brand .logo-mark { background: linear-gradient(135deg, #2a9d8f, #1a6b5e) !important; }
+
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz i { transition: var(--transition); }
+        .btn-sz:hover i { transform: translateX(4px); }
+        [data-theme="dark"] .btn-sz { background: linear-gradient(135deg, #2a9d8f, #3db3a5); }
+        [data-theme="dark"] .btn-sz:hover { background: linear-gradient(135deg, #1a6b5e, #2a9d8f); }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+        [data-theme="dark"] .btn-outline-sz { border-color: var(--sz-green-light); color: var(--sz-green-light); }
+        [data-theme="dark"] .btn-outline-sz:hover { background: var(--sz-green-light); color: var(--sz-paper); }
+
+        .btn-outline-danger-sz {
+            border: 2px solid var(--sz-danger);
+            color: var(--sz-danger);
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-danger-sz:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(220, 53, 69, 0.3);
+        }
+        [data-theme="dark"] .btn-outline-danger-sz { color: #f06a7a !important; border-color: #f06a7a !important; }
+        [data-theme="dark"] .btn-outline-danger-sz:hover { background: #f06a7a !important; color: #0d1c17 !important; }
+
+        .btn-sm-sz {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            color: var(--sz-muted);
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm-sz:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+        }
+        .btn-sm-sz.success:hover { background: var(--sz-green); color: #fff; border-color: var(--sz-green); }
+        .btn-sm-sz.danger:hover { background: var(--sz-danger); color: #fff; border-color: var(--sz-danger); }
+        .btn-sm-sz.warning:hover { background: var(--sz-warning); color: var(--sz-dark); border-color: var(--sz-warning); }
+        .btn-sm-sz.info:hover { background: var(--sz-info); color: #fff; border-color: var(--sz-info); }
+        [data-theme="dark"] .btn-sm-sz { border-color: #2a4a3e !important; color: #a0b0a8 !important; }
+        [data-theme="dark"] .btn-sm-sz:hover { background: rgba(255, 255, 255, 0.06) !important; color: #f0efe8 !important; border-color: #f0c97a !important; }
+
+        .btn-logout-header {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            border: 2px solid var(--sz-danger);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-danger);
+            cursor: pointer;
+            font-size: 1.1rem;
+            text-decoration: none;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .btn-logout-header:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            transform: scale(1.08);
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+        }
+        .btn-logout-header i { transition: var(--transition); }
+        .btn-logout-header:hover i { transform: translateX(2px); }
+        .btn-logout-header .tooltip-logout {
+            position: absolute;
+            bottom: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.55rem;
+            background: var(--sz-dark);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+        .btn-logout-header:hover .tooltip-logout { opacity: 1; bottom: -32px; }
+        [data-theme="dark"] .btn-logout-header { border-color: #f06a7a; color: #f06a7a; }
+        [data-theme="dark"] .btn-logout-header:hover { background: #f06a7a; color: #0d1c17; }
+        [data-theme="dark"] .btn-logout-header .tooltip-logout { background: #2a4a3e; color: #f0efe8; }
+
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        [data-theme="dark"] .eyebrow { color: #f28a71 !important; }
+
+        .sidebar {
+            background: var(--sz-white);
+            min-height: 100vh;
+            border-right: 1px solid var(--sz-line);
+            position: fixed;
+            top: 0; left: 0;
+            padding: 1.5rem 1rem;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+            max-height: 100vh;
+            overflow-y: auto;
+            width: 260px;
+            flex-shrink: 0;
+            z-index: 1050;
+            transform: translateX(-100%);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar .nav-link {
+            color: var(--sz-muted);
+            border-radius: 8px;
+            margin: 0.15rem 0;
+            padding: 10px 14px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i { width: 22px; text-align: center; font-size: 1.05rem; flex-shrink: 0; }
+        .sidebar .nav-link .badge-nav {
+            margin-left: auto;
+            background: var(--sz-coral);
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 1px 8px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+        .sidebar-subtitle {
+            font-size: 0.65rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--sz-muted);
+            transition: color 0.3s ease;
+            margin-top: 0.25rem;
+            font-weight: 600;
+        }
+        [data-theme="dark"] .sidebar { background: #0a1a14 !important; border-color: #2a4a3e !important; }
+        [data-theme="dark"] .sidebar .nav-link { color: #b8c5bf !important; }
+        [data-theme="dark"] .sidebar .nav-link i { color: #8a9a92 !important; }
+        [data-theme="dark"] .sidebar .nav-link:hover,
+        [data-theme="dark"] .sidebar .nav-link.active {
+            background: rgba(42, 157, 143, 0.15) !important;
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .sidebar .nav-link:hover i,
+        [data-theme="dark"] .sidebar .nav-link.active i { color: #f0c97a !important; }
+        [data-theme="dark"] .sidebar-subtitle { color: #a0b0a8 !important; }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+
+        .menu-toggle {
+            display: none;
+            width: 38px; height: 38px;
+            border-radius: 8px;
+            border: 1.5px solid var(--sz-line);
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .menu-toggle:hover { border-color: var(--sz-green); }
+        [data-theme="dark"] .menu-toggle { background: var(--sz-white); border-color: #2a4a3e; color: #f0efe8; }
+
+        .top-nav {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.3;
+        }
+        .top-nav .top-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+        [data-theme="dark"] .top-nav { background: #0a1a14 !important; border-color: #2a4a3e !important; }
+
+        .breadcrumb-premium {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--sz-muted);
+            font-size: 0.8rem;
+            flex-wrap: wrap;
+            overflow: hidden;
+        }
+        .breadcrumb-premium .breadcrumb-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .breadcrumb-premium .breadcrumb-item a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .breadcrumb-premium .breadcrumb-item.current {
+            color: var(--sz-ink);
+            font-weight: 600;
+            padding: 2px 6px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .breadcrumb-premium .home-icon { color: var(--sz-green); font-size: 0.9rem; }
+        .breadcrumb-premium .separator { color: var(--sz-muted-light); font-size: 0.6rem; }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            padding: 2px 8px 2px 6px;
+            border-radius: 20px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(23, 107, 91, 0.15);
+            flex-shrink: 0;
+        }
+        .live-badge .dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .user-info-premium { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .user-info-premium .user-avatar {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 12px rgba(23, 107, 91, 0.25);
+            cursor: pointer;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .user-info-premium .user-avatar .status-badge {
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--sz-success);
+            border: 2px solid var(--sz-white);
+        }
+        .user-info-premium .user-details { display: flex; flex-direction: column; line-height: 1.2; text-align: right; min-width: 0; }
+        .user-info-premium .user-details .user-name {
+            font-weight: 600;
+            color: var(--sz-ink);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+        .user-info-premium .user-details .user-role { font-size: 0.55rem; color: var(--sz-muted); text-transform: uppercase; }
+        .user-info-premium .btn-icon-premium {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-muted);
+            cursor: pointer;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .user-info-premium .btn-icon-premium:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+            transform: translateY(-1px);
+        }
+        [data-theme="dark"] .user-info-premium .user-details .user-name { color: #f0efe8 !important; }
+        [data-theme="dark"] .user-info-premium .user-details .user-role { color: #a0b0a8 !important; }
+        [data-theme="dark"] .user-info-premium .btn-icon-premium { border-color: #2a4a3e !important; color: #a0b0a8 !important; }
+
+        .stat-card {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--sz-line);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--sz-shadow-hover); }
+        .stat-card .stat-icon {
+            width: 40px; height: 40px;
+            border-radius: var(--sz-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card .stat-icon.green { background: rgba(23, 107, 91, 0.12); color: var(--sz-green); }
+        .stat-card .stat-icon.gold { background: rgba(232, 179, 91, 0.12); color: var(--sz-gold); }
+        .stat-card .stat-icon.coral { background: rgba(239, 109, 78, 0.12); color: var(--sz-coral); }
+        .stat-card .stat-icon.red { background: rgba(220, 53, 69, 0.12); color: var(--sz-danger); }
+        .stat-card .stat-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--sz-muted);
+            font-weight: 700;
+        }
+        .stat-card .stat-value {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sz-ink);
+            line-height: 1.2;
+            margin-top: 2px;
+        }
+        .stat-card .stat-change {
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-top: 4px;
+            padding: 1px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-card .stat-change.up { color: var(--sz-green); background: rgba(23, 107, 91, 0.08); }
+        .stat-card .stat-change.down { color: var(--sz-danger); background: rgba(220, 53, 69, 0.08); }
+        .stat-card .stat-change.neutral { color: var(--sz-muted); background: rgba(90, 106, 98, 0.06); }
+        .stat-card.green { border-left: 3px solid var(--sz-green); }
+        .stat-card.gold { border-left: 3px solid var(--sz-gold); }
+        .stat-card.coral { border-left: 3px solid var(--sz-coral); }
+        .stat-card.red { border-left: 3px solid var(--sz-danger); }
+        [data-theme="dark"] .stat-card { background: var(--sz-white); border-color: var(--sz-line); }
+        [data-theme="dark"] .stat-card .stat-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .stat-card .stat-label { color: #a0b0a8 !important; }
+        [data-theme="dark"] .stat-card .stat-change { color: #a0b0a8 !important; }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+        .filter-bar .form-control,
+        .filter-bar .form-select {
+            border-radius: 8px;
+            border: 2px solid var(--sz-line);
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            background: var(--sz-white);
+            transition: var(--transition);
+            color: var(--sz-ink);
+            min-width: 90px;
+        }
+        .filter-bar .form-control:focus,
+        .filter-bar .form-select:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
+        }
+        [data-theme="dark"] .filter-bar .form-control,
+        [data-theme="dark"] .filter-bar .form-select {
+            background: #10271f !important;
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .filter-bar .form-control::placeholder { color: #6a8a7a !important; }
+
+        .card-sz {
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            background: var(--sz-white);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        .card-sz:hover { box-shadow: var(--sz-shadow-hover); }
+        [data-theme="dark"] .card-sz { background: var(--sz-white) !important; border-color: #2a4a3e !important; }
+
+        .table-responsive { background: var(--sz-table-bg) !important; }
+        [data-theme="dark"] .table-responsive { background: #0f2620 !important; }
+
+        .table-custom {
+            background: var(--sz-table-bg) !important;
+            color: var(--sz-ink);
+            margin: 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .table-custom thead { background: var(--sz-table-head-bg) !important; }
+        .table-custom thead tr { background: var(--sz-table-head-bg) !important; }
+        .table-custom thead th {
+            font-size: 0.55rem;
+            letter-spacing: 0.08em;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 2px solid var(--sz-line);
+            padding: 0.5rem 0.3rem;
+            background: var(--sz-table-head-bg) !important;
+            cursor: pointer;
+            user-select: none;
+            transition: var(--transition);
+            text-align: left;
+        }
+        .table-custom thead th:hover { color: var(--sz-green); }
+        .table-custom thead th .sort-icon { opacity: 0.3; transition: var(--transition); }
+        .table-custom thead th .sort-icon.active { opacity: 1; color: var(--sz-green); }
+        [data-theme="dark"] .table-custom thead th {
+            background: #0a1a14 !important;
+            color: #c0d0c8 !important;
+            border-bottom-color: #2a4a3e !important;
+        }
+        .table-custom tbody { background: var(--sz-table-bg) !important; }
+        .table-custom tbody tr { background: var(--sz-table-bg) !important; transition: background 0.2s ease; }
+        .table-custom tbody tr:nth-child(even) { background: var(--sz-table-row-even) !important; }
+        .table-custom tbody tr:hover { background: var(--sz-table-row-hover) !important; }
+        .table-custom tbody td {
+            padding: 0.5rem 0.3rem;
+            border-bottom: 1px solid var(--sz-line);
+            vertical-align: middle;
+            color: var(--sz-ink);
+            font-size: 0.8rem;
+            background: transparent !important;
+        }
+        .table-custom .empty-state { padding: 1.5rem; text-align: center; color: var(--sz-muted); }
+        .table-custom .empty-state i { font-size: 2rem; display: block; margin-bottom: 0.4rem; opacity: 0.3; }
+        [data-theme="dark"] .table-custom tbody { background: #0f2620 !important; }
+        [data-theme="dark"] .table-custom tbody tr { background: #0f2620 !important; }
+        [data-theme="dark"] .table-custom tbody tr:nth-child(even) { background: #132e26 !important; }
+        [data-theme="dark"] .table-custom tbody tr:hover { background: rgba(42, 157, 143, 0.15) !important; }
+        [data-theme="dark"] .table-custom tbody td {
+            color: #f0efe8 !important;
+            border-bottom-color: #2a4a3e !important;
+            background: transparent !important;
+        }
+        [data-theme="dark"] .table-custom .empty-state { color: #a0b0a8 !important; }
+
+        .badge-role {
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: inline-block;
+        }
+        .badge-role.superadmin { background: var(--sz-gold); color: var(--sz-dark); }
+        .badge-role.admin { background: #9b59b6; color: #fff; }
+        .badge-role.user, .badge-role.Vendedor { background: var(--sz-muted); color: #fff; }
+        [data-theme="dark"] .badge-role.superadmin { background: #f0c97a !important; color: #0d1c17 !important; }
+        [data-theme="dark"] .badge-role.admin { background: #b07cc6 !important; color: #0d1c17 !important; }
+        [data-theme="dark"] .badge-role.user,
+        [data-theme="dark"] .badge-role.Vendedor { background: #5a6a62 !important; color: #f0efe8 !important; }
+
+        .badge-status {
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: inline-block;
+        }
+        .badge-status.active { background: #e4f3e9; color: var(--sz-green); }
+        .badge-status.inactive { background: #f8d7da; color: #dc3545; }
+        .badge-status.suspended { background: #fff2ce; color: #987021; }
+        [data-theme="dark"] .badge-status.active { background: rgba(42, 157, 143, 0.35) !important; color: #4ecdc4 !important; }
+        [data-theme="dark"] .badge-status.inactive { background: rgba(240, 106, 122, 0.30) !important; color: #f06a7a !important; }
+        [data-theme="dark"] .badge-status.suspended { background: rgba(240, 201, 122, 0.30) !important; color: #f0c97a !important; }
+
+        .user-info-cell { display: flex; align-items: center; gap: 10px; }
+        .user-avatar-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.7rem;
+            flex-shrink: 0;
+        }
+        .user-name { font-weight: 600; font-size: 0.8rem; color: var(--sz-ink); }
+        .user-email-sm { font-size: 0.6rem; color: var(--sz-muted); display: block; }
+        .user-business { font-size: 0.55rem; color: var(--sz-muted); display: block; }
+        [data-theme="dark"] .user-name { color: #f0efe8 !important; }
+        [data-theme="dark"] .user-email-sm,
+        [data-theme="dark"] .user-business { color: #a0b0a8 !important; }
+
+        .pagination-custom .page-link {
+            border: 1px solid var(--sz-line);
+            color: var(--sz-muted);
+            background: var(--sz-white);
+            transition: var(--transition);
+            padding: 4px 10px;
+            font-size: 0.75rem;
+        }
+        .pagination-custom .page-link:hover {
+            background: var(--sz-paper);
+            color: var(--sz-green);
+            border-color: var(--sz-green);
+        }
+        .pagination-custom .page-item.active .page-link {
+            background: var(--sz-green);
+            border-color: var(--sz-green);
+            color: #fff;
+        }
+        [data-theme="dark"] .pagination-custom .page-link {
+            background: var(--sz-white) !important;
+            border-color: #2a4a3e !important;
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .pagination-custom .page-item.active .page-link {
+            background: #2a9d8f !important;
+            border-color: #2a9d8f !important;
+            color: #fff !important;
+        }
+
+        .app-footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 0.5rem 1rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            margin-top: 1rem;
+        }
+        .app-footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .app-footer .footer-brand { display: flex; align-items: center; gap: 8px; }
+        .app-footer .footer-logo {
+            width: 26px; height: 26px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.5rem;
+        }
+        .app-footer .footer-company {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 0.8rem;
+        }
+        .app-footer .footer-company b { color: var(--sz-coral); }
+        .app-footer .footer-version {
+            font-size: 0.5rem;
+            color: var(--sz-muted);
+            background: var(--sz-paper);
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+        .app-footer .footer-user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .app-footer .user-data-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.6rem;
+            color: var(--sz-muted);
+        }
+        .app-footer .user-data-item i { color: var(--sz-green); font-size: 0.7rem; }
+        .app-footer .data-value { color: var(--sz-ink); font-weight: 500; }
+        .app-footer .user-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        .app-footer .user-status .status-dot {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        [data-theme="dark"] .app-footer { background: #0a1a14 !important; border-color: #2a4a3e !important; }
+        [data-theme="dark"] .app-footer .footer-company { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .data-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .user-data-item { color: #a0b0a8 !important; }
+
+        .modal-content-sz {
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            border-radius: var(--sz-radius);
+            border: 1px solid var(--sz-line);
+        }
+        .modal-content-sz .modal-header {
+            border-bottom-color: var(--sz-line);
+            padding: 0.7rem 1rem;
+        }
+        .modal-content-sz .modal-header .modal-title {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            color: var(--sz-ink);
+            font-size: 1rem;
+        }
+        .modal-content-sz .modal-body { padding: 1rem; }
+        .modal-content-sz .modal-footer {
+            border-top-color: var(--sz-line);
+            padding: 0.7rem 1rem;
+        }
+        [data-theme="dark"] .modal-content-sz {
+            background: #162f27 !important;
+            border-color: #2a4a3e !important;
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .modal-content-sz .modal-header .modal-title { color: #f0efe8 !important; }
+        [data-theme="dark"] .modal-content-sz .modal-body { color: #f0efe8 !important; }
+        [data-theme="dark"] .modal-content-sz .modal-body strong { color: #f0efe8 !important; }
+        [data-theme="dark"] .modal-content-sz .modal-body h5 { color: #f0efe8 !important; }
+
+        .heading-description {
+            font-size: 0.8rem;
+            color: var(--sz-muted);
+            margin-top: 0.25rem;
+        }
+        .heading-description strong { color: var(--sz-ink); }
+        [data-theme="dark"] .heading-description { color: #c0d0c8 !important; }
+        [data-theme="dark"] .heading-description strong { color: #f0efe8 !important; }
+
+        .data-alert {
+            display: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            margin-bottom: 12px;
+            border: 1px solid;
+        }
+        .data-alert.show { display: block; }
+        .data-alert.warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: rgba(255, 193, 7, 0.4);
+            color: #987021;
+        }
+        .data-alert.info {
+            background: rgba(13, 202, 240, 0.1);
+            border-color: rgba(13, 202, 240, 0.4);
+            color: #0a7a8f;
+        }
+        [data-theme="dark"] .data-alert.warning {
+            background: rgba(240, 201, 122, 0.15);
+            border-color: rgba(240, 201, 122, 0.4);
+            color: #f0c97a;
+        }
+        [data-theme="dark"] .data-alert.info {
+            background: rgba(124, 189, 218, 0.15);
+            border-color: rgba(124, 189, 218, 0.4);
+            color: #7cbdda;
+        }
+
+        @media (min-width: 993px) {
+            .sidebar { transform: translateX(0) !important; position: sticky; box-shadow: none; }
+            .sidebar-overlay { display: none !important; }
+            .menu-toggle { display: none !important; }
+        }
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                width: 280px;
+                height: 100vh;
+                box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.active { display: block; }
+            .menu-toggle { display: flex; }
+            .stat-card .stat-value { font-size: 1.3rem; }
+        }
+        @media (max-width: 768px) {
+            .user-info-premium .user-details { display: none; }
+            .stat-card .stat-value { font-size: 1.1rem; }
+            .table-custom { font-size: 0.7rem; }
+            .table-custom thead th { font-size: 0.5rem; padding: 0.4rem 0.2rem; }
+            .table-custom tbody td { padding: 0.4rem 0.2rem; font-size: 0.7rem; }
+        }
+        @media (max-width: 425px) {
+            .table-custom thead th, .table-custom tbody td { padding: 0.35rem 0.15rem; font-size: 0.65rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+
+    <link rel="stylesheet" href="../../responsive.css">
+    <link rel="stylesheet" href="../../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <!-- ============================================================
+       PROTEÇÃO DE DADOS — Executa ANTES de tudo
+       ============================================================ -->
+    <script>
+    (function masterProtection() {
+        'use strict';
+
+        const PROTECTED_KEYS = [
+            'sumbanepay_users',
+            'sumbanepay_users_backup',
+            'sumbanepay_theme'
+        ];
+
+        const ALLOWED_REMOVAL = [
+            'sumbanepay_admin_session',
+            'sumbanepay_session',
+            'sz_admin_session',
+            'sz_session',
+            'admin_session',
+            'superadmin_session'
+        ];
+
+        try {
+            const originalClear = Storage.prototype.clear;
+            Storage.prototype.clear = function() {
+                const storage = this;
+                const protectedData = {};
+
+                PROTECTED_KEYS.forEach(key => {
+                    try {
+                        const val = storage.getItem(key);
+                        if (val !== null) protectedData[key] = val;
+                    } catch (e) {}
+                });
+
+                try {
+                    for (let i = 0; i < storage.length; i++) {
+                        const key = storage.key(i);
+                        if (key && key.startsWith('sumbanepay_data_')) {
+                            protectedData[key] = storage.getItem(key);
+                        }
+                    }
+                } catch (e) {}
+
+                originalClear.call(storage);
+
+                Object.keys(protectedData).forEach(key => {
+                    try { storage.setItem(key, protectedData[key]); } catch (e) {}
+                });
+            };
+        } catch (e) {}
+
+        try {
+            const originalRemoveItem = Storage.prototype.removeItem;
+            Storage.prototype.removeItem = function(key) {
+                if (key && key.startsWith('sumbanepay')) {
+                    if (ALLOWED_REMOVAL.includes(key)) {
+                        return originalRemoveItem.call(this, key);
+                    }
+                    if (key === 'sumbanepay_theme' || key === 'theme') {
+                        return originalRemoveItem.call(this, key);
+                    }
+                    if (key.startsWith('sumbanepay_data_') === false && key !== 'sumbanepay_users' && key !== 'sumbanepay_users_backup') {
+                        return originalRemoveItem.call(this, key);
+                    }
+                    console.log('🛡️ Bloqueada remoção de:', key);
+                    return;
+                }
+                return originalRemoveItem.call(this, key);
+            };
+        } catch (e) {}
+    })();
+    </script>
+
+    <!-- ============================================================
+       BACKUP AUTOMÁTICO
+       ============================================================ -->
+    <script>
+    (function autoBackup() {
+        try {
+            const users = localStorage.getItem('sumbanepay_users');
+            const backup = localStorage.getItem('sumbanepay_users_backup');
+
+            if (users && users !== '[]' && users !== 'null') {
+                if (!backup || backup === '[]' || backup === 'null') {
+                    localStorage.setItem('sumbanepay_users_backup', users);
+                    localStorage.setItem('sumbanepay_users_backup_time', new Date().toISOString());
+                }
+            }
+
+            if ((!users || users === '[]' || users === 'null') && backup && backup !== '[]' && backup !== 'null') {
+                localStorage.setItem('sumbanepay_users', backup);
+                console.log('✅ Dados restaurados do backup');
+            }
+        } catch (e) {}
+    })();
+    </script>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <div class="app-wrapper">
+        <div class="app-row">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" id="sidebar" role="navigation">
+                <div class="mb-4">
+                    <a class="brand" href="index.html">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <div class="sidebar-subtitle">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> SuperAdmin
+                    </div>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="index.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
+                    <a class="nav-link active" href="#"><i class="bi bi-people me-2"></i>Utilizadores <span class="badge-nav" id="userBadge">0</span></a>
+                    <a class="nav-link" href="empresas.html"><i class="bi bi-building me-2"></i>Empresas <span class="badge-nav" id="companyBadge">0</span></a>
+                    <a class="nav-link" href="pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos <span class="badge-nav" id="paymentBadge">0</span></a>
+                    <a class="nav-link" href="faturacao.html"><i class="bi bi-receipt me-2"></i>Faturação <span class="badge-nav" id="invoiceBadge">0</span></a>
+                    <a class="nav-link" href="relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link" href="actividades.html"><i class="bi bi-clipboard-data me-2"></i>Auditoria</a>
+                    <a class="nav-link" href="notificacoes.html"><i class="bi bi-bell me-2"></i>Notificações <span class="badge-nav" id="notifBadge">0</span></a>
+                    <a class="nav-link" href="comunicacao.html"><i class="bi bi-megaphone me-2"></i>Comunicação</a>
+                    <a class="nav-link" href="roles.html"><i class="bi bi-shield-lock me-2"></i>Permissões</a>
+                    <a class="nav-link" href="seguranca.html"><i class="bi bi-shield-check me-2"></i>Segurança</a>
+                    <a class="nav-link" href="suporte.html"><i class="bi bi-ticket me-2"></i>Suporte</a>
+                    <a class="nav-link" href="configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                </nav>
+                <div class="mt-4 d-flex flex-column gap-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
+                        <i class="bi bi-circle-half me-2"></i>Tema
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger-sz w-100" onclick="logoutAdmin()">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sair
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN -->
+            <main class="app-main">
+                <div class="top-nav">
+                    <div class="top-nav-left">
+                        <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()" aria-label="Abrir menu">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <div class="breadcrumb-premium">
+                            <span class="breadcrumb-item">
+                                <i class="bi bi-house-fill home-icon"></i>
+                                <a href="index.html">Dashboard</a>
+                            </span>
+                            <span class="separator">›</span>
+                            <span class="breadcrumb-item current">
+                                <i class="bi bi-people me-1"></i> Utilizadores
+                            </span>
+                            <span class="live-badge ms-1">
+                                <span class="dot"></span>
+                                AO VIVO
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="user-info-premium">
+                        <div class="user-details text-end">
+                            <span class="user-name" id="userDisplay">
+                                <i class="bi bi-person-circle me-1"></i> Carregando...
+                            </span>
+                            <span class="user-role" id="userRole">SuperAdmin</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">
+                            S
+                            <span class="status-badge"></span>
+                        </div>
+                        <button class="btn-icon-premium" onclick="toggleTheme()" title="Alternar tema">
+                            <i class="bi bi-circle-half"></i>
+                        </button>
+                        <button class="btn-logout-header" onclick="logoutAdmin()" title="Sair da conta">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="app-content container-fluid p-2 p-md-3 p-lg-4">
+
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
+                        <div>
+                            <div class="eyebrow"><i class="bi bi-people me-1"></i> GESTÃO</div>
+                            <h1 class="font-display" style="font-size:clamp(1.4rem,2.5vw,2.2rem);margin:0;">
+                                Utilizadores <em style="color:var(--sz-coral);font-style:normal;">✦</em>
+                            </h1>
+                            <p class="heading-description">
+                                Utilizadores reais registados na plataforma · <strong>Persistência garantida 🛡️</strong>
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn-outline-sz btn-sm" onclick="exportCSV()">
+                                <i class="bi bi-file-earmark-spreadsheet"></i> CSV
+                            </button>
+                            <button class="btn-outline-sz btn-sm" onclick="forceRefresh()">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="data-alert warning" id="alertCorrupted">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        <strong>Atenção:</strong> Detetámos dados corrompidos ou em conflito. Foi criado um backup automático antes de qualquer alteração.
+                    </div>
+                    <div class="data-alert info" id="alertMigrated">
+                        <i class="bi bi-info-circle-fill me-1"></i>
+                        <strong>Migração:</strong> <span id="migratedCount">0</span> utilizador(es) reais foram recuperados de chaves antigas.
+                    </div>
+
+                    <div class="row g-2 g-md-3">
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card green">
+                                <div class="stat-icon green"><i class="bi bi-people-fill"></i></div>
+                                <div class="stat-label"><i class="bi bi-people me-1"></i> Total</div>
+                                <div class="stat-value" id="totalUsers">0</div>
+                                <div class="stat-change neutral"><i class="bi bi-dash"></i> Registados</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card gold">
+                                <div class="stat-icon gold"><i class="bi bi-check-circle"></i></div>
+                                <div class="stat-label"><i class="bi bi-check-circle me-1"></i> Activos</div>
+                                <div class="stat-value" id="activeUsers">0</div>
+                                <div class="stat-change up"><i class="bi bi-arrow-up"></i> Activos</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card coral">
+                                <div class="stat-icon coral"><i class="bi bi-shield-check"></i></div>
+                                <div class="stat-label"><i class="bi bi-shield-check me-1"></i> Admins</div>
+                                <div class="stat-value" id="adminUsers">0</div>
+                                <div class="stat-change neutral"><i class="bi bi-dash"></i> Administradores</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card red">
+                                <div class="stat-icon red"><i class="bi bi-person-x"></i></div>
+                                <div class="stat-label"><i class="bi bi-person-x me-1"></i> Inactivos</div>
+                                <div class="stat-value" id="inactiveUsers">0</div>
+                                <div class="stat-change down"><i class="bi bi-arrow-down"></i> Inactivos</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-sz p-2 p-md-3 mt-3">
+                        <div class="filter-bar">
+                            <div class="d-flex align-items-center gap-1 flex-grow-1">
+                                <i class="bi bi-search text-muted"></i>
+                                <input class="form-control" id="searchInput" placeholder="Pesquisar..." oninput="renderUsers()">
+                            </div>
+                            <select class="form-select" id="roleFilter" onchange="renderUsers()">
+                                <option value="">Cargo</option>
+                                <option value="superadmin">SuperAdmin</option>
+                                <option value="admin">Admin</option>
+                                <option value="Vendedor">Vendedor</option>
+                                <option value="user">Utilizador</option>
+                            </select>
+                            <select class="form-select" id="statusFilter" onchange="renderUsers()">
+                                <option value="">Estado</option>
+                                <option value="ativo">Activo</option>
+                                <option value="inativo">Inactivo</option>
+                                <option value="suspenso">Suspenso</option>
+                            </select>
+                            <button class="btn-sm-sz" onclick="resetFilters()" title="Limpar filtros">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </button>
+                            <span class="text-muted small ms-auto" style="font-size:0.6rem;">
+                                <i class="bi bi-database"></i> <span id="userCount">0</span> utilizadores
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-sz mt-3">
+                        <div class="table-responsive">
+                            <table class="table table-custom mb-0">
+                                <thead>
+                                    <tr>
+                                        <th onclick="sortUsers('name')" style="min-width:140px;">
+                                            Utilizador <i class="bi bi-arrow-up sort-icon" id="sort-name"></i>
+                                        </th>
+                                        <th onclick="sortUsers('email')" class="d-none d-md-table-cell">
+                                            Contacto <i class="bi bi-arrow-up sort-icon" id="sort-email"></i>
+                                        </th>
+                                        <th onclick="sortUsers('role')" class="d-none d-lg-table-cell">
+                                            Cargo <i class="bi bi-arrow-up sort-icon" id="sort-role"></i>
+                                        </th>
+                                        <th onclick="sortUsers('status')">
+                                            Estado <i class="bi bi-arrow-up sort-icon" id="sort-status"></i>
+                                        </th>
+                                        <th class="d-none d-xl-table-cell">Registo</th>
+                                        <th style="text-align:right;min-width:120px;">Acções</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userRows">
+                                    <tr><td colspan="6" class="empty-state"><i class="bi bi-inbox"></i>Carregando...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center p-2 p-md-3 border-top flex-wrap gap-2" style="border-color:var(--sz-line) !important;">
+                            <span class="text-muted small" id="paginationInfo">Mostrando 0 de 0</span>
+                            <nav>
+                                <ul class="pagination pagination-custom mb-0" id="paginationControls"></ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                </div>
+
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">Pay</div>
+                            <span class="footer-company">Sumbane<b>Pay</b></span>
+                            <span class="footer-version">v5.0.0</span>
+                        </div>
+                        <div class="footer-user-info">
+                            <span class="user-data-item">
+                                <i class="bi bi-person"></i>
+                                <span class="data-value" id="footerUserName">Carregando...</span>
+                            </span>
+                            <span class="user-data-item d-none d-sm-inline-flex">
+                                <i class="bi bi-envelope"></i>
+                                <span class="data-value" id="footerUserEmail">—</span>
+                            </span>
+                            <span class="user-data-item d-none d-lg-inline-flex">
+                                <i class="bi bi-shield-check"></i>
+                                <span class="data-value" id="footerUserRole">SuperAdmin</span>
+                            </span>
+                            <span class="user-status">
+                                <span class="status-dot"></span>
+                                Online
+                            </span>
+                            <span class="user-data-item d-none d-lg-inline-flex">
+                                <i class="bi bi-clock"></i>
+                                <span class="data-value" id="footerLastUpdate">—</span>
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-sz">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-person-circle me-2" style="color:var(--sz-coral);"></i>
+                        Perfil
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="profileBody"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-bs-dismiss="modal" style="border:1px solid var(--sz-line);background:transparent;color:var(--sz-ink);">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    /* ============================================================
+       UTILIZADORES SUPERADMIN v5.0.0
+       ------------------------------------------------------------
+       ✔ Lê utilizadores REAIS de sumbanepay_users
+       ✔ Migra utilizadores de chaves antigas (legacy)
+       ✔ safeStr em TODOS os campos
+       ✔ core/auth-core.js cuida da sessão (distingue Vendedor/SuperAdmin)
+       ✔ Nunca cria dados fictícios
+       ============================================================ */
+
+    'use strict';
+
+    /* ============================================================
+       UTILIZADORES SUPERADMIN
+       ------------------------------------------------------------
+       ✔ Lê/grava utilizadores via SPStorage (core/storage-core.js)
+         — mesma chave canónica ('sumbanepay_users') usada por
+         cadastro.html e login.html, garantindo que todo utilizador
+         registado aparece aqui sem depender de sincronização manual
+       ✔ escapeHTML delega em SPSecurity.escapeHtml
+       ✔ Sessão validada por core/auth-core.js (substituiu
+         auth-guard.js — agora distingue sessão de Vendedor vs
+         SuperAdmin em vez de aceitar qualquer sessão válida)
+       ✔ Nunca cria dados fictícios
+       ============================================================ */
+
+    'use strict';
+
+    var KEY = 'sumbanepay_';
+    var BACKUP_KEY_PREFIX = 'sumbanepay_users_backup_';
+    var MAX_BACKUPS = 5;
+    var PROTECTED_ADMIN_EMAIL = "jsumbane22@gmail.com";
+
+    var profileModalInstance = null;
+    var sortField = 'name';
+    var sortDirection = 'asc';
+    var currentPage = 1;
+    var itemsPerPage = 10;
+    var isRendering = false;
+    var autoRefreshInterval = null;
+    var integrityCheckInterval = null;
+    var isLoggingOut = false;
+    var navigationGuardInitialized = false;
+    var integrityIssues = false;
+    var lastKnownUserCount = -1;
+
+    /* ---------- UTILITÁRIOS SEGUROS ---------- */
+    function safeStr(v) {
+        if (v === null || v === undefined) return '';
+        if (typeof v === 'string') return v;
+        if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+        try { return JSON.stringify(v); } catch (e) { return ''; }
+    }
+
+    function safeLower(v) { return safeStr(v).toLowerCase(); }
+
+    function escapeHTML(v) {
+        return SPSecurity.escapeHtml(safeStr(v));
+    }
+
+    /* ---------- STORAGE SEGURO (delegado a SPStorage) ---------- */
+    function read(k, fallback) {
+        return SPStorage.get(k, fallback);
+    }
+
+    function write(k, value) {
+        // Backup pontual antes de gravar (mantém o histórico de
+        // recuperação que esta página já oferecia)
+        try {
+            var previous = localStorage.getItem(k);
+            if (previous) {
+                localStorage.setItem(BACKUP_KEY_PREFIX + Date.now(), previous);
+                pruneOldBackups();
+            }
+        } catch (_) {}
+        return SPStorage.forceSet(k, value);
+    }
+
+    function pruneOldBackups() {
+        try {
+            var backups = [];
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (key && key.startsWith(BACKUP_KEY_PREFIX)) {
+                    backups.push({ key: key, ts: parseInt(key.replace(BACKUP_KEY_PREFIX, ''), 10) || 0 });
+                }
+            }
+            backups.sort(function(a, b) { return b.ts - a.ts; });
+            backups.slice(MAX_BACKUPS).forEach(function(b) {
+                try { localStorage.removeItem(b.key); } catch (_) {}
+            });
+        } catch (_) {}
+    }
+
+    /* ---------- UTILIZADORES (Firestore) ----------
+       getAllUsers() lê de uma cache em memória em vez de ir
+       directamente ao Firestore, porque é chamada de forma
+       síncrona em vários pontos (render, editar, apagar) — sem
+       isto, cada uma dessas chamadas teria de se tornar async,
+       obrigando a reescrever muito mais código à volta. A cache é
+       populada por refreshUsersFromFirestore(), chamada no arranque
+       da página e depois de qualquer escrita (activar/suspender/
+       eliminar), para nunca mostrar dados desactualizados. */
+    var _usersCache = [];
+
+    function getAllUsers() {
+        return _usersCache;
+    }
+
+    async function refreshUsersFromFirestore() {
+        var snapshot = await SPFirebase.db.collection('users').get();
+        _usersCache = snapshot.docs.map(function (doc) {
+            return Object.assign({ id: doc.id }, doc.data());
+        });
+        return _usersCache;
+    }
+
+    function formatDate(d) {
+        if (!d) return '-';
+        try { return new Date(d).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+        catch (e) { return '-'; }
+    }
+
+    function formatDateTime(d) {
+        if (!d) return '-';
+        try {
+            return new Date(d).toLocaleString('pt-PT', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        } catch (e) { return '-'; }
+    }
+
+    function toast(t, icon) {
+        icon = icon || 'success';
+        Swal.fire({
+            toast: true, position: 'top-end', timer: 3000, showConfirmButton: false, icon: icon, title: t
+        });
+    }
+
+    /* ---------- MIGRAÇÃO ----------
+       A antiga migração de utilizadores a partir de chaves legadas
+       do localStorage foi removida: o Firestore é agora a única
+       fonte de verdade, e não faz sentido "migrar" dados locais de
+       um dispositivo para uma colecção partilhada na nuvem sem
+       intervenção humana (poderia duplicar ou reviver contas
+       antigas indevidamente). Se precisares de importar utilizadores
+       de uma versão anterior, faz isso manualmente pela consola do
+       Firebase. */
+
+    /* ---------- TEMA ---------- */
+    function toggleTheme() {
+        var cur = document.documentElement.getAttribute('data-theme') || 'light';
+        var next = cur === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try {
+            localStorage.setItem('sumbanepay_theme', next);
+            localStorage.setItem('theme', next);
+        } catch (e) {}
+        setTimeout(renderUsers, 100);
+    }
+
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            document.body.classList.remove('dark-mode');
+        }
+    }
+
+    function loadTheme() {
+        var saved = null;
+        try { saved = localStorage.getItem('sumbanepay_theme') || localStorage.getItem('theme'); } catch (e) {}
+        var system = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(saved || (system ? 'dark' : 'light'));
+    }
+
+    /* ---------- SESSÃO SUPERADMIN ---------- */
+    function clearAdminSession() {
+        [
+            KEY + 'admin_session',
+            KEY + 'session',
+            'sz_admin_session',
+            'sz_session',
+            'sumbanepay_admin_session',
+            'admin_session',
+            'superadmin_session',
+            'sumbanepay_superadmin_session'
+        ].forEach(function (key) {
+            try { localStorage.removeItem(key); } catch (e) {}
+            try { sessionStorage.removeItem(key); } catch (e) {}
+        });
+    }
+
+    function redirectToSuperAdminLogin() {
+        window.location.replace('./superadmin-login.html?logout=' + Date.now());
+    }
+
+    function requireAdmin() {
+        try {
+            var SESSION_KEYS = [
+                KEY + 'admin_session',
+                'sz_admin_session',
+                'admin_session',
+                'superadmin_session',
+                'sumbanepay_superadmin_session',
+                KEY + 'session',
+                'sz_session',
+                'sumbanepay_session'
+            ];
+
+            var raw = null;
+            for (var i = 0; i < SESSION_KEYS.length; i++) {
+                raw = localStorage.getItem(SESSION_KEYS[i]) || sessionStorage.getItem(SESSION_KEYS[i]);
+                if (raw) break;
+            }
+
+            if (!raw) {
+                redirectToSuperAdminLogin();
+                return false;
+            }
+
+            var session = JSON.parse(raw);
+            var validLogin = session.loggedIn === true
+                          || session.userId
+                          || session.role === 'superadmin'
+                          || session.email === PROTECTED_ADMIN_EMAIL;
+            var expiresAt = session.expiresAt || (session.timestamp || 0) + 86400000;
+
+            if (!validLogin || Date.now() > expiresAt) {
+                clearAdminSession();
+                redirectToSuperAdminLogin();
+                return false;
+            }
+
+            var name = session.name || session.userName || session.email || 'SuperAdmin';
+            setText('userDisplay', name);
+            setText('userAvatar', String(name).charAt(0).toUpperCase());
+            setText('footerUserName', name);
+            setText('footerUserEmail', session.email || '—');
+            setText('userRole', 'SuperAdmin');
+            setText('footerUserRole', 'SuperAdmin');
+
+            return true;
+        } catch (e) {
+            clearAdminSession();
+            redirectToSuperAdminLogin();
+            return false;
+        }
+    }
+
+    function setText(id, v) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = v;
+    }
+
+    function performAdminLogout() {
+        if (isLoggingOut) return;
+        isLoggingOut = true;
+        clearAdminSession();
+        if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+        if (integrityCheckInterval) clearInterval(integrityCheckInterval);
+        if (_usersUnsubscribe) { _usersUnsubscribe(); _usersUnsubscribe = null; }
+        redirectToSuperAdminLogin();
+    }
+
+    function logoutAdmin() { performAdminLogout(); }
+
+    function setupNavigationGuard() {
+        if (navigationGuardInitialized) return;
+        navigationGuardInitialized = true;
+
+        window.history.pushState({ guard: true, timestamp: Date.now() }, '', window.location.href);
+
+        window.addEventListener('popstate', function() { performAdminLogout(); });
+        window.addEventListener('pageshow', function(event) { if (event.persisted) performAdminLogout(); });
+        document.addEventListener('keydown', function(event) {
+            var tag = event.target && event.target.tagName;
+            var editable = ['INPUT', 'TEXTAREA', 'SELECT'].indexOf(tag) !== -1;
+            if (!editable && event.key === 'Backspace') {
+                event.preventDefault();
+                performAdminLogout();
+            }
+        });
+        window.addEventListener('mouseup', function(event) {
+            if (event.button === 3) { event.preventDefault(); performAdminLogout(); }
+        });
+    }
+
+    /* ---------- SIDEBAR MOBILE ---------- */
+    function toggleSidebar() {
+        var s = document.getElementById('sidebar');
+        var o = document.getElementById('sidebarOverlay');
+        if (s) s.classList.toggle('open');
+        if (o) o.classList.toggle('active');
+        document.body.style.overflow = s && s.classList.contains('open') ? 'hidden' : '';
+    }
+
+    function closeSidebar() {
+        var s = document.getElementById('sidebar');
+        var o = document.getElementById('sidebarOverlay');
+        if (s) s.classList.remove('open');
+        if (o) o.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    /* ---------- RENDER ---------- */
+    function renderUsers() {
+        if (isRendering || isLoggingOut) return;
+        if (!requireAdmin()) return;
+        isRendering = true;
+
+        try {
+            var users = getAllUsers();
+
+            if (users.length !== lastKnownUserCount) {
+                console.log('📊 Utilizadores em "' + SPStorage.KEYS.USERS + '":', users.length);
+                lastKnownUserCount = users.length;
+            }
+
+            setText('userBadge', users.length);
+
+            var qEl = document.getElementById('searchInput');
+            var rEl = document.getElementById('roleFilter');
+            var sEl = document.getElementById('statusFilter');
+
+            var query = safeLower(qEl ? qEl.value : '');
+            var roleFilter = safeStr(rEl ? rEl.value : '');
+            var statusFilter = safeStr(sEl ? sEl.value : '');
+
+            var filtered = users.filter(function(u) {
+                if (!u) return false;
+                var searchable = (u.name + ' ' + u.email + ' ' + u.business + ' ' + u.phone).toLowerCase();
+                var matchSearch = query === '' || searchable.indexOf(query) !== -1;
+                var matchRole = roleFilter === '' || u.role === roleFilter;
+                var matchStatus = statusFilter === '' || u.status === statusFilter;
+                return matchSearch && matchRole && matchStatus;
+            });
+
+            filtered.sort(function(a, b) {
+                var va = safeLower(a[sortField]);
+                var vb = safeLower(b[sortField]);
+                if (va < vb) return sortDirection === 'asc' ? -1 : 1;
+                if (va > vb) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            var total = users.length;
+            var active = users.filter(function(u) { return u.status === 'ativo' || !u.status; }).length;
+            var inactive = users.filter(function(u) { return u.status === 'inativo' || u.status === 'suspenso'; }).length;
+            var admins = users.filter(function(u) { return u.role === 'admin' || u.role === 'superadmin'; }).length;
+
+            setText('totalUsers', total);
+            setText('activeUsers', active);
+            setText('inactiveUsers', inactive);
+            setText('adminUsers', admins);
+            setText('userCount', filtered.length);
+            setText('footerLastUpdate', new Date().toLocaleTimeString('pt-PT'));
+
+            var totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+            var start = (currentPage - 1) * itemsPerPage;
+            var end = Math.min(start + itemsPerPage, filtered.length);
+            var pageItems = filtered.slice(start, end);
+
+            var container = document.getElementById('userRows');
+            if (!container) { isRendering = false; return; }
+
+            if (filtered.length === 0) {
+                container.innerHTML =
+                    '<tr><td colspan="6" class="empty-state">' +
+                    '<i class="bi bi-inbox"></i>' +
+                    'Nenhum utilizador registado ainda.<br>' +
+                    '<small class="text-muted">Assim que alguém se registar na plataforma, aparecerá aqui automaticamente.</small>' +
+                    '</td></tr>';
+            } else {
+                var colors = ['#176b5b', '#e8b35b', '#ef6d4e', '#9b59b6', '#17a2b8', '#28a745'];
+                container.innerHTML = pageItems.map(function(u, idx) {
+                    var avatarColor = colors[idx % colors.length];
+                    var initials = (u.name || 'U').charAt(0).toUpperCase();
+                    var isProtected = u.email === PROTECTED_ADMIN_EMAIL;
+                    var userRole = u.role || 'Vendedor';
+                    var userStatus = u.status || 'ativo';
+                    var statusClass = userStatus === 'ativo' ? 'active' : (userStatus === 'suspenso' ? 'suspended' : 'inactive');
+                    var statusLabel = userStatus === 'ativo' ? 'Activo' : (userStatus === 'suspenso' ? 'Suspenso' : 'Inactivo');
+
+                    var actionsHtml = '';
+                    actionsHtml += '<button class="btn-sm-sz info" onclick="viewProfile(\'' + escapeHTML(u.id) + '\')" title="Ver perfil">' +
+                        '<i class="bi bi-eye"></i></button>';
+
+                    if (!isProtected) {
+                        actionsHtml += '<button class="btn-sm-sz ' + (userStatus === 'ativo' ? 'warning' : 'success') + '" onclick="toggleUserStatus(\'' + escapeHTML(u.id) + '\')" title="' + (userStatus === 'ativo' ? 'Suspender' : 'Activar') + '">' +
+                            '<i class="bi ' + (userStatus === 'ativo' ? 'bi-pause-circle' : 'bi-play-circle') + '"></i></button>';
+                        actionsHtml += '<button class="btn-sm-sz danger" onclick="deleteUser(\'' + escapeHTML(u.id) + '\')" title="Eliminar">' +
+                            '<i class="bi bi-trash"></i></button>';
+                    } else {
+                        actionsHtml += '<button class="btn-sm-sz" title="Conta protegida" disabled style="opacity:0.4;cursor:not-allowed;">' +
+                            '<i class="bi bi-shield-lock"></i></button>';
+                    }
+
+                    return '<tr>' +
+                        '<td>' +
+                        '<div class="user-info-cell">' +
+                        '<div class="user-avatar-sm" style="background:' + avatarColor + ';">' + escapeHTML(initials) + '</div>' +
+                        '<div>' +
+                        '<div class="user-name">' +
+                        escapeHTML(u.name || 'Sem nome') +
+                        (isProtected ? ' <span class="badge-role superadmin" style="font-size:0.4rem;padding:1px 4px;">★</span>' : '') +
+                        '</div>' +
+                        '<div class="user-business">' + escapeHTML(u.business || '—') + '</div>' +
+                        '<div class="user-email-sm d-md-none">' + escapeHTML(u.email || '—') + '</div>' +
+                        '</div></div></td>' +
+                        '<td class="d-none d-md-table-cell">' +
+                        '<div style="font-size:0.75rem;color:inherit;">' + escapeHTML(u.email || '—') + '</div>' +
+                        '<div style="font-size:0.6rem;color:var(--sz-muted);">' + escapeHTML(u.phone || '—') + '</div>' +
+                        '</td>' +
+                        '<td class="d-none d-lg-table-cell">' +
+                        '<span class="badge-role ' + userRole + '">' + escapeHTML(userRole) + '</span>' +
+                        '</td>' +
+                        '<td><span class="badge-status ' + statusClass + '">' + statusLabel + '</span></td>' +
+                        '<td class="d-none d-xl-table-cell" style="font-size:0.7rem;color:var(--sz-muted);">' +
+                        formatDate(u.createdAt) +
+                        '</td>' +
+                        '<td style="text-align:right;">' +
+                        '<div class="d-flex gap-1 flex-wrap justify-content-end">' + actionsHtml + '</div>' +
+                        '</td></tr>';
+                }).join('');
+            }
+
+            var infoEl = document.getElementById('paginationInfo');
+            if (infoEl) {
+                infoEl.textContent = filtered.length > 0
+                    ? 'Mostrando ' + (start + 1) + ' a ' + end + ' de ' + filtered.length
+                    : 'Mostrando 0 de 0';
+            }
+
+            var ctrl = document.getElementById('paginationControls');
+            if (ctrl) {
+                var html = '';
+                html += '<li class="page-item ' + (currentPage <= 1 ? 'disabled' : '') + '">' +
+                        '<a class="page-link" href="#" onclick="goToPage(' + (currentPage - 1) + ');return false;">«</a></li>';
+                for (var i = 1; i <= totalPages; i++) {
+                    if (totalPages > 7 && i > 5 && i < totalPages) {
+                        if (i === 6) html += '<li class="page-item disabled"><a class="page-link">…</a></li>';
+                        continue;
+                    }
+                    html += '<li class="page-item ' + (i === currentPage ? 'active' : '') + '">' +
+                            '<a class="page-link" href="#" onclick="goToPage(' + i + ');return false;">' + i + '</a></li>';
+                }
+                html += '<li class="page-item ' + (currentPage >= totalPages ? 'disabled' : '') + '">' +
+                        '<a class="page-link" href="#" onclick="goToPage(' + (currentPage + 1) + ');return false;">»</a></li>';
+                ctrl.innerHTML = html;
+            }
+
+            document.querySelectorAll('.sort-icon').forEach(function(icon) {
+                icon.className = 'bi bi-arrow-up sort-icon';
+            });
+            var icon = document.getElementById('sort-' + sortField);
+            if (icon) {
+                icon.className = 'bi bi-arrow-' + (sortDirection === 'asc' ? 'up' : 'down') + ' sort-icon active';
+            }
+
+        } catch (e) {
+            console.error('Erro renderUsers:', e);
+        } finally {
+            isRendering = false;
+        }
+    }
+
+    /* ---------- ACÇÕES ---------- */
+    function goToPage(page) { currentPage = page; renderUsers(); return false; }
+
+    function sortUsers(field) {
+        if (sortField === field) sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+        else { sortField = field; sortDirection = 'asc'; }
+        renderUsers();
+    }
+
+    function resetFilters() {
+        ['searchInput', 'roleFilter', 'statusFilter'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        currentPage = 1;
+        renderUsers();
+    }
+
+    function forceRefresh() {
+        refreshUsersFromFirestore()
+            .then(function () {
+                renderUsers();
+                toast('Dados actualizados!');
+            })
+            .catch(function (e) {
+                console.error('Falha ao actualizar:', e);
+                toast('Falha ao actualizar. Tenta novamente.', 'error');
+            });
+    }
+
+    function exportCSV() {
+        var users = getAllUsers();
+        if (!users.length) { toast('Sem dados para exportar.', 'warning'); return; }
+
+        var headers = ['ID', 'Nome', 'Email', 'Telefone', 'Negócio', 'Cargo', 'Estado', 'Registo'];
+        var rows = users.map(function(u) {
+            return [
+                u.id || '', u.name || '', u.email || '', u.phone || '',
+                u.business || '', u.role || '', u.status || 'ativo',
+                formatDateTime(u.createdAt)
+            ];
+        });
+
+        var csv = [headers.join(',')].concat(rows.map(function(r) {
+            return r.map(function(v) { return '"' + safeStr(v).replace(/"/g, '""') + '"'; }).join(',');
+        })).join('\n');
+
+        var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'utilizadores_' + new Date().toISOString().slice(0, 10) + '.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+        toast('CSV exportado!');
+    }
+
+    function viewProfile(id) {
+        var users = getAllUsers();
+        var user = users.find(function(u) { return u.id === id; });
+        if (!user) { toast('Utilizador não encontrado.', 'error'); return; }
+
+        var initials = (user.name || 'U').charAt(0).toUpperCase();
+        var isProtected = user.email === PROTECTED_ADMIN_EMAIL;
+
+        var body = document.getElementById('profileBody');
+        body.innerHTML =
+            '<div class="text-center mb-3">' +
+            '<div class="user-avatar-sm" style="width:56px;height:56px;font-size:1.3rem;margin:0 auto;background:var(--sz-green);">' +
+            escapeHTML(initials) + '</div>' +
+            '<h5 class="mt-2">' + escapeHTML(user.name || 'Sem nome') + '</h5>' +
+            '<span class="badge-role ' + (user.role || 'Vendedor') + '">' + escapeHTML(user.role || 'Vendedor') + '</span>' +
+            (isProtected ? ' <span class="badge-role superadmin ms-1">★ Protegido</span>' : '') +
+            '</div><hr>' +
+            '<div class="row g-1" style="font-size:0.85rem;">' +
+            '<div class="col-5"><strong>ID:</strong></div>' +
+            '<div class="col-7" style="word-break:break-all;">' + escapeHTML(user.id || '—') + '</div>' +
+            '<div class="col-5"><strong>Email:</strong></div>' +
+            '<div class="col-7">' + escapeHTML(user.email || '—') + '</div>' +
+            '<div class="col-5"><strong>Telefone:</strong></div>' +
+            '<div class="col-7">' + escapeHTML(user.phone || '—') + '</div>' +
+            '<div class="col-5"><strong>Negócio:</strong></div>' +
+            '<div class="col-7">' + escapeHTML(user.business || '—') + '</div>' +
+            '<div class="col-5"><strong>Estado:</strong></div>' +
+            '<div class="col-7">' + escapeHTML(user.status || 'ativo') + '</div>' +
+            '<div class="col-5"><strong>Registado em:</strong></div>' +
+            '<div class="col-7">' + formatDateTime(user.createdAt) + '</div>' +
+            '<div class="col-5"><strong>Último acesso:</strong></div>' +
+            '<div class="col-7">' + (user.lastAccess ? formatDateTime(user.lastAccess) : 'Nunca') + '</div>' +
+            '</div>';
+
+        if (!profileModalInstance) {
+            profileModalInstance = new bootstrap.Modal(document.getElementById('profileModal'));
+        }
+        profileModalInstance.show();
+    }
+
+    function toggleUserStatus(id) {
+        var users = getAllUsers();
+        var idx = -1;
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].id === id) { idx = i; break; }
+        }
+        if (idx === -1) return;
+        var user = users[idx];
+        if (user.email === PROTECTED_ADMIN_EMAIL) { toast('Conta protegida.', 'error'); return; }
+
+        var newStatus = user.status === 'ativo' ? 'suspenso' : 'ativo';
+        var action = newStatus === 'ativo' ? 'activar' : 'suspender';
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+        Swal.fire({
+            title: action.charAt(0).toUpperCase() + action.slice(1) + ' utilizador?',
+            text: user.name + ' será ' + (newStatus === 'ativo' ? 'activado' : 'suspenso') + '.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#176b5b',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: 'Sim, ' + action,
+            cancelButtonText: 'Cancelar',
+            background: isDark ? '#162f27' : '#ffffff',
+            color: isDark ? '#f0efe8' : '#19362e'
+        }).then(function(result) {
+            if (!result.isConfirmed) return;
+            SPFirebase.db.collection('users').doc(id).update({ status: newStatus })
+                .then(function () { return refreshUsersFromFirestore(); })
+                .then(function () {
+                    toast('Utilizador ' + action + 'do!');
+                    renderUsers();
+                })
+                .catch(function (e) {
+                    console.error('Falha ao actualizar estado:', e);
+                    toast('Falha ao actualizar. Tenta novamente.', 'error');
+                });
+        });
+    }
+
+    function deleteUser(id) {
+        var users = getAllUsers();
+        var user = users.find(function(u) { return u.id === id; });
+        if (!user) return;
+        if (user.email === PROTECTED_ADMIN_EMAIL) { toast('Conta protegida.', 'error'); return; }
+
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        Swal.fire({
+            title: 'Eliminar utilizador?',
+            text: 'A conta de ' + user.name + ' será removida permanentemente.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sim, eliminar',
+            cancelButtonText: 'Cancelar',
+            background: isDark ? '#162f27' : '#ffffff',
+            color: isDark ? '#f0efe8' : '#19362e'
+        }).then(function(result) {
+            if (!result.isConfirmed) return;
+
+            // NOTA: isto apaga o PERFIL no Firestore, não a conta no
+            // Firebase Authentication — apagar a conta de outra pessoa
+            // exigiria o Admin SDK (um backend), que este projecto não
+            // tem. Sem perfil, login.html bloqueia o acesso dessa conta
+            // (reason: 'no_profile'), o que na prática já impede o uso
+            // da aplicação — mas se precisares de garantir que a conta
+            // não pode voltar a fazer login de forma alguma, "Suspender"
+            // é a acção mais robusta (ver toggleUserStatus).
+            SPFirebase.db.collection('users').doc(id).delete()
+                .then(function () { return refreshUsersFromFirestore(); })
+                .then(function () {
+                    try {
+                        var keysToDelete = [];
+                        for (var i = 0; i < localStorage.length; i++) {
+                            var k = localStorage.key(i);
+                            if (k && (k.indexOf(KEY + 'data_' + id + '_') === 0 || k.indexOf('sumbanepay_data_' + id + '_') === 0)) {
+                                keysToDelete.push(k);
+                            }
+                        }
+                        keysToDelete.forEach(function(k) {
+                            try { localStorage.removeItem(k); } catch (e) {}
+                        });
+                    } catch (e) {}
+
+                    toast('Utilizador eliminado.');
+                    renderUsers();
+                })
+                .catch(function (e) {
+                    console.error('Falha ao eliminar:', e);
+                    toast('Falha ao eliminar. Tenta novamente.', 'error');
+                });
+        });
+    }
+
+    /* ---------- SINCRONIZAÇÃO EM TEMPO REAL (Firestore) ----------
+       Em vez de sondar a cada 30 segundos (como antes), subscrevemos
+       a colecção inteira: o Firestore envia-nos as alterações no
+       instante em que acontecem, em qualquer dispositivo. Um
+       registo feito no telemóvel aparece aqui sem precisares de
+       recarregar a página. */
+    var _usersUnsubscribe = null;
+
+    function startRealtimeUsersSync() {
+        if (_usersUnsubscribe) _usersUnsubscribe();
+        _usersUnsubscribe = SPFirebase.db.collection('users').onSnapshot(
+            function (snapshot) {
+                _usersCache = snapshot.docs.map(function (doc) {
+                    return Object.assign({ id: doc.id }, doc.data());
+                });
+                renderUsers();
+            },
+            function (error) {
+                console.error('[utilizadores] Falha na sincronização em tempo real:', error);
+            }
+        );
+    }
+
+    /* ---------- SESSÃO ---------- */
+    function startAutoRefresh() {
+        if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+        autoRefreshInterval = setInterval(function() {
+            var session = localStorage.getItem(KEY + 'admin_session')
+                       || localStorage.getItem('sz_admin_session')
+                       || sessionStorage.getItem(KEY + 'admin_session');
+            if (!session) {
+                clearInterval(autoRefreshInterval);
+                performAdminLogout();
+            }
+        }, 30000);
+    }
+
+    function setupFocusRefresh() {
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') renderUsers();
+        });
+        window.addEventListener('focus', renderUsers);
+    }
+
+    /* ---------- BOOT ---------- */
+    document.addEventListener('DOMContentLoaded', function() {
+        loadTheme();
+
+        if (!requireAdmin()) return;
+
+        if (integrityIssues) {
+            var alertEl2 = document.getElementById('alertCorrupted');
+            if (alertEl2) {
+                alertEl2.classList.add('show');
+                setTimeout(function() { alertEl2.classList.remove('show'); }, 12000);
+            }
+        }
+
+        setupNavigationGuard();
+
+        if (window.innerWidth < 576) itemsPerPage = 5;
+        else if (window.innerWidth < 768) itemsPerPage = 6;
+        else itemsPerPage = 10;
+
+        renderUsers();          // primeira renderização (cache ainda vazia)
+        startRealtimeUsersSync(); // o Firestore preenche e re-renderiza assim que os dados chegarem
+        startAutoRefresh();
+        setupFocusRefresh();
+
+        document.querySelectorAll('.sidebar .nav-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 992) closeSidebar();
+            });
+        });
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 992) closeSidebar();
+        });
+
+        console.log('🛡️ Utilizadores — sincronização em tempo real com Firestore activa');
+    });
+
+    /* ---------- EXPOSIÇÃO GLOBAL ---------- */
+    Object.assign(window, {
+        logoutAdmin: logoutAdmin,
+        toggleTheme: toggleTheme,
+        renderUsers: renderUsers,
+        sortUsers: sortUsers,
+        goToPage: goToPage,
+        resetFilters: resetFilters,
+        forceRefresh: forceRefresh,
+        exportCSV: exportCSV,
+        viewProfile: viewProfile,
+        toggleUserStatus: toggleUserStatus,
+        deleteUser: deleteUser,
+        toggleSidebar: toggleSidebar,
+        closeSidebar: closeSidebar,
+        performAdminLogout: performAdminLogout
+    });
+    </script>
+
+    <script src="../../mobile.js" defer></script>
+</body>
+</html>

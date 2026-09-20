@@ -1,0 +1,2291 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+    <title>Dashboard — SumbanePay SuperAdmin</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+
+    <!-- ✅ AUTH-GUARD — sempre primeiro -->
+    <script src="../../core/security-utils.js"></script>
+    <script src="../../core/storage-core.js"></script>
+    <script src="../../core/pbkdf2-fallback.js"></script>
+    <script src="../../core/auth-core.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 20px rgba(16, 63, 55, 0.06);
+            --sz-shadow-hover: 0 12px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-info: #0dcaf0;
+            --sz-purple: #9b59b6;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+            --sz-table-bg: #ffffff;
+            --sz-table-head-bg: #f7f6f1;
+            --sz-table-row-even: #faf9f5;
+            --sz-table-row-hover: rgba(23, 107, 91, 0.06);
+        }
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --sz-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+            --sz-info: #7cbdda;
+            --sz-purple: #b07cc6;
+            --sz-table-bg: #0f2620;
+            --sz-table-head-bg: #0a1a14;
+            --sz-table-row-even: #132e26;
+            --sz-table-row-hover: rgba(42, 157, 143, 0.15);
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+        [data-theme="dark"] body { background: #0d1c17 !important; color: #f0efe8 !important; }
+        [data-theme="dark"] .app-wrapper,
+        [data-theme="dark"] .app-main,
+        [data-theme="dark"] .app-content { background: #0d1c17 !important; }
+        .font-display { font-family: 'Playfair Display', 'Georgia', serif; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sz-paper); }
+        ::-webkit-scrollbar-thumb { background: var(--sz-green); border-radius: 10px; }
+
+        .text-muted { color: var(--sz-muted) !important; opacity: 1 !important; }
+        [data-theme="dark"] .text-muted,
+        [data-theme="dark"] .text-muted * { color: #c0d0c8 !important; opacity: 1 !important; }
+
+        .heading-description { font-size: 0.8rem; color: var(--sz-muted); margin-top: 0.25rem; }
+        .heading-description strong { color: var(--sz-ink); }
+        [data-theme="dark"] .heading-description { color: #c0d0c8 !important; }
+
+        .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+        .app-row { display: flex; flex: 1; position: relative; }
+        .app-main { display: flex; flex-direction: column; flex: 1; min-height: 100vh; width: 100%; }
+        .app-content { flex: 1; padding-bottom: 1rem; }
+        .app-footer { flex-shrink: 0; width: 100%; }
+
+        .brand {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); }
+        .brand b { color: var(--sz-coral); }
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+        }
+        [data-theme="dark"] .brand { color: #f0efe8 !important; }
+        [data-theme="dark"] .brand b { color: #f28a71 !important; }
+
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-sz:hover { background: var(--sz-green); color: #fff; }
+        [data-theme="dark"] .btn-outline-sz { border-color: var(--sz-green-light); color: var(--sz-green-light); }
+        [data-theme="dark"] .btn-outline-sz:hover { background: var(--sz-green-light); color: var(--sz-paper); }
+
+        .btn-outline-danger-sz {
+            border: 2px solid var(--sz-danger);
+            color: var(--sz-danger);
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-danger-sz:hover { background: var(--sz-danger); color: #fff; }
+        [data-theme="dark"] .btn-outline-danger-sz { color: #f06a7a !important; border-color: #f06a7a !important; }
+        [data-theme="dark"] .btn-outline-danger-sz:hover { background: #f06a7a !important; color: #0d1c17 !important; }
+
+        .btn-sm-sz {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            color: var(--sz-muted);
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm-sz:hover { background: var(--sz-paper); color: var(--sz-ink); border-color: var(--sz-ink); }
+        [data-theme="dark"] .btn-sm-sz { border-color: #2a4a3e !important; color: #a0b0a8 !important; }
+        [data-theme="dark"] .btn-sm-sz:hover { background: rgba(255,255,255,0.06) !important; color: #f0efe8 !important; border-color: #f0c97a !important; }
+
+        .btn-logout-header {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            border: 2px solid var(--sz-danger);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-danger);
+            cursor: pointer;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .btn-logout-header:hover { background: var(--sz-danger); color: #fff; transform: scale(1.08); }
+        [data-theme="dark"] .btn-logout-header { border-color: #f06a7a; color: #f06a7a; }
+        [data-theme="dark"] .btn-logout-header:hover { background: #f06a7a; color: #0d1c17; }
+
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        [data-theme="dark"] .eyebrow { color: #f28a71 !important; }
+
+        .sidebar {
+            background: var(--sz-white);
+            min-height: 100vh;
+            border-right: 1px solid var(--sz-line);
+            position: sticky;
+            top: 0;
+            padding: 1.5rem 1rem;
+            transition: background 0.3s ease, transform 0.3s ease;
+            max-height: 100vh;
+            overflow-y: auto;
+            width: 260px;
+            flex-shrink: 0;
+            z-index: 1050;
+        }
+        .sidebar .nav-link {
+            color: var(--sz-muted);
+            border-radius: 8px;
+            margin: 0.15rem 0;
+            padding: 10px 14px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i { width: 22px; text-align: center; font-size: 1.05rem; flex-shrink: 0; }
+        .sidebar .nav-link .badge-nav {
+            margin-left: auto;
+            background: var(--sz-coral);
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 1px 8px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+        .sidebar-subtitle {
+            font-size: 0.65rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--sz-muted);
+            margin-top: 0.25rem;
+            font-weight: 600;
+        }
+        [data-theme="dark"] .sidebar { background: #0a1a14; border-color: #2a4a3e; }
+        [data-theme="dark"] .sidebar .brand { color: #f0efe8 !important; }
+        [data-theme="dark"] .sidebar .nav-link { color: #b8c5bf !important; }
+        [data-theme="dark"] .sidebar .nav-link:hover,
+        [data-theme="dark"] .sidebar .nav-link.active {
+            background: rgba(42, 157, 143, 0.15) !important;
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .sidebar-subtitle { color: #a0b0a8 !important; }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+
+        .menu-toggle {
+            display: none;
+            width: 38px; height: 38px;
+            border-radius: 8px;
+            border: 1.5px solid var(--sz-line);
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .menu-toggle:hover { border-color: var(--sz-green); }
+        [data-theme="dark"] .menu-toggle { background: var(--sz-white); border-color: #2a4a3e; color: #f0efe8; }
+
+        .top-nav {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.3;
+        }
+        .top-nav .top-nav-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+        .breadcrumb-premium { display: flex; align-items: center; gap: 6px; color: var(--sz-muted); font-size: 0.8rem; flex-wrap: wrap; }
+        .breadcrumb-premium .breadcrumb-item a { color: var(--sz-muted); text-decoration: none; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+        .breadcrumb-premium .breadcrumb-item.current {
+            color: var(--sz-ink);
+            font-weight: 600;
+            padding: 2px 6px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .breadcrumb-premium .home-icon { color: var(--sz-green); font-size: 0.9rem; }
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            padding: 2px 8px 2px 6px;
+            border-radius: 20px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 1px solid rgba(23, 107, 91, 0.15);
+        }
+        .live-badge .dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .user-info-premium { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .user-info-premium .user-avatar {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .user-info-premium .user-avatar .status-badge {
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--sz-success);
+            border: 2px solid var(--sz-white);
+        }
+        .user-info-premium .user-details {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+            text-align: right;
+        }
+        .user-info-premium .user-details .user-name { font-weight: 600; color: var(--sz-ink); font-size: 0.8rem; }
+        .user-info-premium .user-details .user-role { font-size: 0.55rem; color: var(--sz-muted); text-transform: uppercase; }
+        .user-info-premium .btn-icon-premium {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-muted);
+            cursor: pointer;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .user-info-premium .btn-icon-premium:hover { background: var(--sz-paper); color: var(--sz-ink); border-color: var(--sz-ink); }
+        .user-info-premium .btn-icon-premium .notif-badge {
+            position: absolute;
+            top: -4px; right: -4px;
+            background: var(--sz-coral);
+            color: #fff;
+            font-size: 0.5rem;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 10px;
+            border: 2px solid var(--sz-white);
+            display: none;
+        }
+        .user-info-premium .btn-icon-premium .notif-badge.show {
+            display: block;
+            animation: pulse-notif 1s ease-in-out infinite;
+        }
+        @keyframes pulse-notif {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        [data-theme="dark"] .top-nav { background: #0a1a14; border-color: #2a4a3e; }
+        [data-theme="dark"] .user-info-premium .user-details .user-name { color: #f0efe8 !important; }
+        [data-theme="dark"] .user-info-premium .user-details .user-role { color: #a0b0a8 !important; }
+        [data-theme="dark"] .user-info-premium .btn-icon-premium { border-color: #2a4a3e !important; color: #a0b0a8 !important; }
+
+        .notif-dropdown {
+            position: absolute;
+            top: 55px; right: 16px;
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            box-shadow: var(--sz-shadow-hover);
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1060;
+            padding: 0.5rem 0;
+        }
+        .notif-dropdown.show { display: block; }
+        .notif-dropdown .notif-header {
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid var(--sz-line);
+            font-weight: 700;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--sz-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notif-dropdown .notif-item {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--sz-line);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .notif-dropdown .notif-item:hover { background: var(--sz-paper); }
+        .notif-dropdown .notif-item.unread { border-left: 3px solid var(--sz-green); }
+        .notif-dropdown .notif-title { font-weight: 600; font-size: 0.75rem; color: var(--sz-ink); }
+        .notif-dropdown .notif-text { font-size: 0.65rem; color: var(--sz-muted); }
+        .notif-dropdown .notif-time { font-size: 0.55rem; color: var(--sz-muted); }
+        .notif-dropdown .notif-empty {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--sz-muted);
+            font-size: 0.75rem;
+        }
+        .notif-dropdown .notif-empty i { font-size: 2rem; display: block; margin-bottom: 0.5rem; opacity: 0.3; }
+        [data-theme="dark"] .notif-dropdown { background: var(--sz-white); border-color: #2a4a3e; }
+        [data-theme="dark"] .notif-dropdown .notif-item { border-color: #2a4a3e; }
+        [data-theme="dark"] .notif-dropdown .notif-title { color: #f0efe8; }
+        [data-theme="dark"] .notif-dropdown .notif-text { color: #a0b0a8; }
+
+        .stat-card {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--sz-line);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--sz-shadow-hover); }
+        .stat-card .stat-icon {
+            width: 40px; height: 40px;
+            border-radius: var(--sz-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card .stat-icon.green { background: rgba(23, 107, 91, 0.12); color: var(--sz-green); }
+        .stat-card .stat-icon.gold { background: rgba(232, 179, 91, 0.12); color: var(--sz-gold); }
+        .stat-card .stat-icon.coral { background: rgba(239, 109, 78, 0.12); color: var(--sz-coral); }
+        .stat-card .stat-icon.blue { background: rgba(124, 157, 181, 0.12); color: #7c9db5; }
+        .stat-card .stat-icon.red { background: rgba(220, 53, 69, 0.12); color: var(--sz-danger); }
+        .stat-card .stat-icon.purple { background: rgba(155, 89, 182, 0.12); color: #9b59b6; }
+        .stat-card .stat-icon.teal { background: rgba(13, 202, 240, 0.12); color: #0dcaf0; }
+        .stat-card .stat-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--sz-muted);
+            font-weight: 700;
+        }
+        .stat-card .stat-value {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sz-ink);
+            line-height: 1.2;
+            margin-top: 2px;
+        }
+        .stat-card .stat-change {
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-top: 4px;
+            padding: 1px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-card .stat-change.up { color: var(--sz-green); background: rgba(23, 107, 91, 0.08); }
+        .stat-card .stat-change.down { color: var(--sz-danger); background: rgba(220, 53, 69, 0.08); }
+        .stat-card .stat-change.neutral { color: var(--sz-muted); background: rgba(90, 106, 98, 0.06); }
+        .stat-card.green { border-left: 3px solid var(--sz-green); }
+        .stat-card.gold { border-left: 3px solid var(--sz-gold); }
+        .stat-card.coral { border-left: 3px solid var(--sz-coral); }
+        .stat-card.blue { border-left: 3px solid #7c9db5; }
+        .stat-card.red { border-left: 3px solid var(--sz-danger); }
+        .stat-card.purple { border-left: 3px solid #9b59b6; }
+        .stat-card.teal { border-left: 3px solid #0dcaf0; }
+        [data-theme="dark"] .stat-card { background: var(--sz-white); border-color: var(--sz-line); }
+        [data-theme="dark"] .stat-card .stat-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .stat-card .stat-label { color: #a0b0a8 !important; }
+        [data-theme="dark"] .stat-card .stat-change { color: #a0b0a8 !important; }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .quick-action-item {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            padding: 1rem 0.5rem;
+            text-align: center;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--sz-muted);
+            box-shadow: var(--sz-shadow);
+        }
+        .quick-action-item:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-green);
+            color: var(--sz-ink);
+        }
+        .quick-action-item i {
+            font-size: 1.4rem;
+            color: var(--sz-green);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .quick-action-item span { font-size: 0.6rem; font-weight: 600; }
+        [data-theme="dark"] .quick-action-item { background: var(--sz-white); border-color: #2a4a3e; color: #b8c5bf; }
+        [data-theme="dark"] .quick-action-item:hover { border-color: #f0c97a; color: #f0efe8; }
+        [data-theme="dark"] .quick-action-item i { color: #2a9d8f; }
+
+        .chart-card {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            border: 1px solid var(--sz-line);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        .chart-card:hover { box-shadow: var(--sz-shadow-hover); }
+        .chart-card .chart-header {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .chart-card .chart-header h5 {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 0.85rem;
+            color: var(--sz-ink);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .chart-card .chart-body {
+            padding: 0.75rem 1rem;
+            position: relative;
+            min-height: 160px;
+        }
+        .chart-container {
+            position: relative;
+            height: 180px;
+            width: 100%;
+        }
+        [data-theme="dark"] .chart-card { background: var(--sz-white); border-color: var(--sz-line); }
+        [data-theme="dark"] .chart-card .chart-header h5 { color: #f0efe8 !important; }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--sz-line);
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-item .activity-icon {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .activity-item .activity-icon.login { background: rgba(23, 107, 91, 0.12); color: var(--sz-green); }
+        .activity-item .activity-icon.user { background: rgba(232, 179, 91, 0.12); color: var(--sz-gold); }
+        .activity-item .activity-icon.info { background: rgba(124, 157, 181, 0.12); color: #7c9db5; }
+        .activity-item .activity-content { flex: 1; min-width: 0; }
+        .activity-item .activity-content .activity-title {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--sz-ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .activity-item .activity-content .activity-desc {
+            font-size: 0.65rem;
+            color: var(--sz-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .activity-item .activity-time {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        [data-theme="dark"] .activity-item .activity-content .activity-title { color: #f0efe8 !important; }
+        [data-theme="dark"] .activity-item .activity-content .activity-desc { color: #a0b0a8 !important; }
+        [data-theme="dark"] .activity-item .activity-time { color: #a0b0a8 !important; }
+
+        .section-card {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .section-card .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .section-card .section-head h2 {
+            font: 700 0.95rem 'Playfair Display', 'Georgia', serif;
+            color: var(--sz-ink);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        [data-theme="dark"] .section-card { background: var(--sz-white); border-color: var(--sz-line); }
+        [data-theme="dark"] .section-card .section-head h2 { color: #f0efe8 !important; }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            background: var(--sz-table-bg) !important;
+        }
+        .table-custom thead,
+        .table-custom thead tr { background: var(--sz-table-head-bg) !important; }
+        .table-custom thead th {
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 2px solid var(--sz-line);
+            padding: 0.6rem 0.5rem;
+            background: var(--sz-table-head-bg) !important;
+            text-align: left;
+        }
+        .table-custom tbody { background: var(--sz-table-bg) !important; }
+        .table-custom tbody tr {
+            background: var(--sz-table-bg) !important;
+            transition: background 0.2s ease;
+        }
+        .table-custom tbody tr:nth-child(even) { background: var(--sz-table-row-even) !important; }
+        .table-custom tbody tr:hover { background: var(--sz-table-row-hover) !important; }
+        .table-custom tbody td {
+            padding: 0.6rem 0.5rem;
+            border-bottom: 1px solid var(--sz-line);
+            vertical-align: middle;
+            color: var(--sz-ink);
+            background: transparent !important;
+        }
+        .table-custom .empty-state {
+            padding: 2.5rem;
+            text-align: center;
+            color: var(--sz-muted);
+        }
+        .table-custom .empty-state i { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; opacity: 0.3; }
+        .table-responsive { background: var(--sz-table-bg) !important; }
+        [data-theme="dark"] .table-responsive { background: #0f2620 !important; }
+        [data-theme="dark"] .table-custom { background: #0f2620 !important; }
+        [data-theme="dark"] .table-custom thead,
+        [data-theme="dark"] .table-custom thead tr,
+        [data-theme="dark"] .table-custom thead th {
+            background: #0a1a14 !important;
+            color: #c0d0c8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .table-custom tbody { background: #0f2620 !important; }
+        [data-theme="dark"] .table-custom tbody tr { background: #0f2620 !important; }
+        [data-theme="dark"] .table-custom tbody tr:nth-child(even) { background: #132e26 !important; }
+        [data-theme="dark"] .table-custom tbody tr:hover { background: rgba(42, 157, 143, 0.15) !important; }
+        [data-theme="dark"] .table-custom tbody td {
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+            background: transparent !important;
+        }
+        [data-theme="dark"] .table-custom .empty-state { color: #a0b0a8 !important; }
+
+        .badge-role {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-role.superadmin { background: rgba(232, 179, 91, 0.15); color: #b8860b; }
+        .badge-role.admin { background: rgba(155, 89, 182, 0.15); color: #7d3c98; }
+        .badge-role.user, .badge-role.Vendedor { background: rgba(23, 107, 91, 0.12); color: var(--sz-green); }
+        [data-theme="dark"] .badge-role.superadmin { background: rgba(240, 201, 122, 0.2); color: #f0c97a; }
+        [data-theme="dark"] .badge-role.admin { background: rgba(176, 124, 198, 0.2); color: #b07cc6; }
+        [data-theme="dark"] .badge-role.user, [data-theme="dark"] .badge-role.Vendedor { background: rgba(42, 157, 143, 0.2); color: #3db3a5; }
+
+        .badge-status {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 700;
+        }
+        .badge-status.ativo { background: rgba(25, 135, 84, 0.12); color: var(--sz-success); }
+        .badge-status.inativo { background: rgba(220, 53, 69, 0.12); color: var(--sz-danger); }
+        [data-theme="dark"] .badge-status.ativo { background: rgba(78, 205, 196, 0.2); color: #4ecdc4; }
+        [data-theme="dark"] .badge-status.inativo { background: rgba(240, 106, 122, 0.2); color: #f06a7a; }
+
+        .app-footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+        }
+        .app-footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .app-footer .footer-brand { display: flex; align-items: center; gap: 8px; }
+        .app-footer .footer-logo {
+            width: 26px; height: 26px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.5rem;
+        }
+        .app-footer .footer-company {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 0.8rem;
+        }
+        .app-footer .footer-company b { color: var(--sz-coral); }
+        .app-footer .footer-version {
+            font-size: 0.5rem;
+            color: var(--sz-muted);
+            background: var(--sz-paper);
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+        .app-footer .footer-user-info { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+        .app-footer .user-data-item { display: flex; align-items: center; gap: 4px; font-size: 0.6rem; color: var(--sz-muted); }
+        .app-footer .user-data-item i { color: var(--sz-green); font-size: 0.7rem; }
+        .app-footer .data-value { color: var(--sz-ink); font-weight: 500; }
+        .app-footer .user-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        .app-footer .user-status .status-dot {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        [data-theme="dark"] .app-footer { background: #0a1a14; border-color: #2a4a3e; }
+        [data-theme="dark"] .app-footer .footer-company { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .data-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .user-data-item { color: #a0b0a8 !important; }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                position: fixed;
+                top: 0; left: 0;
+                transform: translateX(-100%);
+                width: 280px;
+                height: 100vh;
+                z-index: 1050;
+                box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.active { display: block; }
+            .menu-toggle { display: flex; }
+            .stat-card .stat-value { font-size: 1.3rem; }
+        }
+        @media (max-width: 768px) {
+            .top-nav { padding: 6px 10px; }
+            .breadcrumb-premium { font-size: 0.65rem; }
+            .user-info-premium .user-details { display: none; }
+            .stat-card .stat-value { font-size: 1.1rem; }
+            .stat-card { padding: 0.75rem 1rem; }
+            .quick-actions { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .quick-action-item { padding: 0.75rem 0.4rem; }
+            .quick-action-item i { font-size: 1.2rem; }
+            .quick-action-item span { font-size: 0.55rem; }
+            .chart-container { height: 150px; }
+            .table-custom { font-size: 0.7rem; }
+            .notif-dropdown { width: calc(100vw - 20px); right: 10px; }
+        }
+        @media (max-width: 425px) {
+            .quick-actions { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+            .stat-card .stat-value { font-size: 1rem; }
+            .table-custom thead th, .table-custom tbody td { padding: 0.4rem 0.3rem; font-size: 0.65rem; }
+            .app-footer .user-data-item { font-size: 0.55rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="../../responsive.css">
+    <link rel="stylesheet" href="../../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <!-- ============================================================
+       PROTEÇÃO DE DADOS — Executa ANTES de tudo
+       ============================================================ -->
+    <script>
+    (function masterProtection() {
+        'use strict';
+
+        const PROTECTED_KEYS = [
+            'sumbanepay_users',
+            'sumbanepay_users_backup',
+            'sumbanepay_theme'
+        ];
+
+        const ALLOWED_REMOVAL = [
+            'sumbanepay_admin_session',
+            'sumbanepay_session',
+            'sz_admin_session',
+            'sz_session',
+            'admin_session',
+            'superadmin_session'
+        ];
+
+        try {
+            const originalClear = Storage.prototype.clear;
+            Storage.prototype.clear = function() {
+                const storage = this;
+                const protectedData = {};
+
+                PROTECTED_KEYS.forEach(key => {
+                    try {
+                        const val = storage.getItem(key);
+                        if (val !== null) protectedData[key] = val;
+                    } catch (e) {}
+                });
+
+                try {
+                    for (let i = 0; i < storage.length; i++) {
+                        const key = storage.key(i);
+                        if (key && key.startsWith('sumbanepay_data_')) {
+                            protectedData[key] = storage.getItem(key);
+                        }
+                    }
+                } catch (e) {}
+
+                originalClear.call(storage);
+
+                Object.keys(protectedData).forEach(key => {
+                    try { storage.setItem(key, protectedData[key]); } catch (e) {}
+                });
+            };
+        } catch (e) {}
+
+        try {
+            const originalRemoveItem = Storage.prototype.removeItem;
+            Storage.prototype.removeItem = function(key) {
+                if (key && key.startsWith('sumbanepay')) {
+                    if (ALLOWED_REMOVAL.includes(key)) {
+                        return originalRemoveItem.call(this, key);
+                    }
+                    if (key === 'sumbanepay_theme' || key === 'theme') {
+                        return originalRemoveItem.call(this, key);
+                    }
+                    if (key.startsWith('sumbanepay_data_') === false && key !== 'sumbanepay_users' && key !== 'sumbanepay_users_backup') {
+                        return originalRemoveItem.call(this, key);
+                    }
+                    console.log('🛡️ Bloqueada remoção de:', key);
+                    return;
+                }
+                return originalRemoveItem.call(this, key);
+            };
+        } catch (e) {}
+    })();
+    </script>
+
+    <!-- ============================================================
+       BACKUP AUTOMÁTICO
+       ============================================================ -->
+    <script>
+    (function autoBackup() {
+        try {
+            const users = localStorage.getItem('sumbanepay_users');
+            const backup = localStorage.getItem('sumbanepay_users_backup');
+
+            if (users && users !== '[]' && users !== 'null') {
+                if (!backup || backup === '[]' || backup === 'null') {
+                    localStorage.setItem('sumbanepay_users_backup', users);
+                    localStorage.setItem('sumbanepay_users_backup_time', new Date().toISOString());
+                }
+            }
+
+            if ((!users || users === '[]' || users === 'null') && backup && backup !== '[]' && backup !== 'null') {
+                localStorage.setItem('sumbanepay_users', backup);
+                console.log('✅ Dados restaurados do backup');
+            }
+        } catch (e) {}
+    })();
+    </script>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <div class="app-wrapper">
+        <div class="app-row">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" id="sidebar" role="navigation">
+                <div class="mb-4">
+                    <a class="brand" href="index.html">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <div class="sidebar-subtitle">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> SuperAdmin
+                    </div>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="index.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="utilizadores.html"><i class="bi bi-people me-2"></i>Utilizadores <span class="badge-nav" id="userBadge">0</span></a>
+                    <a class="nav-link" href="empresas.html"><i class="bi bi-building me-2"></i>Empresas <span class="badge-nav" id="companyBadge">0</span></a>
+                    <a class="nav-link" href="pagamentos.html"><i class="bi bi-wallet2 me-2"></i>Pagamentos <span class="badge-nav" id="paymentBadge">0</span></a>
+                    <a class="nav-link" href="faturacao.html"><i class="bi bi-receipt me-2"></i>Faturação <span class="badge-nav" id="invoiceBadge">0</span></a>
+                    <a class="nav-link" href="relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link" href="actividades.html"><i class="bi bi-clipboard-data me-2"></i>Auditoria</a>
+                    <a class="nav-link" href="notificacoes.html"><i class="bi bi-bell me-2"></i>Notificações</a>
+                    <a class="nav-link" href="comunicacao.html"><i class="bi bi-megaphone me-2"></i>Comunicação</a>
+                    <a class="nav-link" href="roles.html"><i class="bi bi-shield-lock me-2"></i>Permissões</a>
+                    <a class="nav-link" href="seguranca.html"><i class="bi bi-shield-check me-2"></i>Segurança</a>
+                    <a class="nav-link" href="suporte.html"><i class="bi bi-ticket me-2"></i>Suporte</a>
+                    <a class="nav-link" href="configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                </nav>
+                <div class="mt-4 d-flex flex-column gap-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
+                        <i class="bi bi-circle-half me-2"></i>Tema
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger-sz w-100" onclick="logoutAdmin()">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sair
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN -->
+            <main class="app-main">
+
+                <div class="top-nav">
+                    <div class="top-nav-left">
+                        <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()" aria-label="Abrir menu">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <div class="breadcrumb-premium">
+                            <span class="breadcrumb-item">
+                                <i class="bi bi-house-fill home-icon"></i>
+                                <a href="index.html">Dashboard</a>
+                            </span>
+                            <span class="separator">›</span>
+                            <span class="breadcrumb-item current">
+                                <i class="bi bi-grid-1x2 me-1"></i> Visão Geral
+                            </span>
+                            <span class="live-badge ms-1">
+                                <span class="dot"></span>
+                                AO VIVO
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="user-info-premium">
+                        <div class="user-details text-end">
+                            <span class="user-name" id="userDisplay">
+                                <i class="bi bi-person-circle me-1"></i> Carregando...
+                            </span>
+                            <span class="user-role" id="userRole">SuperAdmin</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">
+                            S
+                            <span class="status-badge"></span>
+                        </div>
+                        <button class="btn-icon-premium" onclick="toggleNotifDropdown()" title="Notificações" id="notifBtn">
+                            <i class="bi bi-bell"></i>
+                            <span class="notif-badge" id="notifBadge">0</span>
+                        </button>
+                        <button class="btn-icon-premium" onclick="toggleTheme()" title="Alternar tema">
+                            <i class="bi bi-circle-half"></i>
+                        </button>
+                        <button class="btn-logout-header" onclick="logoutAdmin()" title="Sair da conta">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="notif-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <span><i class="bi bi-bell me-1"></i> Notificações</span>
+                        <button class="btn-sm-sz" onclick="clearNotifs(event)" style="font-size:0.55rem;padding:2px 8px;">Limpar</button>
+                    </div>
+                    <div id="notifList">
+                        <div class="notif-empty">
+                            <i class="bi bi-inbox"></i>
+                            Nenhuma notificação
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-content container-fluid p-2 p-md-3 p-lg-4">
+
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
+                        <div>
+                            <div class="eyebrow"><i class="bi bi-clock-history me-1"></i> SUPERADMIN</div>
+                            <h1 class="font-display" style="font-size:clamp(1.4rem,2.5vw,2.2rem);margin:0;">
+                                Dashboard <em style="color:var(--sz-coral);font-style:normal;">✦</em>
+                                <span id="newSinceBadge" class="badge bg-warning text-dark" style="font-size:0.55rem;vertical-align:middle;display:none;"></span>
+                            </h1>
+                            <p class="text-muted mb-0" style="font-size:0.8rem;">
+                                Dados reais dos utilizadores registados · <strong style="color:var(--sz-green);">Persistência garantida 🛡️</strong>
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn-outline-sz btn-sm" onclick="exportCSV()">
+                                <i class="bi bi-file-earmark-spreadsheet"></i> CSV
+                            </button>
+                            <button class="btn-outline-sz btn-sm" onclick="exportExcel()">
+                                <i class="bi bi-file-earmark-excel"></i> Excel
+                            </button>
+                            <button class="btn-outline-sz btn-sm" onclick="exportJSON()">
+                                <i class="bi bi-file-earmark-code"></i> JSON
+                            </button>
+                            <button class="btn-outline-sz btn-sm" onclick="forceRefresh()">
+                                <i class="bi bi-arrow-clockwise"></i> Actualizar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <a href="utilizadores.html" class="quick-action-item">
+                            <i class="bi bi-people"></i>
+                            <span>Utilizadores</span>
+                        </a>
+                        <a href="empresas.html" class="quick-action-item">
+                            <i class="bi bi-building"></i>
+                            <span>Empresas</span>
+                        </a>
+                        <a href="relatorios.html" class="quick-action-item">
+                            <i class="bi bi-bar-chart"></i>
+                            <span>Relatórios</span>
+                        </a>
+                        <a href="actividades.html" class="quick-action-item">
+                            <i class="bi bi-clipboard-data"></i>
+                            <span>Auditoria</span>
+                        </a>
+                        <a href="configuracoes.html" class="quick-action-item">
+                            <i class="bi bi-gear"></i>
+                            <span>Config.</span>
+                        </a>
+                        <a href="faturacao.html" class="quick-action-item">
+                            <i class="bi bi-receipt"></i>
+                            <span>Faturação</span>
+                        </a>
+                    </div>
+
+                    <div class="row g-2 g-md-3">
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card green">
+                                <div class="stat-icon green"><i class="bi bi-people-fill"></i></div>
+                                <div class="stat-label"><i class="bi bi-people me-1"></i> Utilizadores</div>
+                                <div class="stat-value" id="totalUsers">0</div>
+                                <div class="stat-change neutral" id="userChange">
+                                    <i class="bi bi-dash"></i> Total registados
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card gold">
+                                <div class="stat-icon gold"><i class="bi bi-person-check-fill"></i></div>
+                                <div class="stat-label"><i class="bi bi-person-check me-1"></i> Activos</div>
+                                <div class="stat-value" id="activeUsers">0</div>
+                                <div class="stat-change up" id="activeUserChange">
+                                    <i class="bi bi-arrow-up"></i> Activos
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card coral">
+                                <div class="stat-icon coral"><i class="bi bi-person-x-fill"></i></div>
+                                <div class="stat-label"><i class="bi bi-person-x me-1"></i> Inactivos</div>
+                                <div class="stat-value" id="inactiveUsers">0</div>
+                                <div class="stat-change down" id="inactiveUserChange">
+                                    <i class="bi bi-arrow-down"></i> Inactivos
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card purple">
+                                <div class="stat-icon purple"><i class="bi bi-building"></i></div>
+                                <div class="stat-label"><i class="bi bi-building me-1"></i> Negócios</div>
+                                <div class="stat-value" id="totalBusinesses">0</div>
+                                <div class="stat-change neutral" id="businessChange">
+                                    <i class="bi bi-dash"></i> Registados
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 g-md-3 mt-1">
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card teal">
+                                <div class="stat-icon teal"><i class="bi bi-calendar-week"></i></div>
+                                <div class="stat-label"><i class="bi bi-calendar-week me-1"></i> Novos (7 dias)</div>
+                                <div class="stat-value" id="newUsers7d">0</div>
+                                <div class="stat-change up" id="new7dChange">
+                                    <i class="bi bi-arrow-up"></i> Últimos 7 dias
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card blue">
+                                <div class="stat-icon blue"><i class="bi bi-calendar-month"></i></div>
+                                <div class="stat-label"><i class="bi bi-calendar-month me-1"></i> Novos (30 dias)</div>
+                                <div class="stat-value" id="newUsers30d">0</div>
+                                <div class="stat-change up" id="new30dChange">
+                                    <i class="bi bi-arrow-up"></i> Últimos 30 dias
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card gold">
+                                <div class="stat-icon gold"><i class="bi bi-graph-up-arrow"></i></div>
+                                <div class="stat-label"><i class="bi bi-graph-up me-1"></i> Crescimento</div>
+                                <div class="stat-value" id="growthRate">0%</div>
+                                <div class="stat-change up" id="growthChange">
+                                    <i class="bi bi-arrow-up"></i> Vs mês anterior
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-6">
+                            <div class="stat-card green">
+                                <div class="stat-icon green"><i class="bi bi-activity"></i></div>
+                                <div class="stat-label"><i class="bi bi-activity me-1"></i> Actividade Total</div>
+                                <div class="stat-value" id="totalActivity">0</div>
+                                <div class="stat-change neutral" id="activityChange">
+                                    <i class="bi bi-dash"></i> Registos
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 g-md-3 mt-1">
+                        <div class="col-lg-6">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h5><i class="bi bi-pie-chart me-2" style="color:var(--sz-gold);"></i>Utilizadores por Cargo</h5>
+                                </div>
+                                <div class="chart-body">
+                                    <div class="chart-container">
+                                        <canvas id="usersChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h5><i class="bi bi-graph-up-arrow me-2" style="color:var(--sz-green);"></i>Registos (últimos 7 dias)</h5>
+                                </div>
+                                <div class="chart-body">
+                                    <div class="chart-container">
+                                        <canvas id="growthChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 g-md-3 mt-1">
+                        <div class="col-lg-6">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h5><i class="bi bi-bar-chart me-2" style="color:var(--sz-coral);"></i>Top Utilizadores (Vendas)</h5>
+                                </div>
+                                <div class="chart-body">
+                                    <div class="chart-container">
+                                        <canvas id="topUsersChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h5><i class="bi bi-graph-up me-2" style="color:var(--sz-purple);"></i>Crescimento Mensal</h5>
+                                </div>
+                                <div class="chart-body">
+                                    <div class="chart-container">
+                                        <canvas id="monthlyChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <div class="section-head">
+                            <h2><i class="bi bi-people-fill me-2" style="color:var(--sz-green);"></i>Últimos Utilizadores Registados</h2>
+                            <a href="utilizadores.html" class="text-decoration-none small" style="color:var(--sz-green);font-weight:600;">
+                                Ver todos <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Telefone</th>
+                                        <th>Negócio</th>
+                                        <th>Cargo</th>
+                                        <th>Estado</th>
+                                        <th>Registo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentUsersBody">
+                                    <tr>
+                                        <td colspan="7" class="empty-state">
+                                            <i class="bi bi-inbox"></i>
+                                            Nenhum utilizador registado
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <div class="section-head">
+                            <h2><i class="bi bi-clock-history me-2" style="color:var(--sz-gold);"></i>Actividade Recente</h2>
+                            <span class="text-muted small" id="activityCount">0 atividades</span>
+                        </div>
+                        <div id="activityRows">
+                            <div class="activity-item">
+                                <div class="activity-icon info"><i class="bi bi-hourglass"></i></div>
+                                <div class="activity-content">
+                                    <div class="activity-title">A carregar...</div>
+                                </div>
+                                <div class="activity-time">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">Pay</div>
+                            <span class="footer-company">Sumbane<b>Pay</b></span>
+                            <span class="footer-version">v5.0.0</span>
+                        </div>
+                        <div class="footer-user-info">
+                            <span class="user-data-item">
+                                <i class="bi bi-person"></i>
+                                <span class="data-value" id="footerUserName">Carregando...</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-envelope"></i>
+                                <span class="data-value" id="footerUserEmail">—</span>
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-shield-check"></i>
+                                <span class="data-value" id="footerUserRole">SuperAdmin</span>
+                            </span>
+                            <span class="user-status">
+                                <span class="status-dot"></span>
+                                Online
+                            </span>
+                            <span class="user-data-item">
+                                <i class="bi bi-clock"></i>
+                                <span class="data-value" id="footerLastUpdate">—</span>
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* ============================================================
+           DASHBOARD SUPERADMIN v5.0.0
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+        const ADMIN_EMAIL = "jsumbane22@gmail.com";
+
+        let usersChartInstance = null;
+        let growthChartInstance = null;
+        let topUsersChartInstance = null;
+        let monthlyChartInstance = null;
+        let autoRefreshInterval = null;
+        let integrityCheckInterval = null;
+        let isLoggingOut = false;
+        let navigationGuardInitialized = false;
+        let notifDropdownOpen = false;
+        let lastUsersSignature = '';
+
+        /* ============================================================
+           BACKUP E RESTAURAÇÃO
+           ============================================================ */
+        function backupUsers() {
+            try {
+                const users = localStorage.getItem(KEY + 'users');
+                if (users && users !== '[]' && users !== 'null') {
+                    localStorage.setItem(KEY + 'users_backup', users);
+                    localStorage.setItem(KEY + 'users_backup_time', new Date().toISOString());
+                }
+
+                let totalSize = 0;
+                for (let key in localStorage) {
+                    if (localStorage.hasOwnProperty(key)) {
+                        totalSize += (localStorage[key] || '').length + key.length;
+                    }
+                }
+                const sizeMB = totalSize / (1024 * 1024);
+                if (sizeMB > 4.5 && !window._storageWarningShown) {
+                    window._storageWarningShown = true;
+                    toast('⚠️ Armazenamento quase cheio (' + sizeMB.toFixed(2) + ' MB)', 'warning');
+                }
+            } catch (e) {}
+        }
+
+        function restoreUsersIfMissing() {
+            try {
+                const current = localStorage.getItem(KEY + 'users');
+                const backup = localStorage.getItem(KEY + 'users_backup');
+
+                if ((!current || current === '[]' || current === 'null') &&
+                    backup && backup !== '[]' && backup !== 'null') {
+                    localStorage.setItem(KEY + 'users', backup);
+                    console.log('✅ Dados restaurados do backup');
+                    return true;
+                }
+            } catch (e) {}
+            return false;
+        }
+
+        function read(k, f) {
+            try {
+                const data = localStorage.getItem(k);
+                return data ? JSON.parse(data) : f;
+            } catch (e) { return f; }
+        }
+
+        function getUsers() {
+            restoreUsersIfMissing();
+            return read(KEY + 'users', []);
+        }
+
+        function getUserData(userId, suffix) {
+            return read(KEY + 'data_' + userId + '_' + suffix, []);
+        }
+
+        function escapeHTML(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+            }[char]));
+        }
+
+        function money(n) {
+            return new Intl.NumberFormat('pt-PT', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(Number(n) || 0) + ' MT';
+        }
+
+        function formatDate(d) {
+            if (!d) return '-';
+            try {
+                return new Date(d).toLocaleDateString('pt-PT', {
+                    day: '2-digit', month: '2-digit', year: 'numeric'
+                });
+            } catch (e) { return '-'; }
+        }
+
+        function formatDateTime(d) {
+            if (!d) return '-';
+            try {
+                return new Date(d).toLocaleString('pt-PT', {
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+            } catch (e) { return '-'; }
+        }
+
+        function toast(t, icon = 'success') {
+            Swal.fire({ toast: true, position: 'top-end', timer: 3000, showConfirmButton: false, icon, title: t });
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar) sidebar.classList.toggle('open');
+            if (overlay) overlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar) sidebar.classList.remove('open');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+            try {
+                localStorage.setItem('sumbanepay_theme', next);
+                localStorage.setItem('theme', next);
+            } catch (e) {}
+            setTimeout(() => renderDashboard(), 100);
+        }
+
+        function applyChartTheme() {
+            if (typeof Chart === 'undefined') return;
+            const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const text = dark ? '#f0efe8' : '#19362e';
+            const grid = dark ? 'rgba(192, 208, 200, 0.24)' : 'rgba(25, 54, 46, 0.12)';
+            Chart.defaults.color = text;
+            Chart.defaults.borderColor = grid;
+            Chart.defaults.plugins.legend.labels.color = text;
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+            applyChartTheme();
+        }
+
+        function loadTheme() {
+            let saved = null;
+            try {
+                saved = localStorage.getItem('sumbanepay_theme') || localStorage.getItem('theme');
+            } catch (e) {}
+            const system = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(saved || (system ? 'dark' : 'light'));
+        }
+
+        /* ============================================================
+           SESSÃO
+           ============================================================ */
+        function clearAdminSession() {
+            [
+                KEY + 'admin_session',
+                KEY + 'session',
+                'sz_admin_session',
+                'sz_session',
+                'sumbanepay_admin_session',
+                'admin_session',
+                'superadmin_session',
+                'sumbanepay_superadmin_session'
+            ].forEach(key => {
+                try { localStorage.removeItem(key); } catch (e) {}
+                try { sessionStorage.removeItem(key); } catch (e) {}
+            });
+        }
+
+        function redirectToSuperAdminLogin() {
+            window.location.replace('./superadmin-login.html?logout=' + Date.now());
+        }
+
+        function requireAdmin() {
+            try {
+                const SESSION_KEYS = [
+                    KEY + 'admin_session',
+                    'sz_admin_session',
+                    'admin_session',
+                    'superadmin_session',
+                    'sumbanepay_superadmin_session',
+                    KEY + 'session',
+                    'sz_session'
+                ];
+
+                let raw = null;
+                for (let i = 0; i < SESSION_KEYS.length; i++) {
+                    raw = localStorage.getItem(SESSION_KEYS[i]) || sessionStorage.getItem(SESSION_KEYS[i]);
+                    if (raw) break;
+                }
+
+                if (!raw) {
+                    redirectToSuperAdminLogin();
+                    return false;
+                }
+
+                const session = JSON.parse(raw);
+                const validLogin = session.loggedIn === true
+                                || session.userId
+                                || session.role === 'superadmin'
+                                || session.email === ADMIN_EMAIL;
+                const expiresAt = session.expiresAt || (session.timestamp || 0) + 86400000;
+
+                if (!validLogin || Date.now() > expiresAt) {
+                    clearAdminSession();
+                    redirectToSuperAdminLogin();
+                    return false;
+                }
+
+                return true;
+            } catch (e) {
+                clearAdminSession();
+                redirectToSuperAdminLogin();
+                return false;
+            }
+        }
+
+        function performAdminLogout() {
+            if (isLoggingOut) return;
+            isLoggingOut = true;
+            clearAdminSession();
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            if (integrityCheckInterval) clearInterval(integrityCheckInterval);
+            redirectToSuperAdminLogin();
+        }
+
+        function logoutAdmin() { performAdminLogout(); }
+
+        function setupNavigationGuard() {
+            if (navigationGuardInitialized) return;
+            navigationGuardInitialized = true;
+
+            window.history.pushState({ guard: true, timestamp: Date.now() }, '', window.location.href);
+
+            window.addEventListener('popstate', function() { performAdminLogout(); });
+            window.addEventListener('pageshow', function(event) { if (event.persisted) performAdminLogout(); });
+            document.addEventListener('keydown', function(event) {
+                const tag = event.target?.tagName;
+                const editable = ['INPUT', 'TEXTAREA', 'SELECT'].includes(tag);
+                if (!editable && event.key === 'Backspace') {
+                    event.preventDefault();
+                    performAdminLogout();
+                }
+            });
+            window.addEventListener('mouseup', function(event) {
+                if (event.button === 3) { event.preventDefault(); performAdminLogout(); }
+            });
+        }
+
+        /* ============================================================
+           EXPORTAÇÕES
+           ============================================================ */
+        function exportCSV() {
+            const users = getUsers();
+            if (!users.length) { toast('Sem dados para exportar.', 'warning'); return; }
+            const headers = ['Nome', 'Email', 'Telefone', 'Negócio', 'Cargo', 'Estado', 'Registo'];
+            const rows = users.map(u => [
+                u.name || '', u.email || '', u.phone || '', u.business || '',
+                u.role || 'Vendedor', u.status || 'ativo', formatDate(u.createdAt)
+            ]);
+            const csv = [headers.join(','), ...rows.map(r =>
+                r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')
+            )].join('\n');
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `utilizadores_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            toast('CSV exportado!');
+        }
+
+        function exportExcel() {
+            try {
+                const users = getUsers();
+                if (!users.length) { toast('Sem dados para exportar.', 'warning'); return; }
+                if (typeof XLSX === 'undefined') { toast('Biblioteca Excel não carregada.', 'error'); return; }
+
+                const data = users.map(u => ({
+                    Nome: u.name || '',
+                    Email: u.email || '',
+                    Telefone: u.phone || '',
+                    Negócio: u.business || '',
+                    Cargo: u.role || 'Vendedor',
+                    Estado: u.status || 'ativo',
+                    'Registado em': formatDate(u.createdAt),
+                    'Último acesso': u.lastAccess ? formatDate(u.lastAccess) : 'Nunca'
+                }));
+
+                const ws = XLSX.utils.json_to_sheet(data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Utilizadores');
+                XLSX.writeFile(wb, `utilizadores_${new Date().toISOString().slice(0,10)}.xlsx`);
+                toast('Excel exportado!');
+            } catch (e) {
+                console.error(e);
+                toast('Erro ao exportar Excel.', 'error');
+            }
+        }
+
+        function exportJSON() {
+            const users = getUsers();
+            const fullData = {
+                exportadoEm: new Date().toISOString(),
+                totalUtilizadores: users.length,
+                utilizadores: users.map(u => {
+                    const sales = getUserData(u.id, 'sales');
+                    const clients = getUserData(u.id, 'clients');
+                    const products = getUserData(u.id, 'products');
+                    const invoices = getUserData(u.id, 'invoices');
+                    const payments = getUserData(u.id, 'payments');
+                    return {
+                        id: u.id, nome: u.name, email: u.email, telefone: u.phone,
+                        negocio: u.business, cargo: u.role, estado: u.status,
+                        criadoEm: u.createdAt, ultimoAcesso: u.lastAccess,
+                        estatisticas: {
+                            vendas: sales.length, clientes: clients.length,
+                            produtos: products.length, faturas: invoices.length,
+                            pagamentos: payments.length
+                        }
+                    };
+                })
+            };
+            const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `superadmin_export_${new Date().toISOString().slice(0,10)}.json`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            toast('JSON exportado!');
+        }
+
+        /* ============================================================
+           NOTIFICAÇÕES
+           ============================================================ */
+        function getNotifications() {
+            return read(KEY + 'admin_notifications', []);
+        }
+
+        function saveNotifications(notifs) {
+            try {
+                localStorage.setItem(KEY + 'admin_notifications', JSON.stringify(notifs.slice(0, 50)));
+            } catch (e) {}
+        }
+
+        function addNotification(type, title, message) {
+            const notifs = getNotifications();
+            const sig = type + '|' + title + '|' + message;
+            const today = new Date().toISOString().slice(0, 10);
+            if (notifs.some(n => n.sig === sig && (n.date || '').slice(0, 10) === today)) return;
+            notifs.unshift({
+                id: 'notif_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                type, title, message, sig,
+                read: false,
+                date: new Date().toISOString()
+            });
+            saveNotifications(notifs);
+            updateNotifBadge();
+        }
+
+        function updateNotifBadge() {
+            const notifs = getNotifications();
+            const unread = notifs.filter(n => !n.read).length;
+            const badge = document.getElementById('notifBadge');
+            if (badge) {
+                badge.textContent = unread > 99 ? '99+' : unread;
+                badge.classList.toggle('show', unread > 0);
+            }
+        }
+
+        function toggleNotifDropdown() {
+            notifDropdownOpen = !notifDropdownOpen;
+            const dd = document.getElementById('notifDropdown');
+            if (dd) dd.classList.toggle('show', notifDropdownOpen);
+            if (notifDropdownOpen) renderNotifications();
+        }
+
+        function renderNotifications() {
+            const notifs = getNotifications();
+            const c = document.getElementById('notifList');
+            if (!c) return;
+            if (!notifs.length) {
+                c.innerHTML = `<div class="notif-empty"><i class="bi bi-inbox"></i>Nenhuma notificação</div>`;
+                return;
+            }
+            c.innerHTML = notifs.slice(0, 20).map(n => `
+                <div class="notif-item ${!n.read ? 'unread' : ''}" onclick="markNotifRead('${n.id}')">
+                    <div class="notif-title">${escapeHTML(n.title)}</div>
+                    <div class="notif-text">${escapeHTML(n.message)}</div>
+                    <div class="notif-time">${formatDateTime(n.date)}</div>
+                </div>
+            `).join('');
+        }
+
+        function markNotifRead(id) {
+            const notifs = getNotifications();
+            const updated = notifs.map(n => n.id === id ? { ...n, read: true } : n);
+            saveNotifications(updated);
+            renderNotifications();
+            updateNotifBadge();
+        }
+
+        function clearNotifs(event) {
+            if (event) event.stopPropagation();
+            saveNotifications([]);
+            renderNotifications();
+            updateNotifBadge();
+        }
+
+        function generateAutoNotifications(users) {
+            const now = new Date();
+            const today = now.toISOString().slice(0, 10);
+
+            const newToday = users.filter(u => u.createdAt && u.createdAt.slice(0, 10) === today);
+            if (newToday.length > 0) {
+                addNotification('info', '👤 Novos utilizadores hoje',
+                    newToday.length + ' utilizador(es) registado(s) hoje.');
+            }
+
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const inactive = users.filter(u => u.createdAt && new Date(u.createdAt) < weekAgo && !u.lastAccess);
+            if (inactive.length > 0) {
+                addNotification('warning', '⚠️ Utilizadores inativos',
+                    inactive.length + ' utilizador(es) nunca acederam.');
+            }
+
+            updateNotifBadge();
+        }
+
+        /* ============================================================
+           RENDER
+           ============================================================ */
+        function renderDashboard() {
+            if (!requireAdmin()) return;
+
+            restoreUsersIfMissing();
+            backupUsers();
+
+            const users = getUsers();
+            const totalUsers = users.length;
+            const activeUsers = users.filter(u => u.status === 'ativo' || !u.status).length;
+            const inactiveUsers = users.filter(u => u.status === 'inativo').length;
+            const totalBusinesses = users.filter(u => u.business && u.business.trim() !== '').length;
+
+            const now = new Date();
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            const twoMonthsAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+            const newUsers7d = users.filter(u => u.createdAt && new Date(u.createdAt) >= weekAgo).length;
+            const newUsers30d = users.filter(u => u.createdAt && new Date(u.createdAt) >= monthAgo).length;
+            const prevMonthUsers = users.filter(u => u.createdAt && new Date(u.createdAt) >= twoMonthsAgo && new Date(u.createdAt) < monthAgo).length;
+
+            const growthRate = prevMonthUsers > 0
+                ? ((newUsers30d - prevMonthUsers) / prevMonthUsers * 100)
+                : (newUsers30d > 0 ? 100 : 0);
+
+            let totalActivity = 0;
+            users.forEach(u => {
+                totalActivity += getUserData(u.id, 'sales').length;
+                totalActivity += getUserData(u.id, 'clients').length;
+                totalActivity += getUserData(u.id, 'products').length;
+                totalActivity += getUserData(u.id, 'invoices').length;
+                totalActivity += getUserData(u.id, 'payments').length;
+            });
+
+            const setText = (id, v) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = v;
+            };
+
+            setText('totalUsers', totalUsers);
+            setText('activeUsers', activeUsers);
+            setText('inactiveUsers', inactiveUsers);
+            setText('totalBusinesses', totalBusinesses);
+            setText('newUsers7d', newUsers7d);
+            setText('newUsers30d', newUsers30d);
+            setText('growthRate', growthRate.toFixed(1) + '%');
+            setText('totalActivity', totalActivity);
+            setText('userBadge', totalUsers);
+            setText('companyBadge', totalBusinesses);
+            setText('paymentBadge', totalActivity);
+
+            const admin = users.find(u => u.email === ADMIN_EMAIL);
+            if (admin) {
+                setText('userDisplay', admin.name || 'SuperAdmin');
+                const avatarEl = document.getElementById('userAvatar');
+                if (avatarEl && avatarEl.firstChild && avatarEl.firstChild.nodeType === 3) {
+                    avatarEl.firstChild.nodeValue = (admin.name || 'S').charAt(0).toUpperCase() + ' ';
+                }
+                setText('footerUserName', admin.name || 'SuperAdmin');
+                setText('footerUserEmail', admin.email || ADMIN_EMAIL);
+            }
+
+            const lastVisitKey = KEY + 'admin_last_visit_' + ADMIN_EMAIL;
+            let lastVisit = null;
+            try { lastVisit = localStorage.getItem(lastVisitKey); } catch (e) {}
+
+            if (lastVisit) {
+                const newSince = users.filter(u => u.createdAt && new Date(u.createdAt) > new Date(lastVisit)).length;
+                const badge = document.getElementById('newSinceBadge');
+                if (badge && newSince > 0) {
+                    badge.textContent = '+' + newSince + ' novo' + (newSince > 1 ? 's' : '');
+                    badge.style.display = 'inline-block';
+                }
+            }
+            try { localStorage.setItem(lastVisitKey, new Date().toISOString()); } catch (e) {}
+
+            const tbody = document.getElementById('recentUsersBody');
+            const sorted = [...users].sort((a, b) => {
+                const da = new Date(a.createdAt || 0).getTime();
+                const db = new Date(b.createdAt || 0).getTime();
+                return db - da;
+            });
+            const recent = sorted.slice(0, 10);
+
+            if (tbody) {
+                if (recent.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <i class="bi bi-inbox"></i>
+                                Nenhum utilizador registado
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML = recent.map(u => `
+                        <tr>
+                            <td><strong>${escapeHTML(u.name || 'Sem nome')}</strong></td>
+                            <td>${escapeHTML(u.email || '—')}</td>
+                            <td>${escapeHTML(u.phone || '—')}</td>
+                            <td>${escapeHTML(u.business || '—')}</td>
+                            <td><span class="badge-role ${u.role || 'user'}">${escapeHTML(u.role || 'Vendedor')}</span></td>
+                            <td><span class="badge-status ${u.status === 'inativo' ? 'inativo' : 'ativo'}">${u.status === 'inativo' ? 'Inactivo' : 'Activo'}</span></td>
+                            <td>${formatDate(u.createdAt)}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+
+            const activityRows = document.getElementById('activityRows');
+            const activityCount = document.getElementById('activityCount');
+
+            const activities = sorted.slice(0, 10).map(u => ({
+                type: 'user',
+                title: `Novo utilizador: ${u.name || 'Sem nome'}`,
+                desc: `${u.email || '—'} • ${u.business || 'Sem negócio'}`,
+                date: u.createdAt
+            }));
+
+            if (activityCount) activityCount.textContent = `${totalUsers} utilizadores registados`;
+
+            if (activityRows) {
+                if (activities.length === 0) {
+                    activityRows.innerHTML = `
+                        <div class="activity-item">
+                            <div class="activity-icon info"><i class="bi bi-inbox"></i></div>
+                            <div class="activity-content">
+                                <div class="activity-title">Nenhuma actividade</div>
+                            </div>
+                            <div class="activity-time">—</div>
+                        </div>
+                    `;
+                } else {
+                    activityRows.innerHTML = activities.map(a => `
+                        <div class="activity-item">
+                            <div class="activity-icon ${a.type}">
+                                <i class="bi bi-person-plus"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">${escapeHTML(a.title)}</div>
+                                <div class="activity-desc">${escapeHTML(a.desc)}</div>
+                            </div>
+                            <div class="activity-time">${a.date ? formatDateTime(a.date) : '—'}</div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            setText('footerLastUpdate', new Date().toLocaleTimeString('pt-PT'));
+
+            generateAutoNotifications(users);
+            updateNotifBadge();
+
+            renderUsersChart(users);
+            renderGrowthChart(users);
+            renderTopUsersChart(users);
+            renderMonthlyChart(users);
+        }
+
+        /* ============================================================
+           CHARTS
+           ============================================================ */
+        function renderUsersChart(users) {
+            const ctx = document.getElementById('usersChart');
+            if (!ctx) return;
+            if (usersChartInstance) usersChartInstance.destroy();
+
+            const superadmins = users.filter(u => u.role === 'superadmin').length;
+            const admins = users.filter(u => u.role === 'admin').length;
+            const vendedores = users.filter(u => u.role === 'Vendedor' || u.role === 'user' || !u.role).length;
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#f0efe8' : '#19362e';
+            const borderColor = isDark ? '#162f27' : '#ffffff';
+
+            usersChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Vendedores', 'Admins', 'SuperAdmins'],
+                    datasets: [{
+                        data: [vendedores, admins, superadmins],
+                        backgroundColor: ['#176b5b', '#9b59b6', '#e8b35b'],
+                        borderWidth: 2,
+                        borderColor: borderColor
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 10 }, padding: 10, usePointStyle: true, color: textColor }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
+
+        function renderGrowthChart(users) {
+            const ctx = document.getElementById('growthChart');
+            if (!ctx) return;
+            if (growthChartInstance) growthChartInstance.destroy();
+
+            const today = new Date();
+            const labels = [];
+            const data = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().slice(0, 10);
+                labels.push(i === 0 ? 'Hoje' : d.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit' }));
+                data.push(users.filter(u => u.createdAt && new Date(u.createdAt).toISOString().slice(0, 10) === dateStr).length);
+            }
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#f0efe8' : '#19362e';
+
+            growthChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Novos utilizadores',
+                        data: data,
+                        backgroundColor: isDark ? 'rgba(240, 201, 122, 0.6)' : 'rgba(23, 107, 91, 0.6)',
+                        borderColor: isDark ? '#f0c97a' : '#176b5b',
+                        borderWidth: 2,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: textColor } },
+                        x: { ticks: { color: textColor } }
+                    }
+                }
+            });
+        }
+
+        function renderTopUsersChart(users) {
+            const ctx = document.getElementById('topUsersChart');
+            if (!ctx) return;
+            if (topUsersChartInstance) topUsersChartInstance.destroy();
+
+            const userSales = users.map(u => {
+                const sales = getUserData(u.id, 'sales');
+                const total = sales.reduce((sum, s) => sum + (parseFloat(s.total) || 0), 0);
+                return { name: u.name || u.email || 'Sem nome', total: total };
+            });
+
+            const sorted = userSales.sort((a, b) => b.total - a.total).slice(0, 5);
+            const labels = sorted.map(u => u.name.length > 15 ? u.name.substring(0, 15) + '...' : u.name);
+            const data = sorted.map(u => u.total);
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#f0efe8' : '#19362e';
+
+            topUsersChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.length ? labels : ['Sem dados'],
+                    datasets: [{
+                        label: 'Vendas (MT)',
+                        data: data.length ? data : [0],
+                        backgroundColor: ['#176b5b', '#1f8a75', '#e8b35b', '#ef6d4e', '#9b59b6'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: c => money(c.parsed.x) } }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { color: textColor, callback: v => v.toLocaleString('pt-PT') + ' MT' } },
+                        y: { ticks: { color: textColor } }
+                    }
+                }
+            });
+        }
+
+        function renderMonthlyChart(users) {
+            const ctx = document.getElementById('monthlyChart');
+            if (!ctx) return;
+            if (monthlyChartInstance) monthlyChartInstance.destroy();
+
+            const months = [];
+            const data = [];
+            const today = new Date();
+
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                const monthStr = d.toISOString().slice(0, 7);
+                months.push(d.toLocaleDateString('pt-PT', { month: 'short', year: '2-digit' }));
+                data.push(users.filter(u => u.createdAt && new Date(u.createdAt).toISOString().slice(0, 7) === monthStr).length);
+            }
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#f0efe8' : '#19362e';
+
+            monthlyChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Utilizadores registados',
+                        data: data,
+                        borderColor: isDark ? '#b07cc6' : '#9b59b6',
+                        backgroundColor: isDark ? 'rgba(176, 124, 198, 0.2)' : 'rgba(155, 89, 182, 0.2)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: isDark ? '#b07cc6' : '#9b59b6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: textColor } },
+                        x: { ticks: { color: textColor } }
+                    }
+                }
+            });
+        }
+
+        function forceRefresh() {
+            renderDashboard();
+            toast('Dados actualizados!');
+        }
+
+        /* ============================================================
+           AUTO REFRESH
+           ============================================================ */
+        function startAutoRefresh() {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            autoRefreshInterval = setInterval(function() {
+                const session = localStorage.getItem(KEY + 'admin_session')
+                             || localStorage.getItem('sz_admin_session')
+                             || sessionStorage.getItem(KEY + 'admin_session');
+                if (!session) {
+                    clearInterval(autoRefreshInterval);
+                    performAdminLogout();
+                } else {
+                    renderDashboard();
+                }
+            }, 30000);
+        }
+
+        /* ============================================================
+           INTEGRITY CHECK
+           ============================================================ */
+        function startIntegrityCheck() {
+            if (integrityCheckInterval) clearInterval(integrityCheckInterval);
+            integrityCheckInterval = setInterval(function() {
+                try {
+                    const current = localStorage.getItem(KEY + 'users');
+                    const backup = localStorage.getItem(KEY + 'users_backup');
+
+                    if ((!current || current === '[]' || current === 'null') &&
+                        backup && backup !== '[]' && backup !== 'null') {
+                        localStorage.setItem(KEY + 'users', backup);
+                        console.log('🔄 Dados restaurados');
+                        renderDashboard();
+                    } else if (current && current !== '[]' && current !== 'null') {
+                        const sig = current.length + '_' + current.slice(0, 100);
+                        if (sig !== lastUsersSignature) {
+                            lastUsersSignature = sig;
+                            backupUsers();
+                        }
+                    }
+                } catch (e) {}
+            }, 3000);
+        }
+
+        /* ============================================================
+           INIT
+           ============================================================ */
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+
+            /* ✅ core/auth-core.js já validou a sessão no <head>
+               Este requireAdmin() é redundante, mas mantido por segurança */
+            if (!requireAdmin()) return;
+
+            setupNavigationGuard();
+            renderDashboard();
+            startAutoRefresh();
+            startIntegrityCheck();
+
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 992) closeSidebar();
+                });
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 992) closeSidebar();
+            });
+
+            window.addEventListener('storage', function(e) {
+                if (e.key && e.key.startsWith(KEY)) {
+                    renderDashboard();
+                }
+            });
+
+            window.addEventListener('beforeunload', function() {
+                backupUsers();
+            });
+
+            document.addEventListener('click', function(e) {
+                const dd = document.getElementById('notifDropdown');
+                const btn = document.getElementById('notifBtn');
+                if (dd && btn && !dd.contains(e.target) && !btn.contains(e.target)) {
+                    dd.classList.remove('show');
+                    notifDropdownOpen = false;
+                }
+            });
+
+            console.log('🛡️ Dashboard v5.0.0 — Todos os sistemas ativos');
+        });
+
+        /* ============================================================
+           EXPORTA
+           ============================================================ */
+        Object.assign(window, {
+            logoutAdmin,
+            toggleTheme,
+            renderDashboard,
+            forceRefresh,
+            exportCSV,
+            exportExcel,
+            exportJSON,
+            toggleSidebar,
+            closeSidebar,
+            toggleNotifDropdown,
+            markNotifRead,
+            clearNotifs,
+            performAdminLogout
+        });
+    </script>
+
+    <script src="../../mobile.js" defer></script>
+</body>
+</html>

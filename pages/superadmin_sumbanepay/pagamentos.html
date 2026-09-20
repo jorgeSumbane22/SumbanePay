@@ -1,0 +1,2205 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <title>Pagamentos — SumbanePay SuperAdmin</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <!-- ✅ AUTH-GUARD — sempre primeiro -->
+    <script src="../../core/security-utils.js"></script>
+    <script src="../../core/storage-core.js"></script>
+    <script src="../../core/pbkdf2-fallback.js"></script>
+    <script src="../../core/auth-core.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 4px 20px rgba(16, 63, 55, 0.06);
+            --sz-shadow-hover: 0 12px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-info: #0dcaf0;
+            --sz-purple: #9b59b6;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+            --sz-focus: #0b5ed7;
+            --sz-surface-2: #f0efe8;
+            --sz-input-bg: #ffffff;
+            --sz-on-accent: #ffffff;
+            --sz-table-stripe: rgba(23, 107, 91, 0.035);
+            --sz-table-bg: #ffffff;
+            --sz-table-head-bg: #f7f6f1;
+            --sz-table-row-even: #faf9f5;
+            --sz-table-row-hover: rgba(23, 107, 91, 0.06);
+            color-scheme: light;
+        }
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --sz-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
+            --sz-danger: #f06a7a;
+            --sz-success: #4ecdc4;
+            --sz-warning: #f5d76e;
+            --sz-info: #7cbdda;
+            --sz-purple: #b07cc6;
+            --sz-focus: #8fc7ff;
+            --sz-surface-2: #1d3b31;
+            --sz-input-bg: #10271f;
+            --sz-on-accent: #07130f;
+            --sz-table-stripe: rgba(255, 255, 255, 0.035);
+            --sz-table-bg: #0f2620;
+            --sz-table-head-bg: #0a1a14;
+            --sz-table-row-even: #132e26;
+            --sz-table-row-hover: rgba(42, 157, 143, 0.15);
+            color-scheme: dark;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+        [data-theme="dark"] body { background: #0d1c17 !important; color: #f0efe8 !important; }
+        [data-theme="dark"] .app-wrapper,
+        [data-theme="dark"] .app-main,
+        [data-theme="dark"] .app-content { background: #0d1c17 !important; }
+        .font-display { font-family: 'Playfair Display', 'Georgia', serif; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--sz-paper); }
+        ::-webkit-scrollbar-thumb { background: var(--sz-green); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sz-green-light); }
+
+        .text-muted { color: var(--sz-muted) !important; opacity: 1 !important; }
+        [data-theme="dark"] .text-muted,
+        [data-theme="dark"] .text-muted * { color: #c0d0c8 !important; opacity: 1 !important; }
+
+        .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+        .app-row { display: flex; flex: 1; position: relative; }
+        .app-main { display: flex; flex-direction: column; flex: 1; min-height: 100vh; width: 100%; }
+        .app-content { flex: 1; padding-bottom: 1rem; }
+        .app-footer { flex-shrink: 0; width: 100%; }
+
+        .brand {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); transform: translateY(-1px); }
+        .brand b { color: var(--sz-coral); }
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+        }
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(23, 107, 91, 0.4);
+        }
+        [data-theme="dark"] .brand { color: #f0efe8 !important; }
+        [data-theme="dark"] .brand b { color: #f28a71 !important; }
+        [data-theme="dark"] .brand .logo-mark { background: linear-gradient(135deg, #2a9d8f, #1a6b5e) !important; }
+
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 10px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz i { transition: var(--transition); }
+        .btn-sz:hover i { transform: translateX(4px); }
+        [data-theme="dark"] .btn-sz { background: linear-gradient(135deg, #2a9d8f, #3db3a5); }
+        [data-theme="dark"] .btn-sz:hover { background: linear-gradient(135deg, #1a6b5e, #2a9d8f); }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+        [data-theme="dark"] .btn-outline-sz {
+            border-color: var(--sz-green-light);
+            color: var(--sz-green-light);
+        }
+        [data-theme="dark"] .btn-outline-sz:hover {
+            background: var(--sz-green-light);
+            color: var(--sz-paper);
+        }
+
+        .btn-outline-danger-sz {
+            border: 2px solid var(--sz-danger);
+            color: var(--sz-danger);
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-outline-danger-sz:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(220, 53, 69, 0.3);
+        }
+        [data-theme="dark"] .btn-outline-danger-sz {
+            color: #f06a7a !important;
+            border-color: #f06a7a !important;
+        }
+        [data-theme="dark"] .btn-outline-danger-sz:hover {
+            background: #f06a7a !important;
+            color: #0d1c17 !important;
+        }
+
+        .btn-sm-sz {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            color: var(--sz-muted);
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm-sz:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+        }
+        [data-theme="dark"] .btn-sm-sz {
+            border-color: #2a4a3e !important;
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .btn-sm-sz:hover {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: #f0efe8 !important;
+            border-color: #f0c97a !important;
+        }
+        .btn-sm-sz.success:hover { background: var(--sz-green); color: #fff; border-color: var(--sz-green); }
+        .btn-sm-sz.danger:hover { background: var(--sz-danger); color: #fff; border-color: var(--sz-danger); }
+        .btn-sm-sz.warning:hover { background: var(--sz-warning); color: var(--sz-dark); border-color: var(--sz-warning); }
+        .btn-sm-sz.info:hover { background: var(--sz-info); color: #fff; border-color: var(--sz-info); }
+
+        .btn-logout-header {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            border: 2px solid var(--sz-danger);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-danger);
+            cursor: pointer;
+            font-size: 1.1rem;
+            text-decoration: none;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .btn-logout-header:hover {
+            background: var(--sz-danger);
+            color: #fff;
+            transform: scale(1.08);
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+        }
+        .btn-logout-header i { transition: var(--transition); }
+        .btn-logout-header:hover i { transform: translateX(2px); }
+        .btn-logout-header .tooltip-logout {
+            position: absolute;
+            bottom: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.55rem;
+            background: var(--sz-dark);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+        .btn-logout-header:hover .tooltip-logout { opacity: 1; bottom: -32px; }
+        [data-theme="dark"] .btn-logout-header { border-color: #f06a7a; color: #f06a7a; }
+        [data-theme="dark"] .btn-logout-header:hover { background: #f06a7a; color: #0d1c17; }
+        [data-theme="dark"] .btn-logout-header .tooltip-logout { background: #2a4a3e; color: #f0efe8; }
+
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        [data-theme="dark"] .eyebrow { color: #f28a71 !important; }
+
+        .sidebar {
+            background: var(--sz-white);
+            min-height: 100vh;
+            border-right: 1px solid var(--sz-line);
+            position: fixed;
+            top: 0; left: 0;
+            padding: 1.5rem 1rem;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+            max-height: 100vh;
+            overflow-y: auto;
+            width: 260px;
+            flex-shrink: 0;
+            z-index: 1050;
+            transform: translateX(-100%);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar .nav-link {
+            color: var(--sz-muted);
+            border-radius: 8px;
+            margin: 0.15rem 0;
+            padding: 10px 14px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            font-weight: 600;
+        }
+        .sidebar .nav-link i { width: 22px; text-align: center; font-size: 1.05rem; flex-shrink: 0; }
+        .sidebar .nav-link .badge-nav {
+            margin-left: auto;
+            background: var(--sz-coral);
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 1px 8px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+        .sidebar-subtitle {
+            font-size: 0.65rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--sz-muted);
+            transition: color 0.3s ease;
+            margin-top: 0.25rem;
+            font-weight: 600;
+        }
+        [data-theme="dark"] .sidebar { background: #0a1a14 !important; border-color: #2a4a3e !important; }
+        [data-theme="dark"] .sidebar .nav-link { color: #b8c5bf !important; }
+        [data-theme="dark"] .sidebar .nav-link i { color: #8a9a92 !important; }
+        [data-theme="dark"] .sidebar .nav-link:hover,
+        [data-theme="dark"] .sidebar .nav-link.active {
+            background: rgba(42, 157, 143, 0.15) !important;
+            color: #f0c97a !important;
+        }
+        [data-theme="dark"] .sidebar .nav-link:hover i,
+        [data-theme="dark"] .sidebar .nav-link.active i { color: #f0c97a !important; }
+        [data-theme="dark"] .sidebar-subtitle { color: #a0b0a8 !important; }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+
+        .menu-toggle {
+            display: none;
+            width: 38px; height: 38px;
+            border-radius: 8px;
+            border: 1.5px solid var(--sz-line);
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .menu-toggle:hover { border-color: var(--sz-green); }
+        [data-theme="dark"] .menu-toggle { background: var(--sz-white); border-color: #2a4a3e; color: #f0efe8; }
+
+        .top-nav {
+            background: var(--sz-white);
+            border-bottom: 1px solid var(--sz-line);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+        .top-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.3;
+        }
+        .top-nav .top-nav-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+        [data-theme="dark"] .top-nav { background: #0a1a14 !important; border-color: #2a4a3e !important; }
+
+        .breadcrumb-premium {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--sz-muted);
+            font-size: 0.8rem;
+            flex-wrap: wrap;
+            overflow: hidden;
+        }
+        .breadcrumb-premium .breadcrumb-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .breadcrumb-premium .breadcrumb-item a {
+            color: var(--sz-muted);
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .breadcrumb-premium .breadcrumb-item.current {
+            color: var(--sz-ink);
+            font-weight: 600;
+            padding: 2px 6px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .breadcrumb-premium .home-icon { color: var(--sz-green); font-size: 0.9rem; }
+        .breadcrumb-premium .separator { color: var(--sz-muted-light); font-size: 0.6rem; }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(23, 107, 91, 0.1);
+            color: var(--sz-green);
+            padding: 2px 8px 2px 6px;
+            border-radius: 20px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(23, 107, 91, 0.15);
+            flex-shrink: 0;
+        }
+        .live-badge .dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .user-info-premium { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .user-info-premium .user-avatar {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 12px rgba(23, 107, 91, 0.25);
+            cursor: pointer;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .user-info-premium .user-avatar .status-badge {
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--sz-success);
+            border: 2px solid var(--sz-white);
+        }
+        .user-info-premium .user-details { display: flex; flex-direction: column; line-height: 1.2; text-align: right; min-width: 0; }
+        .user-info-premium .user-details .user-name {
+            font-weight: 600;
+            color: var(--sz-ink);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+        .user-info-premium .user-details .user-role { font-size: 0.55rem; color: var(--sz-muted); text-transform: uppercase; }
+        .user-info-premium .btn-icon-premium {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            border: 1.5px solid var(--sz-line);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--sz-muted);
+            cursor: pointer;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .user-info-premium .btn-icon-premium:hover {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            border-color: var(--sz-ink);
+            transform: translateY(-1px);
+        }
+        [data-theme="dark"] .user-info-premium .user-details .user-name { color: #f0efe8 !important; }
+        [data-theme="dark"] .user-info-premium .user-details .user-role { color: #a0b0a8 !important; }
+        [data-theme="dark"] .user-info-premium .btn-icon-premium {
+            border-color: #2a4a3e !important;
+            color: #a0b0a8 !important;
+        }
+
+        .stat-card {
+            background: var(--sz-white);
+            border-radius: var(--sz-radius);
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--sz-line);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--sz-shadow-hover); }
+        .stat-card .stat-icon {
+            width: 40px; height: 40px;
+            border-radius: var(--sz-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card .stat-icon.green { background: rgba(23, 107, 91, 0.12); color: var(--sz-green); }
+        .stat-card .stat-icon.gold { background: rgba(232, 179, 91, 0.12); color: var(--sz-gold); }
+        .stat-card .stat-icon.coral { background: rgba(239, 109, 78, 0.12); color: var(--sz-coral); }
+        .stat-card .stat-icon.blue { background: rgba(124, 157, 181, 0.12); color: #7c9db5; }
+        .stat-card .stat-icon.red { background: rgba(220, 53, 69, 0.12); color: var(--sz-danger); }
+        .stat-card .stat-icon.purple { background: rgba(155, 89, 182, 0.12); color: #9b59b6; }
+        .stat-card .stat-icon.teal { background: rgba(13, 202, 240, 0.12); color: #0dcaf0; }
+        .stat-card .stat-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--sz-muted);
+            font-weight: 700;
+        }
+        .stat-card .stat-value {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sz-ink);
+            line-height: 1.2;
+            margin-top: 2px;
+        }
+        .stat-card .stat-change {
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-top: 4px;
+            padding: 1px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-card .stat-change.up { color: var(--sz-green); background: rgba(23, 107, 91, 0.08); }
+        .stat-card .stat-change.down { color: var(--sz-danger); background: rgba(220, 53, 69, 0.08); }
+        .stat-card .stat-change.neutral { color: var(--sz-muted); background: rgba(90, 106, 98, 0.06); }
+        .stat-card.green { border-left: 3px solid var(--sz-green); }
+        .stat-card.gold { border-left: 3px solid var(--sz-gold); }
+        .stat-card.coral { border-left: 3px solid var(--sz-coral); }
+        .stat-card.blue { border-left: 3px solid #7c9db5; }
+        .stat-card.red { border-left: 3px solid var(--sz-danger); }
+        .stat-card.purple { border-left: 3px solid #9b59b6; }
+        .stat-card.teal { border-left: 3px solid #0dcaf0; }
+        [data-theme="dark"] .stat-card { background: var(--sz-white); border-color: var(--sz-line); }
+        [data-theme="dark"] .stat-card .stat-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .stat-card .stat-label { color: #a0b0a8 !important; }
+        [data-theme="dark"] .stat-card .stat-change { color: #a0b0a8 !important; }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .quick-action-item {
+            background: var(--sz-white);
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            padding: 1rem 0.5rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--sz-muted);
+            box-shadow: var(--sz-shadow);
+        }
+        .quick-action-item:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-green);
+            color: var(--sz-ink);
+        }
+        .quick-action-item i {
+            font-size: 1.4rem;
+            color: var(--sz-green);
+            display: block;
+            margin-bottom: 4px;
+            transition: var(--transition);
+        }
+        .quick-action-item:hover i { transform: scale(1.1); color: var(--sz-coral); }
+        .quick-action-item span { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.02em; }
+        [data-theme="dark"] .quick-action-item {
+            background: var(--sz-white) !important;
+            border-color: #2a4a3e !important;
+            color: #b8c5bf !important;
+        }
+        [data-theme="dark"] .quick-action-item:hover { border-color: #f0c97a !important; color: #f0efe8 !important; }
+        [data-theme="dark"] .quick-action-item i { color: #2a9d8f !important; }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+        .filter-bar .form-control,
+        .filter-bar .form-select {
+            border-radius: 8px;
+            border: 2px solid var(--sz-line);
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            background: var(--sz-white);
+            transition: var(--transition);
+            color: var(--sz-ink);
+            min-width: 90px;
+        }
+        .filter-bar .form-control:focus,
+        .filter-bar .form-select:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
+        }
+        [data-theme="dark"] .filter-bar .form-control,
+        [data-theme="dark"] .filter-bar .form-select {
+            background: #10271f !important;
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .filter-bar .form-control::placeholder { color: #6a8a7a !important; }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            background: var(--sz-table-bg) !important;
+        }
+        .table-custom thead,
+        .table-custom thead tr { background: var(--sz-table-head-bg) !important; }
+        .table-custom thead th {
+            font-size: 0.55rem;
+            letter-spacing: 0.08em;
+            color: var(--sz-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 2px solid var(--sz-line);
+            padding: 0.5rem 0.3rem;
+            background: var(--sz-table-head-bg) !important;
+            cursor: pointer;
+            user-select: none;
+            transition: var(--transition);
+            text-align: left;
+        }
+        .table-custom thead th:hover { color: var(--sz-green); }
+        .table-custom thead th .sort-icon { opacity: 0.3; transition: var(--transition); }
+        .table-custom thead th .sort-icon.active { opacity: 1; color: var(--sz-green); }
+        .table-custom tbody { background: var(--sz-table-bg) !important; }
+        .table-custom tbody tr {
+            background: var(--sz-table-bg) !important;
+            transition: background 0.2s ease;
+        }
+        .table-custom tbody tr:nth-child(even) { background: var(--sz-table-row-even) !important; }
+        .table-custom tbody tr:hover { background: var(--sz-table-row-hover) !important; }
+        .table-custom tbody td {
+            padding: 0.5rem 0.3rem;
+            border-bottom: 1px solid var(--sz-line);
+            vertical-align: middle;
+            color: var(--sz-ink);
+            font-size: 0.8rem;
+            background: transparent !important;
+        }
+        .table-custom .empty-state {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--sz-muted);
+        }
+        .table-custom .empty-state i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.4rem;
+            opacity: 0.3;
+        }
+        [data-theme="dark"] .table-responsive { background: #0f2620 !important; }
+        [data-theme="dark"] .table-custom { background: #0f2620 !important; }
+        [data-theme="dark"] .table-custom thead,
+        [data-theme="dark"] .table-custom thead tr,
+        [data-theme="dark"] .table-custom thead th {
+            background: #0a1a14 !important;
+            color: #c0d0c8 !important;
+            border-color: #2a4a3e !important;
+        }
+        [data-theme="dark"] .table-custom tbody { background: #0f2620 !important; }
+        [data-theme="dark"] .table-custom tbody tr { background: #0f2620 !important; }
+        [data-theme="dark"] .table-custom tbody tr:nth-child(even) { background: #132e26 !important; }
+        [data-theme="dark"] .table-custom tbody tr:hover { background: rgba(42, 157, 143, 0.15) !important; }
+        [data-theme="dark"] .table-custom tbody td {
+            color: #f0efe8 !important;
+            border-color: #2a4a3e !important;
+            background: transparent !important;
+        }
+        [data-theme="dark"] .table-custom .empty-state { color: #a0b0a8 !important; }
+
+        .badge-payment {
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: inline-block;
+        }
+        .badge-payment.received { background: #e4f3e9; color: var(--sz-green); }
+        .badge-payment.pending { background: #fff2ce; color: #987021; }
+        .badge-payment.failed { background: #f8d7da; color: #dc3545; }
+        .badge-payment.refunded { background: #cce5ff; color: #004085; }
+        .badge-payment.partial { background: #d4edda; color: #155724; }
+        [data-theme="dark"] .badge-payment.received { background: rgba(42, 157, 143, 0.35) !important; color: #4ecdc4 !important; }
+        [data-theme="dark"] .badge-payment.pending { background: rgba(240, 201, 122, 0.30) !important; color: #f0c97a !important; }
+        [data-theme="dark"] .badge-payment.failed { background: rgba(240, 106, 122, 0.30) !important; color: #f06a7a !important; }
+        [data-theme="dark"] .badge-payment.refunded { background: rgba(124, 189, 218, 0.30) !important; color: #7cbdda !important; }
+        [data-theme="dark"] .badge-payment.partial { background: rgba(42, 157, 143, 0.30) !important; color: #4ecdc4 !important; }
+
+        .card-sz {
+            border: 1px solid var(--sz-line);
+            border-radius: var(--sz-radius);
+            background: var(--sz-white);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        .card-sz:hover { box-shadow: var(--sz-shadow-hover); }
+        .card-sz .card-header-custom {
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .card-sz .card-header-custom h5 {
+            margin: 0;
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 0.9rem;
+            color: var(--sz-ink);
+        }
+        [data-theme="dark"] .card-sz { background: var(--sz-white) !important; border-color: #2a4a3e !important; }
+        [data-theme="dark"] .card-sz .card-header-custom { border-color: #2a4a3e !important; }
+        [data-theme="dark"] .card-sz .card-header-custom h5 { color: #f0efe8 !important; }
+
+        .chart-container { position: relative; height: 170px; width: 100%; }
+
+        .pagination-custom .page-link {
+            border: 1px solid var(--sz-line);
+            color: var(--sz-muted);
+            background: var(--sz-white);
+            transition: var(--transition);
+            padding: 4px 10px;
+            font-size: 0.75rem;
+        }
+        .pagination-custom .page-link:hover {
+            background: var(--sz-paper);
+            color: var(--sz-green);
+            border-color: var(--sz-green);
+        }
+        .pagination-custom .page-item.active .page-link {
+            background: var(--sz-green);
+            border-color: var(--sz-green);
+            color: #fff;
+        }
+        [data-theme="dark"] .pagination-custom .page-link {
+            background: var(--sz-white) !important;
+            border-color: #2a4a3e !important;
+            color: #a0b0a8 !important;
+        }
+        [data-theme="dark"] .pagination-custom .page-item.active .page-link {
+            background: #2a9d8f !important;
+            border-color: #2a9d8f !important;
+            color: #fff !important;
+        }
+
+        .app-footer {
+            background: var(--sz-white);
+            border-top: 1px solid var(--sz-line);
+            padding: 0.5rem 1rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            margin-top: 1rem;
+        }
+        .app-footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .app-footer .footer-brand { display: flex; align-items: center; gap: 8px; }
+        .app-footer .footer-brand .footer-logo {
+            width: 26px; height: 26px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.5rem;
+        }
+        .app-footer .footer-brand .footer-company {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 0.8rem;
+        }
+        .app-footer .footer-brand .footer-company b { color: var(--sz-coral); }
+        .app-footer .footer-brand .footer-version {
+            font-size: 0.5rem;
+            color: var(--sz-muted);
+            background: var(--sz-paper);
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+        .app-footer .footer-user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .app-footer .user-data-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.6rem;
+            color: var(--sz-muted);
+        }
+        .app-footer .user-data-item i { color: var(--sz-green); font-size: 0.7rem; }
+        .app-footer .data-value { color: var(--sz-ink); font-weight: 500; }
+        .app-footer .user-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        .app-footer .user-status .status-dot {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        [data-theme="dark"] .app-footer { background: #0a1a14 !important; border-color: #2a4a3e !important; }
+        [data-theme="dark"] .app-footer .footer-company { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .data-value { color: #f0efe8 !important; }
+        [data-theme="dark"] .app-footer .user-data-item { color: #a0b0a8 !important; }
+
+        .modal-content-sz {
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            border-radius: var(--sz-radius);
+            border: 1px solid var(--sz-line);
+        }
+        .modal-content-sz .modal-header {
+            border-bottom-color: var(--sz-line);
+            padding: 0.7rem 1rem;
+        }
+        .modal-content-sz .modal-header .modal-title {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            color: var(--sz-ink);
+            font-size: 1rem;
+        }
+        .modal-content-sz .modal-body { padding: 1rem; }
+        .modal-content-sz .modal-footer {
+            border-top-color: var(--sz-line);
+            padding: 0.7rem 1rem;
+        }
+        [data-theme="dark"] .modal-content-sz {
+            background: var(--sz-white) !important;
+            border-color: #2a4a3e !important;
+            color: #f0efe8 !important;
+        }
+        [data-theme="dark"] .modal-content-sz .modal-header .modal-title { color: #f0efe8 !important; }
+        [data-theme="dark"] .modal-content-sz .modal-body { color: #f0efe8 !important; }
+
+        @media (min-width: 993px) {
+            .sidebar { transform: translateX(0) !important; position: sticky; box-shadow: none; }
+            .sidebar-overlay { display: none !important; }
+            .menu-toggle { display: none !important; }
+        }
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); position: fixed; width: 280px; height: 100vh; }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.active { display: block; }
+            .menu-toggle { display: flex; }
+            .stat-card .stat-value { font-size: 1.3rem; }
+        }
+        @media (max-width: 768px) {
+            .user-info-premium .user-details { display: none; }
+            .stat-card .stat-value { font-size: 1.1rem; }
+            .table-custom { font-size: 0.7rem; }
+            .table-custom thead th { font-size: 0.5rem; padding: 0.4rem 0.2rem; }
+            .table-custom tbody td { padding: 0.4rem 0.2rem; font-size: 0.7rem; }
+        }
+        @media (max-width: 425px) {
+            .table-custom thead th, .table-custom tbody td { padding: 0.35rem 0.15rem; font-size: 0.65rem; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+
+    <link rel="stylesheet" href="../../responsive.css">
+    <link rel="stylesheet" href="../../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <!-- ============================================================
+       PROTEÇÃO DE DADOS — Executa ANTES de tudo
+       ============================================================ -->
+    <script>
+    (function masterProtection() {
+        'use strict';
+
+        const PROTECTED_KEYS = [
+            'sumbanepay_users',
+            'sumbanepay_users_backup',
+            'sumbanepay_theme'
+        ];
+
+        const ALLOWED_REMOVAL = [
+            'sumbanepay_admin_session',
+            'sumbanepay_session',
+            'sz_admin_session',
+            'sz_session',
+            'admin_session',
+            'superadmin_session'
+        ];
+
+        try {
+            const originalClear = Storage.prototype.clear;
+            Storage.prototype.clear = function() {
+                const storage = this;
+                const protectedData = {};
+
+                PROTECTED_KEYS.forEach(key => {
+                    try {
+                        const val = storage.getItem(key);
+                        if (val !== null) protectedData[key] = val;
+                    } catch (e) {}
+                });
+
+                try {
+                    for (let i = 0; i < storage.length; i++) {
+                        const key = storage.key(i);
+                        if (key && key.startsWith('sumbanepay_data_')) {
+                            protectedData[key] = storage.getItem(key);
+                        }
+                    }
+                } catch (e) {}
+
+                originalClear.call(storage);
+
+                Object.keys(protectedData).forEach(key => {
+                    try { storage.setItem(key, protectedData[key]); } catch (e) {}
+                });
+            };
+        } catch (e) {}
+
+        try {
+            const originalRemoveItem = Storage.prototype.removeItem;
+            Storage.prototype.removeItem = function(key) {
+                if (key && key.startsWith('sumbanepay')) {
+                    if (ALLOWED_REMOVAL.includes(key)) {
+                        return originalRemoveItem.call(this, key);
+                    }
+                    if (key === 'sumbanepay_theme' || key === 'theme') {
+                        return originalRemoveItem.call(this, key);
+                    }
+                    if (key.startsWith('sumbanepay_data_') === false && key !== 'sumbanepay_users' && key !== 'sumbanepay_users_backup') {
+                        return originalRemoveItem.call(this, key);
+                    }
+                    console.log('🛡️ Bloqueada remoção de:', key);
+                    return;
+                }
+                return originalRemoveItem.call(this, key);
+            };
+        } catch (e) {}
+    })();
+    </script>
+
+    <!-- ============================================================
+       BACKUP AUTOMÁTICO
+       ============================================================ -->
+    <script>
+    (function autoBackup() {
+        try {
+            const users = localStorage.getItem('sumbanepay_users');
+            const backup = localStorage.getItem('sumbanepay_users_backup');
+
+            if (users && users !== '[]' && users !== 'null') {
+                if (!backup || backup === '[]' || backup === 'null') {
+                    localStorage.setItem('sumbanepay_users_backup', users);
+                    localStorage.setItem('sumbanepay_users_backup_time', new Date().toISOString());
+                }
+            }
+
+            if ((!users || users === '[]' || users === 'null') && backup && backup !== '[]' && backup !== 'null') {
+                localStorage.setItem('sumbanepay_users', backup);
+                console.log('✅ Dados restaurados do backup');
+            }
+        } catch (e) {}
+    })();
+    </script>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <div class="app-wrapper">
+        <div class="app-row">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" id="sidebar" role="navigation">
+                <div class="mb-4">
+                    <a class="brand" href="index.html">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                    <div class="sidebar-subtitle">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> SuperAdmin
+                    </div>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="index.html"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a>
+                    <a class="nav-link" href="utilizadores.html"><i class="bi bi-people me-2"></i>Utilizadores <span class="badge-nav" id="userBadge">0</span></a>
+                    <a class="nav-link" href="empresas.html"><i class="bi bi-building me-2"></i>Empresas <span class="badge-nav" id="companyBadge">0</span></a>
+                    <a class="nav-link active" href="#"><i class="bi bi-wallet2 me-2"></i>Pagamentos <span class="badge-nav" id="paymentBadge">0</span></a>
+                    <a class="nav-link" href="faturacao.html"><i class="bi bi-receipt me-2"></i>Faturação <span class="badge-nav" id="invoiceBadge">0</span></a>
+                    <a class="nav-link" href="relatorios.html"><i class="bi bi-bar-chart me-2"></i>Relatórios</a>
+                    <a class="nav-link" href="actividades.html"><i class="bi bi-clipboard-data me-2"></i>Auditoria</a>
+                    <a class="nav-link" href="notificacoes.html"><i class="bi bi-bell me-2"></i>Notificações</a>
+                    <a class="nav-link" href="comunicacao.html"><i class="bi bi-megaphone me-2"></i>Comunicação</a>
+                    <a class="nav-link" href="roles.html"><i class="bi bi-shield-lock me-2"></i>Permissões</a>
+                    <a class="nav-link" href="seguranca.html"><i class="bi bi-shield-check me-2"></i>Segurança</a>
+                    <a class="nav-link" href="suporte.html"><i class="bi bi-ticket me-2"></i>Suporte</a>
+                    <a class="nav-link" href="configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a>
+                </nav>
+                <div class="mt-4 d-flex flex-column gap-2">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="toggleTheme()">
+                        <i class="bi bi-circle-half me-2"></i>Tema
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger-sz w-100" onclick="logoutAdmin()">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sair
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN -->
+            <main class="app-main">
+
+                <div class="top-nav">
+                    <div class="top-nav-left">
+                        <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()" aria-label="Abrir menu">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <div class="breadcrumb-premium">
+                            <span class="breadcrumb-item">
+                                <i class="bi bi-house-fill home-icon"></i>
+                                <a href="index.html">Dashboard</a>
+                            </span>
+                            <span class="separator">›</span>
+                            <span class="breadcrumb-item current">
+                                <i class="bi bi-wallet2 me-1"></i> Pagamentos
+                            </span>
+                            <span class="live-badge ms-1">
+                                <span class="dot"></span>
+                                AO VIVO
+                            </span>
+                        </div>
+                    </div>
+                    <div class="user-info-premium">
+                        <div class="user-details text-end">
+                            <span class="user-name" id="userDisplay">
+                                <i class="bi bi-person-circle me-1"></i> Carregando...
+                            </span>
+                            <span class="user-role" id="userRole">SuperAdmin</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">
+                            S
+                            <span class="status-badge"></span>
+                        </div>
+                        <button class="btn-icon-premium" onclick="toggleTheme()" title="Alternar tema">
+                            <i class="bi bi-circle-half"></i>
+                        </button>
+                        <button class="btn-logout-header" onclick="logoutAdmin()" title="Sair da conta">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="app-content container-fluid p-2 p-md-3 p-lg-4">
+
+                    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
+                        <div>
+                            <div class="eyebrow"><i class="bi bi-wallet2 me-1"></i> FINANCEIRO</div>
+                            <h1 class="font-display" style="font-size:clamp(1.4rem,2.5vw,2.2rem);margin:0;">
+                                Pagamentos <em style="color:var(--sz-coral);font-style:normal;">✦</em>
+                            </h1>
+                            <p class="text-muted mb-0" style="font-size:0.8rem;">
+                                Pagamentos reais de todos os utilizadores · <strong style="color:var(--sz-green);">Persistência garantida 🛡️</strong>
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn-outline-sz btn-sm" onclick="exportCSV()">
+                                <i class="bi bi-file-earmark-spreadsheet"></i> CSV
+                            </button>
+                            <button class="btn-outline-sz btn-sm" onclick="exportJSON()">
+                                <i class="bi bi-file-earmark-code"></i> JSON
+                            </button>
+                            <button class="btn-outline-sz btn-sm" onclick="forceRefresh()">
+                                <i class="bi bi-arrow-clockwise"></i> Actualizar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 g-md-3">
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card green">
+                                <div class="stat-icon green"><i class="bi bi-wallet2"></i></div>
+                                <div class="stat-label"><i class="bi bi-wallet2 me-1"></i> Total</div>
+                                <div class="stat-value" id="totalPayments">0</div>
+                                <div class="stat-change neutral"><i class="bi bi-dash"></i> Registados</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card gold">
+                                <div class="stat-icon gold"><i class="bi bi-check-circle"></i></div>
+                                <div class="stat-label"><i class="bi bi-check-circle me-1"></i> Pagos</div>
+                                <div class="stat-value" id="receivedPayments">0</div>
+                                <div class="stat-change up"><i class="bi bi-arrow-up"></i> Confirmados</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card coral">
+                                <div class="stat-icon coral"><i class="bi bi-clock"></i></div>
+                                <div class="stat-label"><i class="bi bi-clock me-1"></i> Pendentes</div>
+                                <div class="stat-value" id="pendingPayments">0</div>
+                                <div class="stat-change down"><i class="bi bi-arrow-down"></i> A aguardar</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card purple">
+                                <div class="stat-icon purple"><i class="bi bi-coin"></i></div>
+                                <div class="stat-label"><i class="bi bi-coin me-1"></i> Valor Total</div>
+                                <div class="stat-value" id="totalAmount">0,00 MT</div>
+                                <div class="stat-change up"><i class="bi bi-arrow-up"></i> Acumulado</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 g-md-3 mt-1">
+                        <div class="col-lg-6">
+                            <div class="card-sz">
+                                <div class="card-header-custom">
+                                    <h5><i class="bi bi-pie-chart me-2" style="color:var(--sz-gold);"></i>Distribuição por Estado</h5>
+                                </div>
+                                <div class="p-2 p-md-3">
+                                    <div class="chart-container">
+                                        <canvas id="statusChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card-sz">
+                                <div class="card-header-custom">
+                                    <h5><i class="bi bi-bar-chart me-2" style="color:var(--sz-green);"></i>Por Método de Pagamento</h5>
+                                </div>
+                                <div class="p-2 p-md-3">
+                                    <div class="chart-container">
+                                        <canvas id="methodChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-sz p-2 p-md-3 mt-3">
+                        <div class="filter-bar">
+                            <div class="d-flex align-items-center gap-1 flex-grow-1">
+                                <i class="bi bi-search text-muted"></i>
+                                <input class="form-control" id="searchInput" placeholder="Pesquisar..." oninput="renderPayments()">
+                            </div>
+                            <select class="form-select" id="statusFilter" onchange="renderPayments()">
+                                <option value="">Estado</option>
+                                <option value="Pago">Pago</option>
+                                <option value="Pendente">Pendente</option>
+                                <option value="Parcial">Parcial</option>
+                                <option value="Cancelado">Cancelado</option>
+                            </select>
+                            <select class="form-select" id="methodFilter" onchange="renderPayments()">
+                                <option value="">Método</option>
+                                <option value="M-Pesa">M-Pesa</option>
+                                <option value="e-Mola">e-Mola</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                                <option value="Transferência">Transferência</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                            <button class="btn-sm-sz" onclick="resetFilters()">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </button>
+                            <span class="text-muted small ms-auto" style="font-size:0.6rem;">
+                                <i class="bi bi-database"></i> <span id="paymentCount">0</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-sz mt-3">
+                        <div class="table-responsive">
+                            <table class="table table-custom mb-0">
+                                <thead>
+                                    <tr>
+                                        <th onclick="sortPayments('date')" style="min-width:100px;">
+                                            Data <i class="bi bi-arrow-up sort-icon" id="sort-date"></i>
+                                        </th>
+                                        <th onclick="sortPayments('userName')" style="min-width:140px;">
+                                            Utilizador <i class="bi bi-arrow-up sort-icon" id="sort-userName"></i>
+                                        </th>
+                                        <th onclick="sortPayments('reference')" class="d-none d-md-table-cell" style="min-width:110px;">
+                                            Referência <i class="bi bi-arrow-up sort-icon" id="sort-reference"></i>
+                                        </th>
+                                        <th onclick="sortPayments('method')" class="d-none d-lg-table-cell" style="min-width:100px;">
+                                            Método <i class="bi bi-arrow-up sort-icon" id="sort-method"></i>
+                                        </th>
+                                        <th onclick="sortPayments('amount')" style="min-width:110px;">
+                                            Valor <i class="bi bi-arrow-up sort-icon" id="sort-amount"></i>
+                                        </th>
+                                        <th onclick="sortPayments('status')" style="min-width:100px;">
+                                            Estado <i class="bi bi-arrow-up sort-icon" id="sort-status"></i>
+                                        </th>
+                                        <th style="text-align:right;min-width:80px;">Acções</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentRows">
+                                    <tr><td colspan="7" class="empty-state"><i class="bi bi-inbox"></i>Carregando...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center p-2 p-md-3 border-top flex-wrap gap-2" style="border-color:var(--sz-line) !important;">
+                            <span class="text-muted small" id="paginationInfo">Mostrando 0 de 0</span>
+                            <nav>
+                                <ul class="pagination pagination-custom mb-0" id="paginationControls"></ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                </div>
+
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <div class="footer-logo">Pay</div>
+                            <span class="footer-company">Sumbane<b>Pay</b></span>
+                            <span class="footer-version">v5.0.0</span>
+                        </div>
+                        <div class="footer-user-info">
+                            <span class="user-data-item">
+                                <i class="bi bi-person"></i>
+                                <span class="data-value" id="footerUserName">Carregando...</span>
+                            </span>
+                            <span class="user-data-item d-none d-sm-inline-flex">
+                                <i class="bi bi-envelope"></i>
+                                <span class="data-value" id="footerUserEmail">—</span>
+                            </span>
+                            <span class="user-data-item d-none d-lg-inline-flex">
+                                <i class="bi bi-shield-check"></i>
+                                <span class="data-value" id="footerUserRole">SuperAdmin</span>
+                            </span>
+                            <span class="user-status">
+                                <span class="status-dot"></span>
+                                Online
+                            </span>
+                            <span class="user-data-item d-none d-lg-inline-flex">
+                                <i class="bi bi-clock"></i>
+                                <span class="data-value" id="footerLastUpdate">—</span>
+                            </span>
+                        </div>
+                    </div>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-sz">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-wallet2 me-2" style="color:var(--sz-coral);"></i>
+                        Detalhes do Pagamento
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detailsBody"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-bs-dismiss="modal" style="border:1px solid var(--sz-line);background:transparent;color:var(--sz-ink);">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    /* ============================================================
+       PAGAMENTOS SUPERADMIN v5.0.0
+       ------------------------------------------------------------
+       ✔ Lê pagamentos REAIS de sumbanepay_data_<userId>_payments
+       ✔ Fallback para sumbanepay_payments (compatibilidade)
+       ✔ Nunca cria dados fictícios
+       ✔ safeStr em TODOS os campos
+       ✔ core/auth-core.js cuida da sessão (distingue Vendedor/SuperAdmin)
+       ============================================================ */
+
+    'use strict';
+
+    var KEY = 'sumbanepay_';
+    var USERS_KEY = 'sumbanepay_users';
+    var ADMIN_EMAIL = "jsumbane22@gmail.com";
+
+    var detailsModalInstance = null;
+    var sortField = 'date';
+    var sortDirection = 'desc';
+    var currentPage = 1;
+    var itemsPerPage = 10;
+    var isRendering = false;
+    var autoRefreshInterval = null;
+    var integrityCheckInterval = null;
+    var statusChartInstance = null;
+    var methodChartInstance = null;
+    var isLoggingOut = false;
+    var navigationGuardInitialized = false;
+    var lastUsersSignature = '';
+
+    /* ---------- UTILITÁRIOS SEGUROS ---------- */
+    function safeStr(v) {
+        if (v === null || v === undefined) return '';
+        if (typeof v === 'string') return v;
+        if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+        try { return JSON.stringify(v); } catch (e) { return ''; }
+    }
+
+    function safeLower(v) { return safeStr(v).toLowerCase(); }
+
+    function escapeHTML(v) {
+        return safeStr(v).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c];
+        });
+    }
+
+    function money(n) {
+        return new Intl.NumberFormat('pt-PT', {
+            minimumFractionDigits: 2, maximumFractionDigits: 2
+        }).format(Number(n) || 0) + ' MT';
+    }
+
+    function formatDate(d) {
+        if (!d) return '-';
+        try { return new Date(d).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+        catch (e) { return '-'; }
+    }
+
+    function formatDateTime(d) {
+        if (!d) return '-';
+        try {
+            return new Date(d).toLocaleString('pt-PT', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        } catch (e) { return '-'; }
+    }
+
+    function toast(msg, icon) {
+        icon = icon || 'success';
+        Swal.fire({
+            toast: true, position: 'top-end', timer: 3000, showConfirmButton: false, icon: icon, title: msg
+        });
+    }
+
+    /* ---------- LEITURA DE DADOS REAIS ---------- */
+    function read(k, fallback) {
+        try {
+            var raw = localStorage.getItem(k);
+            if (raw === null || raw === '') return fallback;
+            var parsed = JSON.parse(raw);
+            return parsed === null ? fallback : parsed;
+        } catch (e) { return fallback; }
+    }
+
+    function write(k, v) {
+        try {
+            localStorage.setItem(k, JSON.stringify(v));
+            return true;
+        } catch (e) { return false; }
+    }
+
+    function getAllUsers() {
+        var v = read(USERS_KEY, []);
+        if (!Array.isArray(v)) return [];
+        return v.filter(function (u) { return u && typeof u === 'object' && u.email; });
+    }
+
+    function getUserData(userId, suffix) {
+        return read(KEY + 'data_' + userId + '_' + suffix, []);
+    }
+
+    function getAllPayments() {
+        var users = getAllUsers();
+        var all = [];
+
+        users.forEach(function (user) {
+            var userKey = KEY + 'data_' + user.id + '_payments';
+            var list = read(userKey, []);
+            if (!Array.isArray(list)) return;
+
+            list.forEach(function (p) {
+                if (!p || typeof p !== 'object') return;
+
+                all.push({
+                    id: safeStr(p.id),
+                    userId: safeStr(user.id),
+                    userName: safeStr(user.name || user.business || 'Sem nome'),
+                    userEmail: safeStr(user.email),
+                    userBusiness: safeStr(user.business || ''),
+                    reference: safeStr(p.reference || p.invoiceNo || ''),
+                    invoiceNo: safeStr(p.invoiceNo || ''),
+                    transactionId: safeStr(p.transactionId || ''),
+                    description: safeStr(p.description || ''),
+                    clientName: safeStr(p.clientName || ''),
+                    method: safeStr(p.method || ''),
+                    status: safeStr(p.status || 'Pendente'),
+                    amount: Number(p.amount || p.value || 0) || 0,
+                    createdAt: safeStr(p.createdAt || p.date || new Date().toISOString()),
+                    updatedAt: safeStr(p.updatedAt || '')
+                });
+            });
+        });
+
+        var globalList = read(KEY + 'payments', []);
+        if (Array.isArray(globalList)) {
+            globalList.forEach(function (p) {
+                if (!p || typeof p !== 'object') return;
+
+                all.push({
+                    id: safeStr(p.id),
+                    userId: safeStr(p.userId || p.entityId || ''),
+                    userName: safeStr(p.userName || p.entity || 'Não atribuído'),
+                    userEmail: safeStr(p.userEmail || ''),
+                    userBusiness: safeStr(p.userBusiness || ''),
+                    reference: safeStr(p.reference || p.invoiceNo || ''),
+                    invoiceNo: safeStr(p.invoiceNo || ''),
+                    transactionId: safeStr(p.transactionId || ''),
+                    description: safeStr(p.description || ''),
+                    clientName: safeStr(p.clientName || ''),
+                    method: safeStr(p.method || ''),
+                    status: safeStr(p.status || 'Pendente'),
+                    amount: Number(p.amount || p.value || 0) || 0,
+                    createdAt: safeStr(p.createdAt || p.date || new Date().toISOString()),
+                    updatedAt: safeStr(p.updatedAt || '')
+                });
+            });
+        }
+
+        return all;
+    }
+
+    /* ---------- TEMA ---------- */
+    function toggleTheme() {
+        var cur = document.documentElement.getAttribute('data-theme') || 'light';
+        var next = cur === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try {
+            localStorage.setItem('sumbanepay_theme', next);
+            localStorage.setItem('theme', next);
+        } catch (e) {}
+        setTimeout(renderPayments, 100);
+    }
+
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            document.body.classList.remove('dark-mode');
+        }
+        applyChartTheme();
+    }
+
+    function applyChartTheme() {
+        if (typeof Chart === 'undefined') return;
+        var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        var text = dark ? '#f0efe8' : '#19362e';
+        var grid = dark ? 'rgba(192, 208, 200, 0.24)' : 'rgba(25, 54, 46, 0.12)';
+        Chart.defaults.color = text;
+        Chart.defaults.borderColor = grid;
+        if (Chart.defaults.plugins && Chart.defaults.plugins.legend && Chart.defaults.plugins.legend.labels) {
+            Chart.defaults.plugins.legend.labels.color = text;
+        }
+    }
+
+    function loadTheme() {
+        var saved = null;
+        try { saved = localStorage.getItem('sumbanepay_theme') || localStorage.getItem('theme'); } catch (e) {}
+        var system = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(saved || (system ? 'dark' : 'light'));
+    }
+
+    /* ---------- SESSÃO SUPERADMIN ---------- */
+    function clearAdminSession() {
+        [
+            KEY + 'admin_session',
+            KEY + 'session',
+            'sz_admin_session',
+            'sz_session',
+            'sumbanepay_admin_session',
+            'admin_session',
+            'superadmin_session',
+            'sumbanepay_superadmin_session'
+        ].forEach(function (key) {
+            try { localStorage.removeItem(key); } catch (e) {}
+            try { sessionStorage.removeItem(key); } catch (e) {}
+        });
+    }
+
+    function redirectToSuperAdminLogin() {
+        window.location.replace('./superadmin-login.html?logout=' + Date.now());
+    }
+
+    function requireAdmin() {
+        try {
+            var SESSION_KEYS = [
+                KEY + 'admin_session',
+                'sz_admin_session',
+                'admin_session',
+                'superadmin_session',
+                'sumbanepay_superadmin_session',
+                KEY + 'session',
+                'sz_session',
+                'sumbanepay_session'
+            ];
+
+            var raw = null;
+            for (var i = 0; i < SESSION_KEYS.length; i++) {
+                raw = localStorage.getItem(SESSION_KEYS[i]) || sessionStorage.getItem(SESSION_KEYS[i]);
+                if (raw) break;
+            }
+
+            if (!raw) { redirectToSuperAdminLogin(); return false; }
+
+            var session = JSON.parse(raw);
+            var validLogin = session.loggedIn === true
+                          || session.userId
+                          || session.role === 'superadmin'
+                          || session.email === ADMIN_EMAIL;
+            var expiresAt = session.expiresAt || (session.timestamp || 0) + 86400000;
+
+            if (!validLogin || Date.now() > expiresAt) {
+                clearAdminSession();
+                redirectToSuperAdminLogin();
+                return false;
+            }
+
+            var name = session.name || session.userName || session.email || 'SuperAdmin';
+            setText('userDisplay', name);
+            setText('userAvatar', String(name).charAt(0).toUpperCase());
+            setText('footerUserName', name);
+            setText('footerUserEmail', session.email || '—');
+            setText('userRole', 'SuperAdmin');
+            setText('footerUserRole', 'SuperAdmin');
+
+            return true;
+        } catch (e) {
+            clearAdminSession();
+            redirectToSuperAdminLogin();
+            return false;
+        }
+    }
+
+    function setText(id, v) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = v;
+    }
+
+    function performAdminLogout() {
+        if (isLoggingOut) return;
+        isLoggingOut = true;
+        clearAdminSession();
+        if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+        if (integrityCheckInterval) clearInterval(integrityCheckInterval);
+        if (statusChartInstance) { statusChartInstance.destroy(); statusChartInstance = null; }
+        if (methodChartInstance) { methodChartInstance.destroy(); methodChartInstance = null; }
+        redirectToSuperAdminLogin();
+    }
+
+    function logoutAdmin() { performAdminLogout(); }
+
+    function setupNavigationGuard() {
+        if (navigationGuardInitialized) return;
+        navigationGuardInitialized = true;
+
+        window.history.pushState({ guard: true, timestamp: Date.now() }, '', window.location.href);
+
+        window.addEventListener('popstate', function() { performAdminLogout(); });
+        window.addEventListener('pageshow', function(event) { if (event.persisted) performAdminLogout(); });
+        document.addEventListener('keydown', function(event) {
+            var tag = event.target && event.target.tagName;
+            var editable = ['INPUT', 'TEXTAREA', 'SELECT'].indexOf(tag) !== -1;
+            if (!editable && event.key === 'Backspace') {
+                event.preventDefault();
+                performAdminLogout();
+            }
+        });
+        window.addEventListener('mouseup', function(event) {
+            if (event.button === 3) { event.preventDefault(); performAdminLogout(); }
+        });
+    }
+
+    /* ---------- SIDEBAR MOBILE ---------- */
+    function toggleSidebar() {
+        var s = document.getElementById('sidebar');
+        var o = document.getElementById('sidebarOverlay');
+        if (s) s.classList.toggle('open');
+        if (o) o.classList.toggle('active');
+        document.body.style.overflow = s && s.classList.contains('open') ? 'hidden' : '';
+    }
+
+    function closeSidebar() {
+        var s = document.getElementById('sidebar');
+        var o = document.getElementById('sidebarOverlay');
+        if (s) s.classList.remove('open');
+        if (o) o.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    /* ---------- ORDENAÇÃO ---------- */
+    function sortPayments(field) {
+        if (sortField === field) {
+            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            sortField = field;
+            sortDirection = 'asc';
+        }
+        renderPayments();
+    }
+
+    /* ---------- RENDER ---------- */
+    function renderPayments() {
+        if (isRendering || isLoggingOut) return;
+        isRendering = true;
+
+        try {
+            var allPayments = getAllPayments();
+
+            var qEl = document.getElementById('searchInput');
+            var sEl = document.getElementById('statusFilter');
+            var mEl = document.getElementById('methodFilter');
+
+            var query = safeLower(qEl ? qEl.value : '');
+            var statusFilter = safeStr(sEl ? sEl.value : '');
+            var methodFilter = safeStr(mEl ? mEl.value : '');
+
+            var filtered = allPayments.filter(function (p) {
+                var searchable = (
+                    p.reference + ' ' +
+                    p.invoiceNo + ' ' +
+                    p.userName + ' ' +
+                    p.userEmail + ' ' +
+                    p.userBusiness + ' ' +
+                    p.transactionId + ' ' +
+                    p.description + ' ' +
+                    p.clientName + ' ' +
+                    p.method
+                ).toLowerCase();
+
+                var matchSearch = query === '' || searchable.indexOf(query) !== -1;
+                var matchStatus = statusFilter === '' || p.status === statusFilter;
+                var matchMethod = methodFilter === '' || p.method === methodFilter;
+                return matchSearch && matchStatus && matchMethod;
+            });
+
+            filtered.sort(function (a, b) {
+                var va, vb;
+                if (sortField === 'amount') {
+                    va = a.amount; vb = b.amount;
+                } else if (sortField === 'date') {
+                    va = new Date(a.createdAt).getTime() || 0;
+                    vb = new Date(b.createdAt).getTime() || 0;
+                } else {
+                    va = safeLower(a[sortField]);
+                    vb = safeLower(b[sortField]);
+                }
+
+                if (va < vb) return sortDirection === 'asc' ? -1 : 1;
+                if (va > vb) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            var total = filtered.length;
+            var totalAmount = filtered.reduce(function (sum, p) { return sum + (p.amount || 0); }, 0);
+            var paid = filtered.filter(function (p) { return p.status === 'Pago'; }).length;
+            var pending = filtered.filter(function (p) {
+                return p.status === 'Pendente' || p.status === 'Parcial';
+            }).length;
+
+            setText('totalPayments', total);
+            setText('receivedPayments', paid);
+            setText('pendingPayments', pending);
+            setText('totalAmount', money(totalAmount));
+            setText('paymentBadge', total);
+            setText('paymentCount', total);
+            setText('footerLastUpdate', new Date().toLocaleTimeString('pt-PT'));
+
+            renderCharts(filtered);
+
+            var totalPages = Math.ceil(total / itemsPerPage) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+            var start = (currentPage - 1) * itemsPerPage;
+            var end = Math.min(start + itemsPerPage, total);
+            var pageItems = filtered.slice(start, end);
+
+            var tbody = document.getElementById('paymentRows');
+            if (!tbody) { isRendering = false; return; }
+
+            if (total === 0) {
+                tbody.innerHTML =
+                    '<tr><td colspan="7" class="empty-state">' +
+                    '<i class="bi bi-inbox"></i>' +
+                    'Nenhum pagamento registado ainda.<br>' +
+                    '<small class="text-muted">Os pagamentos dos utilizadores aparecerão aqui automaticamente.</small>' +
+                    '</td></tr>';
+            } else {
+                tbody.innerHTML = pageItems.map(function (p) {
+                    var statusClass = p.status === 'Pago' ? 'received' :
+                                      p.status === 'Pendente' ? 'pending' :
+                                      p.status === 'Parcial' ? 'partial' : 'failed';
+
+                    return '<tr>' +
+                        '<td>' + formatDate(p.createdAt) + '</td>' +
+                        '<td>' +
+                        '<div style="font-size:0.75rem;font-weight:600;">' + escapeHTML(p.userName) + '</div>' +
+                        '<div style="font-size:0.6rem;color:var(--sz-muted);">' + escapeHTML(p.userEmail) + '</div>' +
+                        '</td>' +
+                        '<td class="d-none d-md-table-cell"><strong>' + escapeHTML(p.reference || p.invoiceNo || '—') + '</strong></td>' +
+                        '<td class="d-none d-lg-table-cell">' +
+                        '<span style="background:rgba(23,107,91,0.08);color:var(--sz-green);padding:2px 10px;border-radius:12px;font-size:0.55rem;font-weight:700;">' +
+                        escapeHTML(p.method || '—') + '</span></td>' +
+                        '<td><strong>' + money(p.amount) + '</strong></td>' +
+                        '<td><span class="badge-payment ' + statusClass + '">' + escapeHTML(p.status) + '</span></td>' +
+                        '<td style="text-align:right;">' +
+                        '<button class="btn-sm-sz info" onclick="viewPaymentDetails(\'' + escapeHTML(p.id) + '\', \'' + escapeHTML(p.userId) + '\')" title="Ver detalhes">' +
+                        '<i class="bi bi-eye"></i></button>' +
+                        '</td>' +
+                        '</tr>';
+                }).join('');
+            }
+
+            var infoEl = document.getElementById('paginationInfo');
+            if (infoEl) {
+                infoEl.textContent = total > 0
+                    ? 'Mostrando ' + (start + 1) + ' a ' + end + ' de ' + total
+                    : 'Mostrando 0 de 0';
+            }
+
+            var ctrl = document.getElementById('paginationControls');
+            if (ctrl) {
+                var html = '';
+                html += '<li class="page-item ' + (currentPage <= 1 ? 'disabled' : '') + '">' +
+                        '<a class="page-link" href="#" onclick="goToPage(' + (currentPage - 1) + ');return false;">«</a></li>';
+                for (var i = 1; i <= totalPages; i++) {
+                    if (totalPages > 7 && i > 5 && i < totalPages) {
+                        if (i === 6) html += '<li class="page-item disabled"><a class="page-link">…</a></li>';
+                        continue;
+                    }
+                    html += '<li class="page-item ' + (i === currentPage ? 'active' : '') + '">' +
+                            '<a class="page-link" href="#" onclick="goToPage(' + i + ');return false;">' + i + '</a></li>';
+                }
+                html += '<li class="page-item ' + (currentPage >= totalPages ? 'disabled' : '') + '">' +
+                        '<a class="page-link" href="#" onclick="goToPage(' + (currentPage + 1) + ');return false;">»</a></li>';
+                ctrl.innerHTML = html;
+            }
+
+            document.querySelectorAll('.sort-icon').forEach(function (icon) {
+                icon.className = 'bi bi-arrow-up sort-icon';
+            });
+            var icon = document.getElementById('sort-' + sortField);
+            if (icon) {
+                icon.className = 'bi bi-arrow-' + (sortDirection === 'asc' ? 'up' : 'down') + ' sort-icon active';
+            }
+
+        } catch (e) {
+            console.error('Erro ao renderizar pagamentos:', e);
+        } finally {
+            isRendering = false;
+        }
+    }
+
+    /* ---------- GRÁFICOS ---------- */
+    function renderCharts(payments) {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        var textColor = isDark ? '#f0efe8' : '#19362e';
+
+        var ctx1 = document.getElementById('statusChart');
+        if (ctx1) {
+            if (statusChartInstance) statusChartInstance.destroy();
+            var statuses = ['Pago', 'Pendente', 'Parcial', 'Cancelado'];
+            var labels = ['Pagos', 'Pendentes', 'Parciais', 'Cancelados'];
+            var data = statuses.map(function (s) {
+                return payments.filter(function (x) { return x.status === s; }).length;
+            });
+            var colors = ['#28a745', '#ffc107', '#17a2b8', '#dc3545'];
+
+            statusChartInstance = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: isDark ? '#162f27' : '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 9, weight: '600' },
+                                padding: 8,
+                                usePointStyle: true,
+                                color: textColor,
+                                boxWidth: 10
+                            }
+                        }
+                    },
+                    cutout: '55%'
+                }
+            });
+        }
+
+        var ctx2 = document.getElementById('methodChart');
+        if (ctx2) {
+            if (methodChartInstance) methodChartInstance.destroy();
+            var methods = ['M-Pesa', 'e-Mola', 'Dinheiro', 'Transferência', 'Outro'];
+            var data2 = methods.map(function (m) {
+                return payments
+                    .filter(function (p) { return p.method === m; })
+                    .reduce(function (sum, p) { return sum + (p.amount || 0); }, 0);
+            });
+            var colors2 = ['#176b5b', '#ef6d4e', '#e8b35b', '#9b59b6', '#17a2b8'];
+
+            methodChartInstance = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: methods,
+                    datasets: [{
+                        label: 'Valor (MT)',
+                        data: data2,
+                        backgroundColor: colors2.map(function (c) { return c + '80'; }),
+                        borderColor: colors2,
+                        borderWidth: 2,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: isDark ? 'rgba(192,208,200,0.24)' : 'rgba(25,54,46,0.12)' },
+                            ticks: {
+                                color: textColor,
+                                font: { size: 8 },
+                                callback: function (v) { return v.toLocaleString('pt-PT') + ' MT'; }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: textColor, font: { size: 8 } }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    /* ---------- ACÇÕES ---------- */
+    function goToPage(page) {
+        currentPage = page;
+        renderPayments();
+        return false;
+    }
+
+    function resetFilters() {
+        var s = document.getElementById('searchInput');
+        var st = document.getElementById('statusFilter');
+        var m = document.getElementById('methodFilter');
+        if (s) s.value = '';
+        if (st) st.value = '';
+        if (m) m.value = '';
+        currentPage = 1;
+        renderPayments();
+    }
+
+    function forceRefresh() {
+        renderPayments();
+        toast('Dados actualizados!');
+    }
+
+    function exportCSV() {
+        var payments = getAllPayments();
+        if (!payments.length) { toast('Sem dados para exportar.', 'warning'); return; }
+
+        var headers = ['Data', 'Utilizador', 'Email', 'Referência', 'Método', 'Valor', 'Estado'];
+        var rows = payments.map(function (p) {
+            return [
+                formatDateTime(p.createdAt),
+                p.userName,
+                p.userEmail,
+                p.reference || p.invoiceNo,
+                p.method,
+                p.amount.toFixed(2),
+                p.status
+            ];
+        });
+
+        var csv = [headers.join(',')].concat(rows.map(function (r) {
+            return r.map(function (v) { return '"' + safeStr(v).replace(/"/g, '""') + '"'; }).join(',');
+        })).join('\n');
+
+        var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'pagamentos_' + new Date().toISOString().slice(0, 10) + '.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+        toast('CSV exportado!');
+    }
+
+    function exportJSON() {
+        var payments = getAllPayments();
+        if (!payments.length) { toast('Sem dados para exportar.', 'warning'); return; }
+        var data = {
+            exportadoEm: new Date().toISOString(),
+            total: payments.length,
+            pagamentos: payments
+        };
+        var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'pagamentos_' + new Date().toISOString().slice(0, 10) + '.json';
+        link.click();
+        URL.revokeObjectURL(link.href);
+        toast('JSON exportado!');
+    }
+
+    function viewPaymentDetails(id, userId) {
+        var found = null;
+
+        if (userId) {
+            var userKey = KEY + 'data_' + userId + '_payments';
+            var list = read(userKey, []);
+            if (Array.isArray(list)) {
+                found = list.find(function (x) { return x && x.id === id; });
+            }
+        }
+
+        if (!found) {
+            var globalList = read(KEY + 'payments', []);
+            if (Array.isArray(globalList)) {
+                found = globalList.find(function (x) { return x && x.id === id; });
+            }
+        }
+
+        if (!found) { toast('Pagamento não encontrado.', 'error'); return; }
+
+        var body = document.getElementById('detailsBody');
+        body.innerHTML =
+            '<div class="row g-1" style="font-size:0.85rem;">' +
+            '<div class="col-5"><strong>Referência:</strong></div>' +
+            '<div class="col-7">' + escapeHTML(found.reference || found.invoiceNo || '—') + '</div>' +
+            '<div class="col-5"><strong>Transacção:</strong></div>' +
+            '<div class="col-7">' + escapeHTML(found.transactionId || '—') + '</div>' +
+            '<div class="col-5"><strong>Data:</strong></div>' +
+            '<div class="col-7">' + formatDateTime(found.createdAt || found.date) + '</div>' +
+            '<div class="col-5"><strong>Método:</strong></div>' +
+            '<div class="col-7">' + escapeHTML(found.method || '—') + '</div>' +
+            '<div class="col-5"><strong>Valor:</strong></div>' +
+            '<div class="col-7"><strong>' + money(found.amount || found.value || 0) + '</strong></div>' +
+            '<div class="col-5"><strong>Estado:</strong></div>' +
+            '<div class="col-7">' + escapeHTML(found.status || '—') + '</div>' +
+            '<div class="col-5"><strong>Cliente:</strong></div>' +
+            '<div class="col-7">' + escapeHTML(found.clientName || '—') + '</div>' +
+            '<div class="col-5"><strong>Descrição:</strong></div>' +
+            '<div class="col-7">' + escapeHTML(found.description || '—') + '</div>' +
+            '</div>';
+
+        if (!detailsModalInstance) {
+            detailsModalInstance = new bootstrap.Modal(document.getElementById('detailsModal'));
+        }
+        detailsModalInstance.show();
+    }
+
+    /* ---------- AUTO-REFRESH ---------- */
+    function startAutoRefresh() {
+        if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+        autoRefreshInterval = setInterval(function () {
+            var session = localStorage.getItem(KEY + 'admin_session')
+                       || localStorage.getItem('sz_admin_session')
+                       || sessionStorage.getItem(KEY + 'admin_session');
+            if (!session) {
+                clearInterval(autoRefreshInterval);
+                performAdminLogout();
+                return;
+            }
+            renderPayments();
+        }, 30000);
+    }
+
+    function setupFocusRefresh() {
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') renderPayments();
+        });
+        window.addEventListener('focus', renderPayments);
+    }
+
+    /* ---------- INTEGRITY CHECK ---------- */
+    function startIntegrityCheck() {
+        if (integrityCheckInterval) clearInterval(integrityCheckInterval);
+        integrityCheckInterval = setInterval(function() {
+            try {
+                var current = localStorage.getItem(KEY + 'users');
+                var backup = localStorage.getItem(KEY + 'users_backup');
+
+                if ((!current || current === '[]' || current === 'null') &&
+                    backup && backup !== '[]' && backup !== 'null') {
+                    localStorage.setItem(KEY + 'users', backup);
+                    console.log('🔄 Dados restaurados');
+                    renderPayments();
+                } else if (current && current !== '[]' && current !== 'null') {
+                    var sig = current.length + '_' + current.slice(0, 100);
+                    if (sig !== lastUsersSignature) {
+                        lastUsersSignature = sig;
+                        try {
+                            localStorage.setItem(KEY + 'users_backup', current);
+                            localStorage.setItem(KEY + 'users_backup_time', new Date().toISOString());
+                        } catch (e) {}
+                    }
+                }
+            } catch (e) {}
+        }, 3000);
+    }
+
+    /* ---------- BOOT ---------- */
+    document.addEventListener('DOMContentLoaded', function () {
+        loadTheme();
+        if (!requireAdmin()) return;
+
+        setupNavigationGuard();
+
+        if (window.innerWidth < 576) itemsPerPage = 5;
+        else if (window.innerWidth < 768) itemsPerPage = 6;
+        else itemsPerPage = 10;
+
+        renderPayments();
+        startAutoRefresh();
+        startIntegrityCheck();
+        setupFocusRefresh();
+
+        document.querySelectorAll('.sidebar .nav-link').forEach(function (l) {
+            l.addEventListener('click', function () {
+                if (window.innerWidth <= 992) closeSidebar();
+            });
+        });
+
+        window.addEventListener('storage', function (e) {
+            if (e.key && (e.key.indexOf(KEY + 'data_') === 0 || e.key === KEY + 'payments' || e.key === KEY + 'users')) {
+                renderPayments();
+            }
+        });
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 992) closeSidebar();
+        });
+
+        window.addEventListener('beforeunload', function () {
+            try {
+                var users = localStorage.getItem(KEY + 'users');
+                if (users && users !== '[]' && users !== 'null') {
+                    localStorage.setItem(KEY + 'users_backup', users);
+                    localStorage.setItem(KEY + 'users_backup_time', new Date().toISOString());
+                }
+            } catch (e) {}
+        });
+
+        console.log('🛡️ Pagamentos v5.0.0 — Todos os sistemas ativos');
+    });
+
+    /* ---------- EXPOSIÇÃO GLOBAL ---------- */
+    Object.assign(window, {
+        logoutAdmin: logoutAdmin,
+        toggleTheme: toggleTheme,
+        renderPayments: renderPayments,
+        sortPayments: sortPayments,
+        goToPage: goToPage,
+        resetFilters: resetFilters,
+        forceRefresh: forceRefresh,
+        exportCSV: exportCSV,
+        exportJSON: exportJSON,
+        viewPaymentDetails: viewPaymentDetails,
+        toggleSidebar: toggleSidebar,
+        closeSidebar: closeSidebar,
+        performAdminLogout: performAdminLogout
+    });
+    </script>
+
+    <script src="../../mobile.js" defer></script>
+</body>
+</html>
