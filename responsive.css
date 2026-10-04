@@ -87,11 +87,20 @@ table { max-width: 100%; }
     pointer-events: auto;
   }
 
-  /* --- BOTÃO DE MENU — mostrar UM só, qualquer variante --- */
+  /* --- BOTÃO DE MENU — mostrar UM só, qualquer variante ---
+     As variantes ".top-nav .X" TÊM DE aparecer aqui também, com a
+     MESMA especificidade das da regra "esconder" lá em cima — senão
+     um botão sem id (ex: .mobile-menu-toggle sozinho, sem
+     #menuToggle) perde o empate de especificidade mesmo com
+     !important dos dois lados, e fica escondido mesmo em mobile.
+     (Foi exactamente isto que aconteceu em dashboard.html.) */
   .sp-menu-toggle,
   .mobile-menu-toggle,
   .menu-toggle,
-  #menuToggle {
+  #menuToggle,
+  .top-nav .sp-menu-toggle,
+  .top-nav .mobile-menu-toggle,
+  .top-nav .menu-toggle {
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
