@@ -1,332 +1,234 @@
-/* ============================================================
-   SumbanePay — navegação mobile corrigida
-   Compatível com:
-   .sp-menu-toggle
-   .mobile-menu-toggle
-   .menu-toggle
-   #menuToggle
-   ============================================================ */
-
 (function () {
     'use strict';
 
-    if (window.__spMobileNavInit) {
-        return;
-    }
-
-    window.__spMobileNavInit = true;
-
-    /*
-     * Aplicar o tema guardado
-     */
-    try {
-        var savedTheme = localStorage.getItem('sumbanepay_theme');
-
-        if (savedTheme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        } else if (savedTheme === 'light') {
-            document.documentElement.removeAttribute('data-theme');
-        }
-    } catch (error) {
-        console.warn('Não foi possível carregar o tema:', error);
-    }
-
-    /*
-     * Seletores utilizados nas páginas
-     */
-    var TOGGLE_SELECTOR =
+    var menuButtonSelector =
         '.sp-menu-toggle, .mobile-menu-toggle, .menu-toggle, #menuToggle';
 
-    var BACKDROP_SELECTOR =
+    var backdropSelector =
         '.sp-sidebar-backdrop, .sidebar-backdrop, .sidebar-overlay';
 
-    var OPEN_CLASS = 'sp-sidebar-open';
-    var BACKDROP_ACTIVE = 'sp-backdrop-active';
+    var sidebar;
+    var menuButton;
+    var backdrop;
 
-    /*
-     * Actualizar o estado visual do botão
-     */
-    function setToggleState(isOpen) {
-        var buttons = document.querySelectorAll(TOGGLE_SELECTOR);
-
-        buttons.forEach(function (button) {
-            button.setAttribute('aria-expanded', String(isOpen));
-
-            button.setAttribute(
-                'aria-label',
-                isOpen
-                    ? 'Fechar menu de navegação'
-                    : 'Abrir menu de navegação'
-            );
-
-            var icon = button.querySelector('i');
-
-            if (icon) {
-                icon.className = isOpen
-                    ? 'bi bi-x-lg'
-                    : 'bi bi-list';
-            }
-        });
+    function findElements() {
+        sidebar = document.querySelector('.sidebar');
+        menuButton = document.querySelector(menuButtonSelector);
+        backdrop = document.querySelector(backdropSelector);
     }
 
-    /*
-     * Abrir menu
-     */
-    function openMenu() {
-        document.body.classList.add(OPEN_CLASS);
+    function setButtonState(open) {
+        if (!menuButton) {
+            return;
+        }
 
-        var sidebar = document.querySelector('.sidebar');
+        menuButton.setAttribute(
+            'aria-expanded',
+            open ? 'true' : 'false'
+        );
+
+        menuButton.setAttribute(
+            'aria-label',
+            open
+                ? 'Fechar menu'
+                : 'Abrir menu'
+        );
+
+        var icon = menuButton.querySelector('i');
+
+        if (icon) {
+            icon.className = open
+                ? 'bi bi-x-lg'
+                : 'bi bi-list';
+        }
+    }
+
+    function openMenu() {
+        findElements();
 
         if (sidebar) {
-            /*
-             * Compatibilidade com páginas antigas
-             * que utilizam .sidebar.open
-             */
             sidebar.classList.add('open');
         }
 
-        var backdrops = document.querySelectorAll(BACKDROP_SELECTOR);
+        document.body.classList.add('sp-sidebar-open');
 
-        backdrops.forEach(function (backdrop) {
+        if (backdrop) {
             backdrop.classList.add('show');
-            backdrop.classList.add(BACKDROP_ACTIVE);
-        });
+            backdrop.classList.add('sp-backdrop-active');
+        }
 
-        setToggleState(true);
+        setButtonState(true);
     }
 
-    /*
-     * Fechar menu
-     */
     function closeMenu() {
-        document.body.classList.remove(OPEN_CLASS);
-
-        var sidebar = document.querySelector('.sidebar');
+        findElements();
 
         if (sidebar) {
             sidebar.classList.remove('open');
         }
 
-        var backdrops = document.querySelectorAll(BACKDROP_SELECTOR);
+        document.body.classList.remove('sp-sidebar-open');
 
-        backdrops.forEach(function (backdrop) {
+        if (backdrop) {
             backdrop.classList.remove('show');
-            backdrop.classList.remove(BACKDROP_ACTIVE);
-        });
+            backdrop.classList.remove('sp-backdrop-active');
+        }
 
-        setToggleState(false);
+        setButtonState(false);
     }
 
-    /*
-     * Alternar menu
-     */
-    function toggleMenu() {
-        if (document.body.classList.contains(OPEN_CLASS)) {
+    function toggleMenu(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        findElements();
+
+        if (
+            sidebar &&
+            sidebar.classList.contains('open')
+        ) {
+            closeMenu();
+        } else if (
+            document.body.classList.contains('sp-sidebar-open')
+        ) {
             closeMenu();
         } else {
             openMenu();
         }
     }
 
-    /*
-     * Garantir que existe apenas um botão de menu
-     */
-    function removeDuplicateButtons(topNav) {
+    function createMenuButtonIfNecessary() {
+        var topNav = document.querySelector('.top-nav');
+
         if (!topNav) {
             return;
         }
 
-        var buttonsInsideNav =
-            topNav.querySelectorAll(TOGGLE_SELECTOR);
+        menuButton = topNav.querySelector(menuButtonSelector);
 
-        for (var i = 1; i < buttonsInsideNav.length; i++) {
-            var duplicate = buttonsInsideNav[i];
+        if (menuButton) {
+            return;
+        }
 
-            if (duplicate.parentNode) {
-                duplicate.parentNode.removeChild(duplicate);
+        menuButton = document.createElement('button');
+
+        menuButton.type = 'button';
+        menuButton.className = 'mobile-menu-toggle';
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.setAttribute('aria-label', 'Abrir menu');
+
+        menuButton.innerHTML =
+            '<i class="bi bi-list" aria-hidden="true"></i>';
+
+        topNav.insertBefore(
+            menuButton,
+            topNav.firstChild
+        );
+    }
+
+    function createBackdropIfNecessary() {
+        backdrop = document.querySelector(backdropSelector);
+
+        if (backdrop) {
+            return;
+        }
+
+        backdrop = document.createElement('div');
+        backdrop.className = 'sidebar-backdrop';
+        backdrop.setAttribute('aria-hidden', 'true');
+
+        document.body.appendChild(backdrop);
+    }
+
+    function removeDuplicateButtons() {
+        var buttons = document.querySelectorAll(
+            menuButtonSelector
+        );
+
+        if (buttons.length <= 1) {
+            return;
+        }
+
+        for (var i = 1; i < buttons.length; i++) {
+            if (buttons[i].parentNode) {
+                buttons[i].parentNode.removeChild(buttons[i]);
             }
         }
     }
 
-    /*
-     * Criar botão se a página não tiver nenhum
-     */
-    function ensureMenuButton(topNav) {
-        if (!topNav) {
-            return;
-        }
+    function initialiseMenu() {
+        findElements();
 
-        var existingButton =
-            topNav.querySelector(TOGGLE_SELECTOR);
-
-        if (existingButton) {
-            return;
-        }
-
-        var button = document.createElement('button');
-
-        button.type = 'button';
-        button.className = 'sp-menu-toggle';
-        button.setAttribute('aria-expanded', 'false');
-        button.setAttribute(
-            'aria-label',
-            'Abrir menu de navegação'
-        );
-
-        button.innerHTML =
-            '<i class="bi bi-list" aria-hidden="true"></i>';
-
-        topNav.insertBefore(button, topNav.firstChild);
-    }
-
-    /*
-     * Ligar o botão de menu
-     */
-    function bindMenuButton(topNav) {
-        if (!topNav) {
-            return;
-        }
-
-        var button = topNav.querySelector(TOGGLE_SELECTOR);
-
-        if (!button) {
-            return;
-        }
-
-        /*
-         * Remover onclick antigo para evitar
-         * que o menu abra e feche duas vezes
-         */
-        button.onclick = null;
-
-        /*
-         * Clonar o botão para remover listeners antigos
-         */
-        var cleanButton = button.cloneNode(true);
-
-        cleanButton.onclick = null;
-
-        button.parentNode.replaceChild(cleanButton, button);
-
-        cleanButton.addEventListener('click', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            toggleMenu();
-        });
-
-        cleanButton.setAttribute('aria-expanded', 'false');
-        cleanButton.setAttribute(
-            'aria-label',
-            'Abrir menu de navegação'
-        );
-    }
-
-    /*
-     * Criar ou preparar o fundo escuro
-     */
-    function ensureBackdrop() {
-        var backdrop =
-            document.querySelector(BACKDROP_SELECTOR);
-
-        if (!backdrop) {
-            backdrop = document.createElement('div');
-            backdrop.className = 'sp-sidebar-backdrop';
-            backdrop.setAttribute('aria-hidden', 'true');
-
-            document.body.appendChild(backdrop);
-        }
-
-        backdrop.classList.add(BACKDROP_ACTIVE);
-        backdrop.setAttribute('aria-hidden', 'true');
-        backdrop.onclick = null;
-
-        var cleanBackdrop = backdrop.cloneNode(true);
-
-        cleanBackdrop.onclick = null;
-
-        backdrop.parentNode.replaceChild(
-            cleanBackdrop,
-            backdrop
-        );
-
-        cleanBackdrop.addEventListener('click', function (event) {
-            event.preventDefault();
-            closeMenu();
-        });
-
-        return cleanBackdrop;
-    }
-
-    /*
-     * Fechar menu ao clicar num link
-     */
-    function bindSidebarLinks(sidebar) {
         if (!sidebar) {
             return;
         }
 
-        var links = sidebar.querySelectorAll('a');
+        createMenuButtonIfNecessary();
+        createBackdropIfNecessary();
+        removeDuplicateButtons();
+        findElements();
 
-        links.forEach(function (link) {
-            var cleanLink = link.cloneNode(true);
+        if (menuButton) {
+            menuButton.onclick = null;
 
-            link.parentNode.replaceChild(cleanLink, link);
-
-            cleanLink.addEventListener('click', function () {
-                closeMenu();
-            });
-        });
-    }
-
-    /*
-     * Inicialização
-     */
-    function initMenu() {
-        var topNav = document.querySelector('.top-nav');
-        var sidebar = document.querySelector('.sidebar');
-
-        if (!topNav || !sidebar) {
-            return;
+            menuButton.addEventListener(
+                'click',
+                toggleMenu
+            );
         }
 
-        ensureBackdrop();
-
-        removeDuplicateButtons(topNav);
-
-        ensureMenuButton(topNav);
-
-        removeDuplicateButtons(topNav);
-
-        bindMenuButton(topNav);
-
-        bindSidebarLinks(sidebar);
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
+        if (backdrop) {
+            backdrop.onclick = function (event) {
+                event.preventDefault();
                 closeMenu();
-            }
-        });
+            };
+        }
 
-        window.addEventListener('resize', function () {
-            if (window.innerWidth > 991.98) {
-                closeMenu();
-            }
-        });
+        var links = sidebar.querySelectorAll('a');
 
-        /*
-         * Compatibilidade com onclick antigo do HTML
-         */
+        for (var i = 0; i < links.length; i++) {
+            links[i].addEventListener(
+                'click',
+                closeMenu
+            );
+        }
+
+        document.addEventListener(
+            'keydown',
+            function (event) {
+                if (event.key === 'Escape') {
+                    closeMenu();
+                }
+            }
+        );
+
+        window.addEventListener(
+            'resize',
+            function () {
+                if (window.innerWidth > 991) {
+                    closeMenu();
+                }
+            }
+        );
+
         window.toggleSidebar = toggleMenu;
         window.closeSidebar = closeMenu;
+
+        setButtonState(false);
     }
+
+    window.openSumbaneMenu = openMenu;
+    window.closeSumbaneMenu = closeMenu;
+    window.toggleSumbaneMenu = toggleMenu;
 
     if (document.readyState === 'loading') {
         document.addEventListener(
             'DOMContentLoaded',
-            initMenu
+            initialiseMenu
         );
     } else {
-        initMenu();
+        initialiseMenu();
     }
 })();
