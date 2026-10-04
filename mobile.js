@@ -1,242 +1,332 @@
 /* ============================================================
-   SumbanePay — mobile navigation enhancement v3
-   Fonte única do menu mobile.
-
-   Funciona com QUALQUER combinação que já tenhas no HTML:
-     - botão:    .sp-menu-toggle | .mobile-menu-toggle | .menu-toggle | #menuToggle
-     - backdrop: .sp-sidebar-backdrop | .sidebar-backdrop | .sidebar-overlay
-     - onclick inline: toggleSidebar() / closeSidebar()
-
-   Faz:
-     1. Remove botões de menu duplicados (mantém 1 só).
-     2. Reutiliza o backdrop existente (não cria outro).
-     3. Neutraliza onclick inline para não haver duplo toggle.
-     4. Expõe window.toggleSidebar / window.closeSidebar.
-     5. Abre/fecha via body.sp-sidebar-open (o que o responsive.css espera).
+   SumbanePay — navegação mobile corrigida
+   Compatível com:
+   .sp-menu-toggle
+   .mobile-menu-toggle
+   .menu-toggle
+   #menuToggle
    ============================================================ */
+
 (function () {
-  'use strict';
+    'use strict';
 
-  // Guarda contra dupla inclusão do ficheiro
-  if (window.__spMobileNavInit) return;
-  window.__spMobileNavInit = true;
-
-  // -----------------------------------------------------------
-  // Aplicar tema guardado antes da página ficar interativa
-  // -----------------------------------------------------------
-  try {
-    var savedTheme = localStorage.getItem('sumbanepay_theme');
-    if (savedTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-    else if (savedTheme === 'light') document.documentElement.removeAttribute('data-theme');
-  } catch (e) {}
-
-  // -----------------------------------------------------------
-  // Constantes
-  // -----------------------------------------------------------
-  var TOGGLE_SELECTOR =
-    '.sp-menu-toggle, .mobile-menu-toggle, .menu-toggle, #menuToggle';
-
-  var BACKDROP_SELECTOR =
-    '.sp-sidebar-backdrop, .sidebar-backdrop, .sidebar-overlay';
-
-  var OPEN_CLASS      = 'sp-sidebar-open';
-  var BACKDROP_ACTIVE = 'sp-backdrop-active';
-
-  // -----------------------------------------------------------
-  // Abrir / fechar / toggle
-  // -----------------------------------------------------------
-  function openMenu() {
-    document.body.classList.add(OPEN_CLASS);
-    setToggleState(true);
-  }
-
-  function closeMenu() {
-    document.body.classList.remove(OPEN_CLASS);
-    setToggleState(false);
-  }
-
-  function toggleMenu() {
-    if (document.body.classList.contains(OPEN_CLASS)) closeMenu();
-    else openMenu();
-  }
-
-  // -----------------------------------------------------------
-  // Atualizar estado visual e ARIA do botão
-  // -----------------------------------------------------------
-  function setToggleState(isOpen) {
-    var toggles = document.querySelectorAll(TOGGLE_SELECTOR);
-    toggles.forEach(function (btn) {
-      btn.setAttribute('aria-expanded', String(isOpen));
-      btn.setAttribute('aria-label', isOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação');
-      var icon = btn.querySelector('i');
-      if (icon) icon.className = isOpen ? 'bi bi-x-lg' : 'bi bi-list';
-    });
-  }
-
-  // -----------------------------------------------------------
-  // Remover botões duplicados — mantém só o primeiro dentro do .top-nav
-  // -----------------------------------------------------------
-  function dedupeToggles(topNav) {
-    if (!topNav) return;
-
-    // 1) Todos os botões que existem dentro do top-nav
-    var insideNav = topNav.querySelectorAll(TOGGLE_SELECTOR);
-    for (var i = 1; i < insideNav.length; i++) {
-      insideNav[i].parentNode && insideNav[i].parentNode.removeChild(insideNav[i]);
+    if (window.__spMobileNavInit) {
+        return;
     }
 
-    // 2) Botões duplicados FORA do top-nav (ex.: dentro do .app-main)
-    //    Só remove se não estiverem dentro do top-nav.
-    var all = document.querySelectorAll(TOGGLE_SELECTOR);
-    var seenInNav = false;
-    all.forEach(function (btn) {
-      var inNav = topNav.contains(btn);
-      if (inNav) {
-        if (seenInNav) {
-          btn.parentNode && btn.parentNode.removeChild(btn);
-        } else {
-          seenInNav = true;
+    window.__spMobileNavInit = true;
+
+    /*
+     * Aplicar o tema guardado
+     */
+    try {
+        var savedTheme = localStorage.getItem('sumbanepay_theme');
+
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else if (savedTheme === 'light') {
+            document.documentElement.removeAttribute('data-theme');
         }
-      }
-    });
-  }
-
-  // -----------------------------------------------------------
-  // Garantir que existe pelo menos um botão.
-  // Se não existir nenhum, cria um .sp-menu-toggle no início do top-nav.
-  // -----------------------------------------------------------
-  function ensureToggleExists(topNav) {
-    if (!topNav) return;
-    if (topNav.querySelector(TOGGLE_SELECTOR)) return;
-
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'sp-menu-toggle';
-    btn.setAttribute('aria-label', 'Abrir menu de navegação');
-    btn.setAttribute('aria-expanded', 'false');
-    btn.innerHTML = '<i class="bi bi-list" aria-hidden="true"></i>';
-    topNav.insertBefore(btn, topNav.firstChild);
-  }
-
-  // -----------------------------------------------------------
-  // Ligar o clique a UM só botão.
-  // Neutraliza onclick inline para não haver duplo toggle.
-  // -----------------------------------------------------------
-  function bindToggle(topNav) {
-    if (!topNav) return;
-
-    var btn = topNav.querySelector(TOGGLE_SELECTOR);
-    if (!btn) return;
-
-    // Neutralizar handlers inline antigos (onclick="toggleSidebar()" etc.)
-    btn.onclick = null;
-
-    // Remover listeners antigos clonando o nó — assim garantimos que
-    // só existe UM listener, mesmo que este script corra duas vezes.
-    var clone = btn.cloneNode(true);
-    clone.onclick = null;
-    btn.parentNode.replaceChild(clone, btn);
-    btn = clone;
-
-    // Ligar o handler único
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      toggleMenu();
-    });
-
-    // Estado inicial
-    btn.setAttribute('aria-expanded', 'false');
-    btn.setAttribute('aria-label', 'Abrir menu de navegação');
-  }
-
-  // -----------------------------------------------------------
-  // Backdrop — reutiliza o que o HTML já tem; só cria se faltar.
-  // -----------------------------------------------------------
-  function ensureBackdrop() {
-    var backdrop = document.querySelector(BACKDROP_SELECTOR);
-
-    if (!backdrop) {
-      backdrop = document.createElement('div');
-      backdrop.className = 'sp-sidebar-backdrop';
-      backdrop.setAttribute('aria-hidden', 'true');
-      document.body.appendChild(backdrop);
+    } catch (error) {
+        console.warn('Não foi possível carregar o tema:', error);
     }
 
-    // Normalizar: garantir a classe de ativação e um único handler
-    backdrop.classList.add(BACKDROP_ACTIVE);
-    backdrop.setAttribute('aria-hidden', 'true');
-    backdrop.onclick = null;
+    /*
+     * Seletores utilizados nas páginas
+     */
+    var TOGGLE_SELECTOR =
+        '.sp-menu-toggle, .mobile-menu-toggle, .menu-toggle, #menuToggle';
 
-    // Clonar para limpar listeners antigos
-    var clone = backdrop.cloneNode(true);
-    clone.onclick = null;
-    backdrop.parentNode.replaceChild(clone, backdrop);
+    var BACKDROP_SELECTOR =
+        '.sp-sidebar-backdrop, .sidebar-backdrop, .sidebar-overlay';
 
-    clone.addEventListener('click', function (e) {
-      e.preventDefault();
-      closeMenu();
-    });
+    var OPEN_CLASS = 'sp-sidebar-open';
+    var BACKDROP_ACTIVE = 'sp-backdrop-active';
 
-    return clone;
-  }
+    /*
+     * Actualizar o estado visual do botão
+     */
+    function setToggleState(isOpen) {
+        var buttons = document.querySelectorAll(TOGGLE_SELECTOR);
 
-  // -----------------------------------------------------------
-  // Fechar menu ao clicar num link do sidebar
-  // -----------------------------------------------------------
-  function bindSidebarLinks(sidebar) {
-    if (!sidebar) return;
-    sidebar.querySelectorAll('a').forEach(function (link) {
-      // Clonar para limpar handlers antigos
-      var clone = link.cloneNode(true);
-      link.parentNode.replaceChild(clone, link);
-      clone.addEventListener('click', closeMenu);
-    });
-  }
+        buttons.forEach(function (button) {
+            button.setAttribute('aria-expanded', String(isOpen));
 
-  // -----------------------------------------------------------
-  // Init
-  // -----------------------------------------------------------
-  function init() {
-    var topNav  = document.querySelector('.top-nav');
-    var sidebar = document.querySelector('.sidebar');
+            button.setAttribute(
+                'aria-label',
+                isOpen
+                    ? 'Fechar menu de navegação'
+                    : 'Abrir menu de navegação'
+            );
 
-    if (!topNav || !sidebar) return;
+            var icon = button.querySelector('i');
 
-    // 1) Backdrop
-    ensureBackdrop();
+            if (icon) {
+                icon.className = isOpen
+                    ? 'bi bi-x-lg'
+                    : 'bi bi-list';
+            }
+        });
+    }
 
-    // 2) Botões: remover duplicados, garantir pelo menos um
-    dedupeToggles(topNav);
-    ensureToggleExists(topNav);
-    // Remover duplicados outra vez (caso ensureToggleExists tenha criado)
-    dedupeToggles(topNav);
+    /*
+     * Abrir menu
+     */
+    function openMenu() {
+        document.body.classList.add(OPEN_CLASS);
 
-    // 3) Ligar clique (um só handler)
-    bindToggle(topNav);
+        var sidebar = document.querySelector('.sidebar');
 
-    // 4) Links do sidebar fecham o menu
-    bindSidebarLinks(sidebar);
+        if (sidebar) {
+            /*
+             * Compatibilidade com páginas antigas
+             * que utilizam .sidebar.open
+             */
+            sidebar.classList.add('open');
+        }
 
-    // 5) ESC fecha
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeMenu();
-    });
+        var backdrops = document.querySelectorAll(BACKDROP_SELECTOR);
 
-    // 6) Ao passar para desktop, garantir que fecha
-    window.addEventListener('resize', function () {
-      if (window.innerWidth > 991.98) closeMenu();
-    });
+        backdrops.forEach(function (backdrop) {
+            backdrop.classList.add('show');
+            backdrop.classList.add(BACKDROP_ACTIVE);
+        });
 
-    // 7) Expor funções globais para o HTML continuar a funcionar
-    //    (onclick="toggleSidebar()" / onclick="closeSidebar()")
-    window.toggleSidebar = toggleMenu;
-    window.closeSidebar  = closeMenu;
-  }
+        setToggleState(true);
+    }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+    /*
+     * Fechar menu
+     */
+    function closeMenu() {
+        document.body.classList.remove(OPEN_CLASS);
+
+        var sidebar = document.querySelector('.sidebar');
+
+        if (sidebar) {
+            sidebar.classList.remove('open');
+        }
+
+        var backdrops = document.querySelectorAll(BACKDROP_SELECTOR);
+
+        backdrops.forEach(function (backdrop) {
+            backdrop.classList.remove('show');
+            backdrop.classList.remove(BACKDROP_ACTIVE);
+        });
+
+        setToggleState(false);
+    }
+
+    /*
+     * Alternar menu
+     */
+    function toggleMenu() {
+        if (document.body.classList.contains(OPEN_CLASS)) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    }
+
+    /*
+     * Garantir que existe apenas um botão de menu
+     */
+    function removeDuplicateButtons(topNav) {
+        if (!topNav) {
+            return;
+        }
+
+        var buttonsInsideNav =
+            topNav.querySelectorAll(TOGGLE_SELECTOR);
+
+        for (var i = 1; i < buttonsInsideNav.length; i++) {
+            var duplicate = buttonsInsideNav[i];
+
+            if (duplicate.parentNode) {
+                duplicate.parentNode.removeChild(duplicate);
+            }
+        }
+    }
+
+    /*
+     * Criar botão se a página não tiver nenhum
+     */
+    function ensureMenuButton(topNav) {
+        if (!topNav) {
+            return;
+        }
+
+        var existingButton =
+            topNav.querySelector(TOGGLE_SELECTOR);
+
+        if (existingButton) {
+            return;
+        }
+
+        var button = document.createElement('button');
+
+        button.type = 'button';
+        button.className = 'sp-menu-toggle';
+        button.setAttribute('aria-expanded', 'false');
+        button.setAttribute(
+            'aria-label',
+            'Abrir menu de navegação'
+        );
+
+        button.innerHTML =
+            '<i class="bi bi-list" aria-hidden="true"></i>';
+
+        topNav.insertBefore(button, topNav.firstChild);
+    }
+
+    /*
+     * Ligar o botão de menu
+     */
+    function bindMenuButton(topNav) {
+        if (!topNav) {
+            return;
+        }
+
+        var button = topNav.querySelector(TOGGLE_SELECTOR);
+
+        if (!button) {
+            return;
+        }
+
+        /*
+         * Remover onclick antigo para evitar
+         * que o menu abra e feche duas vezes
+         */
+        button.onclick = null;
+
+        /*
+         * Clonar o botão para remover listeners antigos
+         */
+        var cleanButton = button.cloneNode(true);
+
+        cleanButton.onclick = null;
+
+        button.parentNode.replaceChild(cleanButton, button);
+
+        cleanButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            toggleMenu();
+        });
+
+        cleanButton.setAttribute('aria-expanded', 'false');
+        cleanButton.setAttribute(
+            'aria-label',
+            'Abrir menu de navegação'
+        );
+    }
+
+    /*
+     * Criar ou preparar o fundo escuro
+     */
+    function ensureBackdrop() {
+        var backdrop =
+            document.querySelector(BACKDROP_SELECTOR);
+
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'sp-sidebar-backdrop';
+            backdrop.setAttribute('aria-hidden', 'true');
+
+            document.body.appendChild(backdrop);
+        }
+
+        backdrop.classList.add(BACKDROP_ACTIVE);
+        backdrop.setAttribute('aria-hidden', 'true');
+        backdrop.onclick = null;
+
+        var cleanBackdrop = backdrop.cloneNode(true);
+
+        cleanBackdrop.onclick = null;
+
+        backdrop.parentNode.replaceChild(
+            cleanBackdrop,
+            backdrop
+        );
+
+        cleanBackdrop.addEventListener('click', function (event) {
+            event.preventDefault();
+            closeMenu();
+        });
+
+        return cleanBackdrop;
+    }
+
+    /*
+     * Fechar menu ao clicar num link
+     */
+    function bindSidebarLinks(sidebar) {
+        if (!sidebar) {
+            return;
+        }
+
+        var links = sidebar.querySelectorAll('a');
+
+        links.forEach(function (link) {
+            var cleanLink = link.cloneNode(true);
+
+            link.parentNode.replaceChild(cleanLink, link);
+
+            cleanLink.addEventListener('click', function () {
+                closeMenu();
+            });
+        });
+    }
+
+    /*
+     * Inicialização
+     */
+    function initMenu() {
+        var topNav = document.querySelector('.top-nav');
+        var sidebar = document.querySelector('.sidebar');
+
+        if (!topNav || !sidebar) {
+            return;
+        }
+
+        ensureBackdrop();
+
+        removeDuplicateButtons(topNav);
+
+        ensureMenuButton(topNav);
+
+        removeDuplicateButtons(topNav);
+
+        bindMenuButton(topNav);
+
+        bindSidebarLinks(sidebar);
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeMenu();
+            }
+        });
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 991.98) {
+                closeMenu();
+            }
+        });
+
+        /*
+         * Compatibilidade com onclick antigo do HTML
+         */
+        window.toggleSidebar = toggleMenu;
+        window.closeSidebar = closeMenu;
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener(
+            'DOMContentLoaded',
+            initMenu
+        );
+    } else {
+        initMenu();
+    }
 })();
