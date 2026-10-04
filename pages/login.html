@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <title>Entrar — SumbanePay</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../core/security-utils.js"></script>
+    <script src="../core/storage-core.js"></script>
+    <script src="../core/pbkdf2-fallback.js"></script>
+    <script src="../core/auth-core.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore-compat.js"></script>
+    <script src="../core/firebase-init.js"></script>
+    <style>
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 16px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+        }
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .serif { font-family: 'Georgia', serif; }
+        .brand {
+            font-family: 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .brand.text-white { color: #fff; }
+        .brand b { color: var(--sz-coral); }
+        .brand.text-white b { color: var(--sz-gold); }
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+        }
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 12px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-sz:hover { transform: translateY(-2px); color: #fff; }
+        .btn-sz:disabled { opacity: 0.7; cursor: not-allowed; }
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 10px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            width: 100%;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-outline-sz:hover { background: var(--sz-green); color: #fff; }
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .password-wrapper { position: relative; }
+        .password-wrapper .form-control { padding-right: 48px; }
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--sz-muted);
+            cursor: pointer;
+            padding: 8px 10px;
+            font-size: 1.15rem;
+            z-index: 5;
+            border-radius: 6px;
+        }
+        .password-toggle:hover { color: var(--sz-green); }
+        .auth-wrap { display: flex; width: 100%; min-height: 100vh; }
+        .auth-side {
+            background: var(--sz-dark);
+            color: #fff;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+        }
+        [data-theme="dark"] .auth-side { background: #0a1f1a; }
+        .auth-side h1 { font: 700 clamp(2.8rem, 4vw, 4rem)/1.05 Georgia, serif; }
+        .auth-side h1 em { color: var(--sz-gold); font-style: normal; }
+        .auth-side p { color: rgba(255, 255, 255, 0.7); font-size: 1.05rem; }
+        .auth-form-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .auth-form {
+            background: var(--sz-white);
+            padding: 2.5rem;
+            max-width: 480px;
+            width: 100%;
+            border-radius: var(--sz-radius);
+            box-shadow: var(--sz-shadow);
+        }
+        .auth-form h2 { font-size: 1.8rem; margin-bottom: 0.25rem; }
+        .auth-form .subtitle { color: var(--sz-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .auth-form .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--sz-ink);
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .auth-form .form-label .required { color: var(--sz-danger); font-size: 1.1rem; }
+        .auth-form .form-control {
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            padding: 10px 14px;
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+            width: 100%;
+        }
+        .auth-form .form-control:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 4px rgba(23, 107, 91, 0.1);
+            outline: none;
+        }
+        .auth-form .form-control.is-invalid { border-color: var(--sz-danger); }
+        .auth-form .links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .auth-form .links a { color: var(--sz-muted); text-decoration: none; }
+        .auth-form .links a:hover { color: var(--sz-green); }
+        .auth-form .links a.admin-link {
+            color: var(--sz-gold);
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(232, 179, 91, 0.3);
+        }
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--sz-muted);
+            font-size: 0.8rem;
+            margin: 1.5rem 0;
+        }
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--sz-line);
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 16px; right: 16px;
+            z-index: 1000;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--sz-line);
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            cursor: pointer;
+        }
+        .btn-back-index {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--sz-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(90, 106, 98, 0.06);
+            cursor: pointer;
+            border: none;
+        }
+        .btn-back-index:hover { color: var(--sz-green); }
+        .btn-exit-main { color: var(--sz-danger); }
+        #attemptsWarning {
+            display: none;
+            background: rgba(220,53,69,0.08);
+            border: 1px solid var(--sz-danger);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 1rem;
+            font-size: 0.75rem;
+            color: var(--sz-danger);
+        }
+        #contextWarning {
+            display: none;
+            background: rgba(220,53,69,0.08);
+            border: 1px solid var(--sz-danger);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+            color: var(--sz-danger);
+        }
+        #contextWarning.show { display: block; }
+        .form-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .form-footer .footer-item {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .status-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        @media (max-width: 992px) {
+            .auth-wrap { flex-direction: column; }
+            .auth-side { min-height: 30vh; padding: 2rem; }
+            .auth-form { padding: 2rem; box-shadow: none; background: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Tema">
+        <i class="bi bi-moon-fill" id="themeIcon"></i>
+    </button>
+
+    <div class="auth-wrap">
+        <div class="auth-side">
+            <div>
+                <a class="brand text-white" href="../index.html">
+                    <span class="logo-mark">Pay</span>
+                    Sumbane<b>Pay</b>
+                </a>
+            </div>
+            <div>
+                <h1>Mais tempo<br><em>para o que importa.</em></h1>
+                <p>Facturação simples para quem faz o seu negócio acontecer.</p>
+            </div>
+            <div style="font-size:0.8rem;color:rgba(255,255,255,0.3);">
+                <i class="bi bi-shield-check me-1"></i> Área segura | v3.3.0
+            </div>
+        </div>
+
+        <div class="auth-form-wrapper">
+            <div class="auth-form">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button type="button" class="btn-back-index btn-exit-main" onclick="goToMain(event)">
+                        <i class="bi bi-box-arrow-right me-1"></i> Sair
+                    </button>
+                    <a class="brand" href="../index.html" style="font-size:1rem;">
+                        <span class="logo-mark" style="width:28px;height:28px;font-size:0.55rem;">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                </div>
+
+                <div class="eyebrow">
+                    <i class="bi bi-door-open me-1"></i> BEM-VINDO DE VOLTA
+                </div>
+                <h2 class="serif mt-1">
+                    <i class="bi bi-person-circle me-2" style="color:var(--sz-gold);"></i>
+                    Entre no seu espaço.
+                </h2>
+                <p class="subtitle">
+                    <i class="bi bi-laptop me-1"></i> Aceda à sua conta.
+                </p>
+
+                <div id="contextWarning">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    <span id="contextWarningText"></span>
+                </div>
+
+                <div id="attemptsWarning">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    <span id="attemptsText"></span>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)" novalidate autocomplete="off">
+
+                    <div style="position:absolute;left:-9999px;">
+                        <input type="text" id="honeypot" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <label class="form-label" for="email">
+                        <i class="bi bi-envelope me-1"></i> Email <span class="required">*</span>
+                    </label>
+                    <input id="email" class="form-control"
+                           type="email" placeholder="seuemail@dominio.com"
+                           autocomplete="off" required>
+
+                    <label class="form-label" for="password">
+                        <i class="bi bi-lock me-1"></i> Senha <span class="required">*</span>
+                    </label>
+                    <div class="password-wrapper">
+                        <input id="password" class="form-control"
+                               type="password" placeholder="••••••••"
+                               autocomplete="off" required minlength="6">
+                        <button type="button" class="password-toggle"
+                                onclick="togglePasswordVisibility()">
+                            <i class="bi bi-eye" id="passwordIcon"></i>
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn-sz mt-3" id="loginBtn">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Entrar
+                    </button>
+                </form>
+
+                <div class="auth-divider">
+                    <span><i class="bi bi-three-dots"></i> ou <i class="bi bi-three-dots"></i></span>
+                </div>
+
+                <div class="text-center">
+                    <p style="color:var(--sz-muted);font-size:0.85rem;margin-bottom:0.5rem;">
+                        <i class="bi bi-person-plus me-1"></i> Ainda não tem conta?
+                    </p>
+                    <a href="cadastro.html" class="btn-outline-sz">
+                        <i class="bi bi-person-plus me-2"></i> Criar nova conta
+                    </a>
+                </div>
+
+                <div class="links">
+                    <a href="recuperar-palavra-passe.html">
+                        <i class="bi bi-question-circle me-1"></i> Esqueci a senha
+                    </a>
+                    <a href="superadmin_sumbanepay/superadmin-login.html" class="admin-link">
+                        <i class="bi bi-shield-lock"></i> SuperAdmin
+                    </a>
+                </div>
+
+                <div class="form-footer">
+                    <span class="footer-item"><i class="bi bi-shield-check"></i> SSL Seguro</span>
+                    <span class="footer-item"><span class="status-dot"></span> Online</span>
+                    <span class="footer-item"><i class="bi bi-clock"></i> <span id="currentTime">--:--</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* ============================================================
+       LOGIN — SumbanePay
+       ------------------------------------------------------------
+       ✔ Utilizadores via SPStorage (core/storage-core.js) — mesma
+         chave canónica usada por cadastro.html e pelo superadmin,
+         eliminando o desalinhamento entre 'sumbanepay_users' e
+         'sumbanepay_users_v2' que existia antes
+       ✔ Verificação de password via SPAuth (PBKDF2, com migração
+         automática de contas legadas em texto plano)
+       ✔ SESSION_KEY mantém-se 'sumbanepay_session' — é o nome que
+         dashboard.html já espera; não é alterado aqui para não
+         quebrar páginas ainda não migradas para core/auth-core.js
+       ============================================================ */
+
+    'use strict';
+
+    var SESSION_KEY   = 'sumbanepay_session';
+    var SESSION_DURATION = 30 * 60 * 1000;
+
+    var loginAttempts = 0;
+    var MAX_ATTEMPTS = 5;
+    var LOCK_TIME = 5 * 60 * 1000;
+    var lockTimer = null;
+    var isLocked = false;
+
+    /* ---------- TEMA ---------- */
+    function getStoredTheme() {
+        try {
+            var v = localStorage.getItem('sumbanepay_theme') || localStorage.getItem('theme');
+            if (v === 'dark' || v === 'light') return v;
+        } catch (e) {}
+        return 'light';
+    }
+
+    function applyTheme(t) {
+        if (t === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.documentElement.setAttribute('data-bs-theme', 'light');
+            document.body.classList.remove('dark-mode');
+        }
+        try { localStorage.setItem('sumbanepay_theme', t); } catch (e) {}
+        var icon = document.getElementById('themeIcon');
+        if (icon) icon.className = t === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+    }
+
+    function toggleTheme() {
+        applyTheme(getStoredTheme() === 'dark' ? 'light' : 'dark');
+    }
+
+    /* ---------- VERIFICAR CREDENCIAIS (Firebase Auth + Firestore) ----------
+       Antes, isto lia utilizadores do localStorage — por isso um
+       registo feito no telemóvel nunca aparecia no PC (localStorage
+       nunca sincroniza entre dispositivos). Agora a conta vive no
+       Firebase: funciona a partir de qualquer dispositivo. */
+    async function verifyCredentials(email, password) {
+        var credential;
+        try {
+            credential = await SPFirebase.auth.signInWithEmailAndPassword(email, password);
+        } catch (err) {
+            var authErrors = ['auth/user-not-found', 'auth/wrong-password', 'auth/invalid-credential', 'auth/invalid-login-credentials'];
+            if (authErrors.indexOf(err.code) !== -1) {
+                return { ok: false, reason: 'wrong_password' };
+            }
+            return { ok: false, reason: 'firebase_error', error: err };
+        }
+
+        var uid = credential.user.uid;
+        var doc = await SPFirebase.db.collection('users').doc(uid).get();
+
+        if (!doc.exists) {
+            // Conta existe no Auth mas sem perfil no Firestore — não
+            // deveria acontecer no fluxo normal (cadastro.html cria os
+            // dois juntos), mas não deixamos a pessoa presa sem sessão.
+            await SPFirebase.auth.signOut();
+            return { ok: false, reason: 'no_profile' };
+        }
+
+        var user = Object.assign({ id: uid }, doc.data());
+
+        if (user.status === 'inativo' || user.status === 'suspenso') {
+            await SPFirebase.auth.signOut();
+            return { ok: false, reason: 'inactive' };
+        }
+
+        return { ok: true, user: user };
+    }
+
+    /* ---------- TOAST ---------- */
+    function toast(msg, icon) {
+        icon = icon || 'success';
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            timer: 3000,
+            showConfirmButton: false,
+            icon: icon,
+            title: msg,
+            background: getStoredTheme() === 'dark' ? '#162f27' : '#ffffff',
+            color: getStoredTheme() === 'dark' ? '#f0efe8' : '#19362e'
+        });
+    }
+
+    function togglePasswordVisibility() {
+        var input = document.getElementById('password');
+        var icon = document.getElementById('passwordIcon');
+        if (!input) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            if (icon) icon.className = 'bi bi-eye-slash';
+        } else {
+            input.type = 'password';
+            if (icon) icon.className = 'bi bi-eye';
+        }
+    }
+
+    /* ---------- BLOQUEIO ---------- */
+    function lockScreen() {
+        isLocked = true;
+        var btn = document.getElementById('loginBtn');
+        if (btn) btn.disabled = true;
+        var warning = document.getElementById('attemptsWarning');
+        var text = document.getElementById('attemptsText');
+        if (warning) warning.style.display = 'block';
+        var remaining = LOCK_TIME / 1000;
+        if (text) text.textContent = 'Bloqueado por ' + Math.floor(remaining / 60) + 'm';
+        if (lockTimer) clearInterval(lockTimer);
+        lockTimer = setInterval(function () {
+            remaining--;
+            var m = Math.floor(remaining / 60);
+            var s = remaining % 60;
+            if (text) text.textContent = 'Bloqueado por ' + m + 'm ' + s + 's';
+            if (remaining <= 0) {
+                clearInterval(lockTimer);
+                unlockScreen();
+            }
+        }, 1000);
+    }
+
+    function unlockScreen() {
+        isLocked = false;
+        if (lockTimer) { clearInterval(lockTimer); lockTimer = null; }
+        loginAttempts = 0;
+        var w = document.getElementById('attemptsWarning');
+        if (w) w.style.display = 'none';
+        var b = document.getElementById('loginBtn');
+        if (b) b.disabled = false;
+    }
+
+    /* ---------- COMPLETAR LOGIN ---------- */
+    function completeLogin(user) {
+        // Actualiza lastAccess no Firestore (fonte de verdade) — não
+        // bloqueia o redireccionamento se isto falhar por qualquer razão.
+        SPFirebase.db.collection('users').doc(user.id)
+            .update({ lastAccess: new Date().toISOString() })
+            .catch(function (e) { console.warn('Não foi possível actualizar lastAccess:', e.message); });
+
+        // Cache local do PRÓPRIO perfil — só para páginas que ainda não
+        // foram migradas para Firestore (dashboard.html, perfil.html)
+        // conseguirem continuar a mostrar nome/avatar sem reescrever
+        // essas páginas. O Firestore continua a ser a fonte de verdade;
+        // isto é só um espelho de leitura de UM utilizador (o que está
+        // a entrar agora neste dispositivo).
+        try {
+            SPStorage.forceSet(SPStorage.KEYS.USERS, [user]);
+        } catch (e) {}
+
+        var sessionId = 'sess_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+        var session = {
+            id: sessionId,
+            userId: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role || 'Vendedor',
+            loggedInAt: new Date().toISOString(),
+            expiresAt: new Date(Date.now() + SESSION_DURATION).toISOString()
+        };
+
+        try {
+            sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+            localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+            localStorage.setItem('sz_session', user.id);
+        } catch (e) {}
+
+        toast('👋 Bem-vindo(a), ' + user.name + '!');
+        setTimeout(function () {
+            window.location.replace('dashboard.html');
+        }, 600);
+    }
+
+    /* ---------- LOGIN ---------- */
+    async function handleLogin(event) {
+        event.preventDefault();
+        if (isLocked) { toast('🔒 Aguarde.', 'error'); return; }
+
+        if (document.getElementById('honeypot').value) {
+            toast('🚫 Acesso negado.', 'error');
+            return;
+        }
+
+        var emailField = document.getElementById('email');
+        var passwordField = document.getElementById('password');
+        var email = emailField.value.trim().toLowerCase();
+        var password = passwordField.value;
+
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailField.classList.add('is-invalid');
+            toast('Email inválido.', 'error');
+            return;
+        }
+        if (!password || password.length < 6) {
+            passwordField.classList.add('is-invalid');
+            toast('Senha inválida.', 'error');
+            return;
+        }
+        emailField.classList.remove('is-invalid');
+        passwordField.classList.remove('is-invalid');
+
+        var btn = document.getElementById('loginBtn');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>A verificar...';
+        }
+
+        try {
+            var r = await verifyCredentials(email, password);
+
+            if (r.ok) {
+                completeLogin(r.user);
+                return;
+            }
+
+            if (r.reason === 'firebase_error') {
+                toast(SPFirebase.translateAuthError(r.error), 'error');
+                return; // não conta como tentativa falhada — não é culpa da password
+            }
+
+            loginAttempts++;
+            var remaining = MAX_ATTEMPTS - loginAttempts;
+
+            emailField.classList.add('is-invalid');
+            passwordField.classList.add('is-invalid');
+
+            var msg = '❌ Credenciais inválidas.';
+            if (r.reason === 'inactive') msg = '❌ Conta inactiva. Contacta o suporte.';
+            else if (r.reason === 'no_profile') msg = '❌ Conta sem perfil associado. Contacta o suporte.';
+
+            var warning = document.getElementById('attemptsWarning');
+            var text = document.getElementById('attemptsText');
+            if (warning) warning.style.display = 'block';
+            if (text) text.textContent = 'Tentativas restantes: ' + remaining;
+
+            toast(msg + ' ' + remaining + ' tentativas.', 'error');
+
+            if (loginAttempts >= MAX_ATTEMPTS) lockScreen();
+        } catch (err) {
+            console.error('Erro login:', err);
+            toast('Erro ao processar login.', 'error');
+        } finally {
+            if (btn && !isLocked) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i> Entrar';
+            }
+        }
+    }
+
+    /* ---------- NAVEGAÇÃO ---------- */
+    var MAIN_PAGE = new URL('../index.html', window.location.href).href;
+    var leavingToMain = false;
+
+    function goToMain(event) {
+        if (event) event.preventDefault();
+        if (leavingToMain) return;
+        leavingToMain = true;
+        window.location.replace(MAIN_PAGE);
+    }
+
+    /* ---------- RELÓGIO ---------- */
+    function updateClock() {
+        var now = new Date();
+        var el = document.getElementById('currentTime');
+        if (el) el.textContent = now.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    /* ---------- BOOT ---------- */
+    function boot() {
+        applyTheme(getStoredTheme());
+
+        try {
+            var email = localStorage.getItem('sz_registered_email');
+            if (email) {
+                var f = document.getElementById('email');
+                if (f) f.value = email;
+                localStorage.removeItem('sz_registered_email');
+                setTimeout(function () {
+                    var pwd = document.getElementById('password');
+                    if (pwd) pwd.focus();
+                }, 300);
+            }
+        } catch (e) {}
+
+        updateClock();
+        setInterval(updateClock, 10000);
+
+        var controls = document.querySelectorAll('.form-control');
+        for (var i = 0; i < controls.length; i++) {
+            controls[i].addEventListener('input', function () {
+                if (this.value.length > 0) this.classList.remove('is-invalid');
+            });
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                var active = document.activeElement;
+                if (active && (active.id === 'email' || active.id === 'password')) {
+                    e.preventDefault();
+                    var form = document.getElementById('loginForm');
+                    if (form) form.requestSubmit();
+                }
+            }
+        });
+    }
+
+    Object.assign(window, {
+        handleLogin: handleLogin,
+        toggleTheme: toggleTheme,
+        togglePasswordVisibility: togglePasswordVisibility,
+        goToMain: goToMain
+    });
+
+    document.addEventListener('DOMContentLoaded', boot);
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

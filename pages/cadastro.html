@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <title>Criar conta — SumbanePay</title>
+
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+
+    <script>
+        (function() {
+            try {
+                var theme = localStorage.getItem('sumbanepay_theme')
+                         || localStorage.getItem('theme')
+                         || 'light';
+                if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    document.documentElement.setAttribute('data-bs-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+
+    <style>
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 16px 48px rgba(16, 63, 55, 0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+        }
+        .brand {
+            font-family: 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .brand:hover { color: var(--sz-green); }
+        .brand b { color: var(--sz-coral); }
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+        }
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 12px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-sz:hover:not(:disabled) {
+            transform: translateY(-2px);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz:disabled { opacity: 0.7; cursor: not-allowed; }
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .auth-wrap { min-height: 100vh; display: flex; }
+        .auth-side {
+            background: var(--sz-dark);
+            color: #fff;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+        }
+        [data-theme="dark"] .auth-side { background: #0a1f1a; }
+        .auth-side h1 { font: 700 clamp(2.8rem, 4vw, 4rem)/1.05 Georgia, serif; color: #fff; }
+        .auth-side h1 em { color: var(--sz-gold); font-style: normal; }
+        .auth-side p { color: rgba(255, 255, 255, 0.7); font-size: 1.05rem; }
+        .auth-form-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .auth-form {
+            background: var(--sz-white);
+            padding: 2.5rem;
+            max-width: 520px;
+            width: 100%;
+            border-radius: var(--sz-radius);
+            box-shadow: var(--sz-shadow);
+        }
+        .auth-form h2 { font-size: 1.7rem; margin-bottom: 0.25rem; color: var(--sz-ink); }
+        .auth-form .subtitle { color: var(--sz-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .auth-form .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--sz-ink);
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .auth-form .form-label .required { color: var(--sz-danger); font-size: 1.1rem; }
+        .auth-form .form-control {
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            padding: 10px 14px;
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+            width: 100%;
+        }
+        .auth-form .form-control:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 4px rgba(23, 107, 91, 0.1);
+            outline: none;
+        }
+        .honeypot-field {
+            position: absolute !important;
+            left: -9999px !important;
+            opacity: 0 !important;
+            width: 1px !important;
+            height: 1px !important;
+            pointer-events: none !important;
+        }
+        .password-wrapper { position: relative; }
+        .password-wrapper .form-control { padding-right: 48px; }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--sz-muted);
+            cursor: pointer;
+            padding: 6px 10px;
+            font-size: 1.15rem;
+            z-index: 5;
+            border-radius: 6px;
+        }
+        .password-toggle:hover { color: var(--sz-green); }
+        .security-reminder {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 1rem;
+            padding: 10px 14px;
+            background: rgba(23, 107, 91, 0.06);
+            border-radius: var(--sz-radius-sm);
+            border: 1px solid var(--sz-line);
+        }
+        .security-reminder i { color: var(--sz-green); font-size: 1.1rem; }
+        .security-reminder span { font-size: 0.72rem; color: var(--sz-muted); }
+        .security-reminder span strong { color: var(--sz-ink); }
+        .role-fixed {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+            color: var(--sz-green);
+            font-weight: 700;
+        }
+        [data-theme="dark"] .role-fixed {
+            background: rgba(42, 157, 143, 0.1);
+            border-color: var(--sz-green-light);
+            color: var(--sz-green-light);
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 16px; right: 16px;
+            z-index: 1000;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--sz-line);
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            cursor: pointer;
+        }
+        .btn-back-index {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--sz-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(90, 106, 98, 0.06);
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+        .btn-back-index:hover { color: var(--sz-green); }
+        .btn-exit-main { color: var(--sz-danger); }
+        .links { margin-top: 1.5rem; text-align: center; font-size: 0.9rem; }
+        .links a { color: var(--sz-green); text-decoration: none; font-weight: 600; }
+        .crypto-warning {
+            display: none;
+            background: rgba(220, 53, 69, 0.08);
+            border: 1px solid var(--sz-danger);
+            color: var(--sz-danger);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+        }
+        .crypto-warning.show { display: block; }
+        @media (max-width: 992px) {
+            .auth-wrap { flex-direction: column; }
+            .auth-side { min-height: 30vh; padding: 2rem; }
+            .auth-form { padding: 2rem; box-shadow: none; background: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Tema" type="button">
+        <i class="bi bi-moon-fill" id="themeIcon"></i>
+    </button>
+
+    <div class="auth-wrap">
+        <aside class="auth-side">
+            <div>
+                <a class="brand" href="login.html" style="color:#fff;">
+                    <span class="logo-mark">Pay</span>
+                    Sumbane<b>Pay</b>
+                </a>
+            </div>
+            <div>
+                <h1>Comece a<br><em>crescer hoje.</em></h1>
+                <p>Crie o seu espaço de gestão em poucos minutos.</p>
+            </div>
+            <div style="font-size:0.8rem;color:rgba(255,255,255,0.3);padding-top:2rem;">
+                <i class="bi bi-shield-check me-1"></i> Área segura | v3.5.0
+            </div>
+        </aside>
+
+        <main class="auth-form-wrapper">
+            <div class="auth-form">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button type="button" class="btn-back-index btn-exit-main" onclick="goToLogin()">
+                        <i class="bi bi-box-arrow-right"></i> Sair
+                    </button>
+                    <a class="brand" href="login.html" style="font-size:1rem;">
+                        <span class="logo-mark" style="width:28px;height:28px;font-size:0.55rem;">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                </div>
+
+                <div class="eyebrow">COMECE AGORA</div>
+                <h2 class="mt-1">Crie o seu espaço.</h2>
+                <p class="subtitle">
+                    <i class="bi bi-lock-fill me-1"></i>
+                    Preencha os dados abaixo para criar a sua conta.
+                </p>
+
+                <form id="registerForm" onsubmit="handleRegister(event)" novalidate>
+
+                    <div class="honeypot-field" aria-hidden="true">
+                        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <label class="form-label" for="name">
+                        <i class="bi bi-person me-1"></i> Nome completo <span class="required">*</span>
+                    </label>
+                    <input id="name" class="form-control" type="text"
+                           placeholder="Seu nome completo" required maxlength="100" minlength="2">
+
+                    <label class="form-label" for="business">
+                        <i class="bi bi-building me-1"></i> Nome do negócio <span class="required">*</span>
+                    </label>
+                    <input id="business" class="form-control" type="text"
+                           placeholder="Nome da sua empresa" required maxlength="100" minlength="2">
+
+                    <label class="form-label">
+                        <i class="bi bi-briefcase me-1"></i> Cargo
+                    </label>
+                    <div class="role-fixed">
+                        <i class="bi bi-person-badge-fill"></i>
+                        Vendedor
+                    </div>
+
+                    <label class="form-label" for="email">
+                        <i class="bi bi-envelope me-1"></i> Email <span class="required">*</span>
+                    </label>
+                    <input id="email" class="form-control" type="email"
+                           placeholder="seuemail@dominio.com" required maxlength="150">
+
+                    <label class="form-label" for="phone">
+                        <i class="bi bi-phone me-1"></i> Telefone <span class="required">*</span>
+                    </label>
+                    <input id="phone" class="form-control" type="tel"
+                           placeholder="84 000 0000" required maxlength="20">
+
+                    <label class="form-label" for="password">
+                        <i class="bi bi-lock me-1"></i> Senha <span class="required">*</span>
+                    </label>
+                    <div class="password-wrapper">
+                        <input id="password" class="form-control" type="password"
+                               placeholder="Mínimo 8 caracteres" minlength="8" required>
+                        <button type="button" class="password-toggle"
+                                onclick="togglePasswordVisibility('password', 'passwordIcon')">
+                            <i class="bi bi-eye" id="passwordIcon"></i>
+                        </button>
+                    </div>
+
+                    <label class="form-label" for="confirm">
+                        <i class="bi bi-shield-lock me-1"></i> Confirmar senha <span class="required">*</span>
+                    </label>
+                    <div class="password-wrapper">
+                        <input id="confirm" class="form-control" type="password"
+                               placeholder="••••••••" required>
+                        <button type="button" class="password-toggle"
+                                onclick="togglePasswordVisibility('confirm', 'confirmIcon')">
+                            <i class="bi bi-eye" id="confirmIcon"></i>
+                        </button>
+                    </div>
+
+                    <div class="security-reminder">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        <span>A sua senha é protegida com <strong>PBKDF2 (600.000 iterações)</strong>.</span>
+                    </div>
+
+                    <button type="submit" class="btn-sz mt-3" id="registerBtn">
+                        <i class="bi bi-shield-check"></i> Criar conta
+                    </button>
+                </form>
+
+                <div class="links">
+                    Já tem conta? <a href="login.html">Entrar</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="../core/security-utils.js"></script>
+    <script src="../core/storage-core.js"></script>
+    <script src="../core/pbkdf2-fallback.js"></script>
+    <script src="../core/auth-core.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore-compat.js"></script>
+    <script src="../core/firebase-init.js"></script>
+
+    <script>
+    /* ============================================================
+       CADASTRO — SumbanePay
+       ------------------------------------------------------------
+       ✔ Persistência via SPStorage (core/storage-core.js) — uma
+         única chave canónica ('sumbanepay_users'), sem os 4 keys
+         duplicados nem o "vencedor por tamanho" da versão anterior
+       ✔ Hash de password via SPAuth.hashPassword (PBKDF2-SHA256,
+         600.000 iterações) — sem fallback permanente em texto plano
+       ✔ Notificação por email ao SuperAdmin via EmailJS
+       ============================================================ */
+
+    'use strict';
+
+    var EMAILJS_PUBLIC_KEY  = '_CcUmq9Z4CdOdhMlM';
+    var EMAILJS_SERVICE_ID  = 'service_ka6p9rh';
+    var EMAILJS_TEMPLATE_ID = 'template_ppnnfal';
+    var NOTIFICATION_EMAIL  = 'jsumbane22@gmail.com';
+
+    var FIXED_ROLE = 'Vendedor';
+    var MIN_PASSWORD_LENGTH = 8;
+    var isSubmitting = false;
+
+    /* ============================================================
+       TEMA
+       ============================================================ */
+    function getStoredTheme() {
+        try {
+            var v = localStorage.getItem('sumbanepay_theme') || localStorage.getItem('theme');
+            if (v === 'dark' || v === 'light') return v;
+        } catch (e) {}
+        return 'light';
+    }
+
+    function applyTheme(t) {
+        if (t === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.documentElement.setAttribute('data-bs-theme', 'light');
+            document.body.classList.remove('dark-mode');
+        }
+        try { localStorage.setItem('sumbanepay_theme', t); } catch (e) {}
+        var icon = document.getElementById('themeIcon');
+        if (icon) icon.className = t === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+    }
+
+    function toggleTheme() {
+        applyTheme(getStoredTheme() === 'dark' ? 'light' : 'dark');
+    }
+
+    /* ============================================================
+       NOTA: a antiga deteção de "contexto seguro" (que bloqueava
+       ou avisava sobre navegadores sem crypto.subtle) foi removida.
+       SPAuth.hashPassword (core/auth-core.js) usa crypto.subtle
+       quando disponível e um fallback PBKDF2 puro em JavaScript
+       quando não está — o registo funciona em qualquer navegador,
+       com ou sem HTTPS/localhost.
+       ============================================================ */
+
+    /* ============================================================
+       NOTA: readUsers/writeUsers (SPStorage) e a geração local de
+       ID (randomHex) já não são usados aqui — o Firebase Auth
+       gera o ID (uid) e o Firestore é a única fonte de verdade
+       dos utilizadores. Mantidos em core/auth-core.js apenas para
+       o que ainda não foi migrado.
+       ============================================================ */
+
+    /* ============================================================
+       HASH DE PASSWORD — delegado a SPAuth.hashPassword
+       (core/auth-core.js), para não duplicar a implementação
+       PBKDF2 que também é usada por login.html na verificação.
+       ============================================================ */
+
+    /* ============================================================
+       VALIDAÇÕES
+       ============================================================ */
+    function sanitize(v) {
+        return SPSecurity.sanitizeInput(v, 500);
+    }
+
+    function isValidEmail(e) {
+        return SPSecurity.isValidEmail(e);
+    }
+
+    function isValidPhone(p) {
+        if (typeof p !== 'string') return false;
+        var d = p.replace(/\D/g, '');
+        var n = d.startsWith('258') ? d.slice(3) : d;
+        return /^8[2-7]\d{7}$/.test(n);
+    }
+
+    function isValidName(n) {
+        return typeof n === 'string' && n.length >= 2 && n.length <= 100 && /^[\p{L}\s'.-]+$/u.test(n);
+    }
+
+    function toast(msg, icon) {
+        icon = icon || 'success';
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            timer: 3500,
+            showConfirmButton: false,
+            icon: icon,
+            title: msg,
+            background: getStoredTheme() === 'dark' ? '#162f27' : '#ffffff',
+            color: getStoredTheme() === 'dark' ? '#f0efe8' : '#19362e'
+        });
+    }
+
+    // escapeHtml agora vive em core/security-utils.js (SPSecurity.escapeHtml)
+
+    function togglePasswordVisibility(id, iconId) {
+        var input = document.getElementById(id);
+        var icon = document.getElementById(iconId);
+        if (!input) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            if (icon) icon.className = 'bi bi-eye-slash';
+        } else {
+            input.type = 'password';
+            if (icon) icon.className = 'bi bi-eye';
+        }
+    }
+
+    function goToLogin() {
+        window.location.replace('login.html');
+    }
+
+    /* ============================================================
+       NOTIFICAÇÃO POR EMAIL (EmailJS)
+       ============================================================ */
+    async function sendRegistrationNotification(user) {
+        try {
+            if (typeof emailjs === 'undefined') return false;
+            var templateParams = {
+                to_email:     NOTIFICATION_EMAIL,
+                from_name:    'SumbanePay Notificações',
+                subject:      '🆕 Novo utilizador registado — ' + user.name,
+                name:         user.name,
+                business:     user.business,
+                email:        user.email,
+                phone:        user.phone,
+                role:         user.role,
+                status:       user.status,
+                user_id:      user.id,
+                created_at:   new Date(user.createdAt).toLocaleString('pt-PT'),
+                plataforma:   'SumbanePay',
+                nome:         user.name,
+                negocio:      user.business,
+                telefone:     user.phone,
+                cargo:        user.role,
+                data:         new Date(user.createdAt).toLocaleString('pt-PT'),
+                message:      'Novo utilizador: ' + user.name + ' (' + user.email + ') — Negócio: ' + user.business
+            };
+            var result = await emailjs.send(
+                EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID,
+                templateParams, { publicKey: EMAILJS_PUBLIC_KEY }
+            );
+            return result.status === 200;
+        } catch (e) {
+            console.error('❌ Erro ao enviar email:', e);
+            return false;
+        }
+    }
+
+    /* ============================================================
+       REGISTO
+       ============================================================ */
+    async function handleRegister(event) {
+        event.preventDefault();
+        if (isSubmitting) return;
+
+        isSubmitting = true;
+
+        if (document.getElementById('website').value.trim()) {
+            toast('Erro de verificação.', 'error');
+            isSubmitting = false;
+            return;
+        }
+
+        var name = sanitize(document.getElementById('name').value);
+        var business = sanitize(document.getElementById('business').value);
+        var email = sanitize(document.getElementById('email').value).toLowerCase();
+        var phone = sanitize(document.getElementById('phone').value);
+        var password = document.getElementById('password').value;
+        var confirm = document.getElementById('confirm').value;
+        var btn = document.getElementById('registerBtn');
+
+        if (!isValidName(name)) {
+            toast('Nome inválido.', 'error'); isSubmitting = false; return;
+        }
+        if (!business || business.length < 2 || business.length > 100) {
+            toast('Nome do negócio inválido.', 'error'); isSubmitting = false; return;
+        }
+        if (!isValidEmail(email)) {
+            toast('Email inválido.', 'error'); isSubmitting = false; return;
+        }
+        if (!isValidPhone(phone)) {
+            toast('Telefone inválido.', 'error'); isSubmitting = false; return;
+        }
+        if (password.length < MIN_PASSWORD_LENGTH) {
+            toast('Senha curta (mínimo ' + MIN_PASSWORD_LENGTH + ').', 'error'); isSubmitting = false; return;
+        }
+        if (password !== confirm) {
+            toast('Senhas não coincidem.', 'error'); isSubmitting = false; return;
+        }
+
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>A criar conta...';
+        }
+
+        try {
+            // 1. Cria a conta no Firebase Authentication. O próprio
+            //    Firebase já recusa (auth/email-already-in-use) se o
+            //    email já existir — não precisamos de verificar
+            //    duplicados nós próprios, nem há janela de corrida
+            //    (isto acontece no servidor do Firebase, não no browser).
+            var credential = await SPFirebase.auth.createUserWithEmailAndPassword(email, password);
+            var uid = credential.user.uid;
+
+            var newUser = {
+                id: uid,
+                name: name,
+                business: business,
+                email: email,
+                phone: phone,
+                role: FIXED_ROLE,
+                status: 'ativo',
+                createdAt: new Date().toISOString(),
+                lastAccess: null
+            };
+
+            // 2. Grava o perfil no Firestore — é isto que faz o
+            //    utilizador aparecer no superadmin a partir de
+            //    QUALQUER dispositivo, não só no que registou.
+            await SPFirebase.db.collection('users').doc(uid).set(newUser);
+
+            console.log('✅ Utilizador registado no Firestore:', email, '(uid: ' + uid + ')');
+
+            // Notifica o SuperAdmin por email (não bloqueia o fluxo de UI
+            // se o EmailJS falhar — o utilizador já está gravado)
+            sendRegistrationNotification(newUser).catch(function (e) {
+                console.error('Notificação de email falhou, mas o registo foi concluído:', e);
+            });
+
+            // 3. Termina a sessão criada automaticamente pelo Firebase
+            //    ao registar, para o fluxo de login (login.html) ser
+            //    o único ponto que estabelece a sessão local.
+            await SPFirebase.auth.signOut();
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-shield-check"></i> Criar conta';
+            }
+
+            await Swal.fire({
+                title: '✅ Conta criada!',
+                html: '<p>Bem-vindo, <strong>' + SPSecurity.escapeHtml(name) + '</strong>!</p>' +
+                      '<hr>' +
+                      '<p style="text-align:left;font-size:0.85rem;">' +
+                      '<strong>Email:</strong> ' + SPSecurity.escapeHtml(email) + '<br>' +
+                      '<strong>Negócio:</strong> ' + SPSecurity.escapeHtml(business) + '<br>' +
+                      '<strong>Cargo:</strong> Vendedor' +
+                      '</p>',
+                icon: 'success',
+                confirmButtonText: 'Ir para o login',
+                confirmButtonColor: '#176b5b',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                background: getStoredTheme() === 'dark' ? '#162f27' : '#ffffff',
+                color: getStoredTheme() === 'dark' ? '#f0efe8' : '#19362e'
+            });
+
+            window.location.replace('login.html?registered=true');
+
+        } catch (err) {
+            console.error('❌ Erro:', err);
+            var msg = (err && err.code) ? SPFirebase.translateAuthError(err) : (err.message || 'Erro ao registar.');
+            toast(msg, 'error');
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-shield-check"></i> Criar conta';
+            }
+            isSubmitting = false;
+        }
+    }
+
+    /* ============================================================
+       BOOT
+       ============================================================ */
+    applyTheme(getStoredTheme());
+
+    Object.assign(window, {
+        handleRegister: handleRegister,
+        toggleTheme: toggleTheme,
+        goToLogin: goToLogin,
+        togglePasswordVisibility: togglePasswordVisibility
+    });
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

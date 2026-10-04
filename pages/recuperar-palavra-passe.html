@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <title>Recuperar senha — SumbanePay</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore-compat.js"></script>
+    <script src="../core/firebase-init.js"></script>
+    <style>
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 16px 48px rgba(16, 63, 55, 0.12);
+            --sz-shadow-hover: 0 20px 60px rgba(16, 63, 55, 0.18);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+            --sz-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .serif { font-family: 'Georgia', 'Times New Roman', serif; }
+
+        .brand {
+            font-family: 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); transform: translateY(-1px); }
+        .brand b { color: var(--sz-coral); }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+        }
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(23, 107, 91, 0.4);
+        }
+
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 12px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz i { transition: var(--transition); }
+        .btn-sz:hover i { transform: translateX(4px); }
+        .btn-sz:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-outline-sz {
+            border: 2px solid var(--sz-green);
+            color: var(--sz-green);
+            background: transparent;
+            padding: 10px 20px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-outline-sz:hover {
+            background: var(--sz-green);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+        }
+        [data-theme="dark"] .btn-outline-sz {
+            border-color: var(--sz-green-light);
+            color: var(--sz-green-light);
+        }
+        [data-theme="dark"] .btn-outline-sz:hover {
+            background: var(--sz-green-light);
+            color: var(--sz-paper);
+        }
+
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        [data-theme="dark"] .eyebrow {
+            color: #f28a71 !important;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 1.5rem;
+        }
+
+        .auth-card {
+            background: var(--sz-white);
+            padding: 2.5rem;
+            border-radius: var(--sz-radius);
+            box-shadow: var(--sz-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-card:hover { 
+            box-shadow: var(--sz-shadow-hover); 
+        }
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--sz-green), var(--sz-coral), var(--sz-gold));
+            opacity: 0.5;
+        }
+
+        [data-theme="dark"] .auth-card {
+            background: var(--sz-white);
+        }
+
+        .auth-card .text-center { margin-bottom: 1.5rem; }
+        .auth-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
+        }
+        .auth-card .subtitle {
+            color: var(--sz-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+        [data-theme="dark"] .auth-card .subtitle {
+            color: #a0b0a8 !important;
+        }
+
+        .auth-card .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--sz-ink);
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        [data-theme="dark"] .auth-card .form-label {
+            color: #f0efe8 !important;
+        }
+
+        .auth-card .form-control {
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            padding: 10px 14px;
+            transition: var(--transition);
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .auth-card .form-control::placeholder {
+            color: var(--sz-muted-light);
+            opacity: 0.7;
+        }
+        .auth-card .form-control:focus {
+            border-color: var(--sz-green);
+            box-shadow: 0 0 0 4px rgba(23, 107, 91, 0.1);
+            outline: none;
+        }
+        .auth-card .form-control.is-invalid {
+            border-color: var(--sz-danger);
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+        }
+        .auth-card .form-control.is-valid {
+            border-color: var(--sz-success);
+            box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.1);
+        }
+
+        [data-theme="dark"] .auth-card .form-control {
+            background: #102a23;
+            color: #f0efe8;
+            border-color: #42675b;
+        }
+        [data-theme="dark"] .auth-card .form-control:focus {
+            border-color: var(--sz-gold);
+            box-shadow: 0 0 0 4px rgba(232, 179, 91, 0.15);
+        }
+        [data-theme="dark"] .auth-card .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .auth-card .invalid-feedback {
+            font-size: 0.75rem;
+            color: var(--sz-danger);
+            margin-top: 4px;
+            display: none;
+        }
+        .auth-card .form-control.is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+
+        .auth-card .back-link {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            margin-top: 1.25rem;
+        }
+        .auth-card .back-link:hover { 
+            color: var(--sz-green); 
+        }
+        [data-theme="dark"] .auth-card .back-link { 
+            color: #a0b0a8 !important; 
+        }
+        [data-theme="dark"] .auth-card .back-link:hover { 
+            color: var(--sz-gold) !important; 
+        }
+
+        .icon-input {
+            position: relative;
+        }
+        .icon-input .form-control {
+            padding-left: 42px;
+        }
+        .icon-input .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--sz-muted);
+            font-size: 1.1rem;
+            transition: var(--transition);
+            z-index: 4;
+            pointer-events: none;
+        }
+        .icon-input .form-control:focus ~ .input-icon,
+        .icon-input .form-control:focus + .input-icon {
+            color: var(--sz-green);
+        }
+        [data-theme="dark"] .icon-input .input-icon {
+            color: #8a9a92;
+        }
+        [data-theme="dark"] .icon-input .form-control:focus ~ .input-icon,
+        [data-theme="dark"] .icon-input .form-control:focus + .input-icon {
+            color: var(--sz-gold);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--sz-line);
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+            box-shadow: var(--sz-shadow);
+        }
+        .theme-toggle:hover {
+            transform: scale(1.08) rotate(8deg);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-gold);
+        }
+        [data-theme="dark"] .theme-toggle {
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            border-color: var(--sz-line);
+        }
+        [data-theme="dark"] .theme-toggle:hover {
+            border-color: var(--sz-gold);
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            background: rgba(23, 107, 91, 0.08);
+            color: var(--sz-green);
+            border: 1px solid rgba(23, 107, 91, 0.1);
+        }
+        [data-theme="dark"] .security-badge {
+            background: rgba(42, 157, 143, 0.12);
+            color: var(--sz-green-light);
+            border-color: rgba(42, 157, 143, 0.15);
+        }
+        .security-badge .badge-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        [data-theme="dark"] .security-badge .badge-dot {
+            background: var(--sz-green-light);
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .form-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .form-footer .footer-item {
+            font-size: 0.55rem;
+            color: var(--sz-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .form-footer .footer-item i { 
+            color: var(--sz-green); 
+        }
+        .form-footer .footer-item .status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--sz-green);
+            display: inline-block;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        [data-theme="dark"] .form-footer .footer-item .status-dot {
+            background: var(--sz-green-light);
+        }
+        [data-theme="dark"] .form-footer {
+            border-color: #2a4a3e !important;
+        }
+
+        @media (max-width: 576px) {
+            .auth-card { padding: 1.5rem; }
+            .auth-card h2 { font-size: 1.5rem; }
+            .auth-container { padding: 1rem; }
+            .theme-toggle { top: 12px; right: 12px; width: 38px; height: 38px; font-size: 0.9rem; }
+        }
+
+        @media (max-width: 380px) {
+            .auth-card { padding: 1rem; }
+            .auth-card .form-control { padding: 8px 12px; font-size: 0.85rem; }
+            .logo-mark { width: 28px; height: 28px; font-size: 0.55rem; }
+            .brand { font-size: 1rem; }
+            .theme-toggle { top: 10px; right: 10px; width: 34px; height: 34px; font-size: 0.8rem; }
+            .icon-input .form-control { padding-left: 34px; }
+            .icon-input .input-icon { font-size: 0.9rem; left: 10px; }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <!-- THEME TOGGLE -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema" title="Alternar tema">
+        <i class="bi bi-moon-fill" id="themeIcon"></i>
+    </button>
+
+    <!-- AUTH CONTAINER -->
+    <div class="auth-container">
+        <div class="auth-card">
+
+            <!-- LOGO -->
+            <div class="text-center">
+                <a class="brand" href="login.html">
+                    <span class="logo-mark">Pay</span>
+                    Sumbane<b>Pay</b>
+                </a>
+                <span class="security-badge ms-2">
+                    <span class="badge-dot"></span>
+                    <i class="bi bi-shield-check"></i> SSL Seguro
+                </span>
+            </div>
+
+            <!-- TÍTULO -->
+            <div class="eyebrow text-center">
+                <i class="bi bi-key me-1"></i> RECUPERAÇÃO
+            </div>
+            <h2 class="serif text-center">
+                <i class="bi bi-arrow-counterclockwise me-2" style="color:var(--sz-gold);"></i>
+                Recupere o acesso.
+            </h2>
+            <p class="subtitle text-center">
+                <i class="bi bi-envelope me-1"></i> 
+                Informe o email da sua conta. Enviaremos uma nova senha para o seu email.
+            </p>
+
+            <!-- FORMULÁRIO -->
+            <form id="recoverForm" onsubmit="handleRecover(event)" novalidate>
+                <label class="form-label" for="email">
+                    <i class="bi bi-envelope me-1"></i> Email <span class="required" style="color:var(--sz-danger);">*</span>
+                </label>
+                <div class="icon-input">
+                    <input id="email" class="form-control" type="email" 
+                           placeholder="seu@email.com" 
+                           autocomplete="email" required>
+                    <span class="input-icon"><i class="bi bi-person"></i></span>
+                </div>
+                <div class="invalid-feedback">
+                    <i class="bi bi-exclamation-circle me-1"></i> 
+                    Por favor, insira o seu email.
+                </div>
+
+                <!-- INFO DE SEGURANÇA -->
+                <div style="display:flex;align-items:flex-start;gap:8px;margin-top:0.75rem;font-size:0.7rem;color:var(--sz-muted);">
+                    <i class="bi bi-shield-lock" style="color:var(--sz-gold);margin-top:2px;"></i>
+                    <span>Uma nova senha será gerada e enviada para o seu email. Verifique também a pasta de spam.</span>
+                </div>
+
+                <button type="submit" class="btn-sz mt-3" id="recoverBtn">
+                    <i class="bi bi-envelope-arrow-up"></i> Enviar nova senha por email
+                </button>
+            </form>
+
+            <!-- VOLTAR -->
+            <div class="text-center">
+                <a class="back-link" href="login.html">
+                    <i class="bi bi-arrow-left"></i> Voltar ao login
+                </a>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="form-footer">
+                <span class="footer-item">
+                    <i class="bi bi-shield-check"></i> SSL Seguro
+                </span>
+                <span class="footer-item">
+                    <span class="status-dot"></span> Online
+                </span>
+                <span class="footer-item">
+                    <i class="bi bi-clock"></i> <span id="currentTime">--:--</span>
+                </span>
+                <span class="footer-item">
+                    <i class="bi bi-database"></i> <span style="font-size:0.5rem;">v2.0</span>
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* ============================================================
+           RECUPERAR SENHA — Firebase Authentication
+           ------------------------------------------------------------
+           A versão anterior gerava uma password nova e ENVIAVA-A EM
+           TEXTO SIMPLES por email, e tinha uma password fixa do
+           SuperAdmin escrita directamente no código-fonte
+           ("JLS5872347"). As duas coisas foram removidas.
+
+           O Firebase já tem uma função pronta para isto —
+           sendPasswordResetEmail — que envia um link seguro e
+           temporário para a pessoa definir uma password nova
+           directamente numa página do próprio Firebase. Nunca
+           passamos, vemos, nem enviamos a password em lado nenhum.
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+
+        function read(k, f) {
+            try {
+                const data = localStorage.getItem(KEY + k);
+                return data ? JSON.parse(data) : f;
+            } catch (e) {
+                return f;
+            }
+        }
+
+        function write(k, v) {
+            try { localStorage.setItem(KEY + k, JSON.stringify(v)); } catch (e) {}
+        }
+
+        function toast(t, icon = 'success') {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                timer: 3000,
+                showConfirmButton: false,
+                icon,
+                title: t
+            });
+        }
+
+        // ======== HANDLE RECOVER ========
+        async function handleRecover(event) {
+            event.preventDefault();
+
+            const emailField = document.getElementById('email');
+            const email = emailField.value.trim().toLowerCase();
+            const recoverBtn = document.getElementById('recoverBtn');
+
+            emailField.classList.remove('is-invalid', 'is-valid');
+
+            if (!email) {
+                emailField.classList.add('is-invalid');
+                toast('Por favor, insira o seu email.', 'error');
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailField.classList.add('is-invalid');
+                toast('Por favor, insira um email válido.', 'error');
+                return;
+            }
+
+            emailField.classList.add('is-valid');
+
+            if (recoverBtn) {
+                recoverBtn.disabled = true;
+                recoverBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>A enviar email...';
+            }
+
+            try {
+                await SPFirebase.auth.sendPasswordResetEmail(email);
+
+                await Swal.fire({
+                    title: '✅ Email Enviado!',
+                    html: `
+                        <p style="font-size:0.95rem;">
+                            <i class="bi bi-envelope-check-fill me-1" style="color:var(--sz-success);"></i>
+                            Enviámos um <strong>link para redefinir a password</strong> para:
+                        </p>
+                        <p style="font-size:1rem;font-weight:600;color:var(--sz-green);margin:0.5rem 0;">
+                            <i class="bi bi-envelope me-1"></i> ${email}
+                        </p>
+                        <div style="background:rgba(232,179,91,0.08);padding:0.75rem;border-radius:8px;margin-top:0.75rem;border-left:3px solid var(--sz-gold);text-align:left;">
+                            <p style="font-size:0.75rem;margin:0;color:var(--sz-muted);">
+                                <i class="bi bi-info-circle me-1" style="color:var(--sz-gold);"></i>
+                                <strong>Importante:</strong> Verifique a sua caixa de entrada e a pasta de <strong>Spam</strong>.
+                            </p>
+                        </div>
+                    `,
+                    icon: 'success',
+                    confirmButtonText: '<i class="bi bi-box-arrow-in-right me-2"></i> Ir para o login',
+                    confirmButtonColor: '#176b5b',
+                    background: getComputedStyle(document.documentElement).getPropertyValue('--sz-white') || '#ffffff',
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--sz-ink') || '#19362e',
+                    allowOutsideClick: false
+                });
+
+                window.location.href = 'login.html';
+
+            } catch (error) {
+                console.error('Erro ao enviar email de recuperação:', error);
+                emailField.classList.add('is-invalid');
+                var msg = (error && error.code && SPFirebase.translateAuthError)
+                    ? SPFirebase.translateAuthError(error)
+                    : 'Não foi possível enviar o email. Tenta novamente.';
+                toast(msg, 'error');
+            } finally {
+                if (recoverBtn) {
+                    recoverBtn.disabled = false;
+                    recoverBtn.innerHTML = '<i class="bi bi-envelope-arrow-up"></i> Enviar link de recuperação';
+                }
+            }
+        }
+
+        // ======== TEMA ========
+        function toggleTheme() {
+            const settings = read('settings', {});
+            const currentTheme = settings.theme || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            settings.theme = newTheme;
+            write('settings', settings);
+            applyTheme(newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            }
+        }
+
+        function loadTheme() {
+            const settings = read('settings', {});
+            const theme = settings.theme || 'light';
+            applyTheme(theme);
+            updateThemeIcon(theme);
+        }
+
+        // ======== RELÓGIO ========
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+            const el = document.getElementById('currentTime');
+            if (el) el.textContent = time;
+        }
+
+        // ======== INICIALIZAÇÃO ========
+        function boot() {
+            ensureDefaultUserExists();
+            loadTheme();
+            updateClock();
+            setInterval(updateClock, 10000);
+
+            // Inicializar EmailJS após 1 segundo
+            setTimeout(() => {
+                initEmailJS();
+            }, 1000);
+
+            document.getElementById('email').addEventListener('input', function() {
+                this.classList.remove('is-invalid', 'is-valid');
+                if (this.value.length > 0) {
+                    this.classList.add('is-valid');
+                }
+            });
+
+            document.getElementById('email').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    handleRecover(e);
+                }
+            });
+        }
+
+        // ======== EXPORTA ========
+        window.handleRecover = handleRecover;
+        window.toggleTheme = toggleTheme;
+        window.read = read;
+        window.write = write;
+        window.KEY = KEY;
+
+        document.addEventListener('DOMContentLoaded', boot);
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>

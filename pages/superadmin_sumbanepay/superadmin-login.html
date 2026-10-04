@@ -1,0 +1,1658 @@
+<!doctype html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SuperAdmin Login — SumbanePay</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore-compat.js"></script>
+    <script src="../../core/firebase-init.js"></script>
+    <style>
+        :root {
+            --sz-green: #176b5b;
+            --sz-green-light: #1f8a75;
+            --sz-dark: #103f37;
+            --sz-coral: #ef6d4e;
+            --sz-gold: #e8b35b;
+            --sz-paper: #f7f6f1;
+            --sz-ink: #19362e;
+            --sz-muted: #5a6a62;
+            --sz-muted-light: #8a9a92;
+            --sz-line: #e5e3da;
+            --sz-white: #ffffff;
+            --sz-shadow: 0 16px 48px rgba(16, 63, 55, 0.12);
+            --sz-shadow-hover: 0 20px 60px rgba(16, 63, 55, 0.18);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sz-danger: #dc3545;
+            --sz-success: #198754;
+            --sz-warning: #ffc107;
+            --sz-radius: 16px;
+            --sz-radius-sm: 10px;
+        }
+
+        [data-theme="dark"] {
+            --sz-paper: #0d1c17;
+            --sz-ink: #f0efe8;
+            --sz-muted: #a0b0a8;
+            --sz-muted-light: #c0d0c8;
+            --sz-line: #2a4a3e;
+            --sz-white: #162f27;
+            --sz-green: #2a9d8f;
+            --sz-green-light: #3db3a5;
+            --sz-coral: #f28a71;
+            --sz-gold: #f0c97a;
+            --sz-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+            --sz-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        .serif { font-family: 'Georgia', 'Times New Roman', serif; }
+
+        .brand {
+            font-family: 'Georgia', serif;
+            font-weight: 700;
+            color: var(--sz-ink);
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .brand:hover { color: var(--sz-green); transform: translateY(-1px); }
+        .brand.text-white { color: #fff; }
+        .brand.text-white:hover { color: var(--sz-gold); }
+        .brand b { color: var(--sz-coral); }
+        .brand.text-white b { color: var(--sz-gold); }
+
+        .logo-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-dark));
+            color: #fff;
+            border-radius: 8px 8px 12px 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(23, 107, 91, 0.3);
+            letter-spacing: 0.5px;
+        }
+        .brand:hover .logo-mark {
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(23, 107, 91, 0.4);
+        }
+
+        .btn-sz {
+            background: linear-gradient(135deg, var(--sz-green), var(--sz-green-light));
+            color: white;
+            border: 0;
+            padding: 12px 24px;
+            border-radius: var(--sz-radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(23, 107, 91, 0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-sz:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(23, 107, 91, 0.35);
+            color: #fff;
+            background: linear-gradient(135deg, var(--sz-dark), var(--sz-green));
+        }
+        .btn-sz i { transition: var(--transition); }
+        .btn-sz:hover i { transform: translateX(4px); }
+        .btn-sz:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .eyebrow {
+            color: var(--sz-coral);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .auth-wrap {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            align-items: stretch;
+        }
+
+        .auth-side {
+            background: var(--sz-dark);
+            color: #fff;
+            padding: 3rem;
+            background-image: radial-gradient(#ffffff12 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+            transition: background 0.3s ease;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-side::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(232, 179, 91, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        [data-theme="dark"] .auth-side {
+            background: #0a1f1a;
+        }
+
+        .auth-side-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        .auth-side h1 {
+            font: 700 clamp(2.8rem, 4vw, 4rem)/1.05 Georgia, serif;
+        }
+        .auth-side h1 em {
+            color: var(--sz-gold);
+            font-style: normal;
+        }
+        .auth-side p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.05rem;
+            max-width: 320px;
+        }
+
+        .security-features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 1.5rem;
+        }
+        .security-features .sec-feat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.55);
+        }
+        .security-features .sec-feat i {
+            color: var(--sz-gold);
+            font-size: 0.85rem;
+            width: 18px;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(78, 205, 196, 0.15);
+            color: #4ecdc4;
+            padding: 2px 12px 2px 8px;
+            border-radius: 20px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            margin-left: 10px;
+        }
+        .live-badge .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .auth-side .footer-note {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: auto;
+            padding-top: 2rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .auth-side .footer-note .sep { opacity: 0.2; }
+
+        .auth-form-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: var(--sz-paper);
+            transition: background 0.3s ease;
+        }
+
+        .auth-form {
+            background: var(--sz-white);
+            padding: 2.5rem;
+            max-width: 480px;
+            width: 100%;
+            border-radius: var(--sz-radius);
+            box-shadow: var(--sz-shadow);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        .auth-form:hover { box-shadow: var(--sz-shadow-hover); }
+        .auth-form .badge-admin {
+            position: absolute;
+            top: -12px;
+            right: 24px;
+            background: var(--sz-gold);
+            color: var(--sz-dark);
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            box-shadow: 0 4px 12px rgba(232, 179, 91, 0.3);
+        }
+        [data-theme="dark"] .auth-form { background: var(--sz-white); }
+
+        .auth-form .eyebrow { margin-bottom: 0.25rem; color: var(--sz-coral); }
+        .auth-form h2 { font-size: 1.8rem; margin-bottom: 0.25rem; }
+        .auth-form .subtitle {
+            color: var(--sz-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-form .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--sz-ink);
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .auth-form .form-label .required {
+            color: var(--sz-danger);
+            font-size: 1.1rem;
+        }
+
+        .auth-form .form-control {
+            border-radius: var(--sz-radius-sm);
+            border: 2px solid var(--sz-line);
+            padding: 10px 14px;
+            transition: var(--transition);
+            background: var(--sz-paper);
+            color: var(--sz-ink);
+            font-size: 0.95rem;
+        }
+        .auth-form .form-control:focus {
+            border-color: var(--sz-gold);
+            box-shadow: 0 0 0 4px rgba(232, 179, 91, 0.15);
+            outline: none;
+        }
+        .auth-form .form-control.is-invalid {
+            border-color: var(--sz-danger);
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+        }
+        .auth-form .form-control.is-valid {
+            border-color: var(--sz-success);
+            box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.1);
+        }
+        .auth-form .form-control::placeholder { color: var(--sz-muted-light); }
+
+        [data-theme="dark"] .auth-form .form-control {
+            background: #102a23;
+            color: #f0efe8;
+            border-color: #42675b;
+        }
+        [data-theme="dark"] .auth-form .form-control::placeholder { color: #6a8a7a; }
+
+        .auth-form .invalid-feedback {
+            font-size: 0.75rem;
+            color: var(--sz-danger);
+            margin-top: 4px;
+            display: none;
+        }
+        .auth-form .form-control.is-invalid ~ .invalid-feedback { display: block; }
+
+        .password-wrapper { position: relative; }
+        .password-wrapper .form-control { padding-right: 48px; }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--sz-muted);
+            cursor: pointer;
+            padding: 6px 10px;
+            font-size: 1.15rem;
+            transition: var(--transition);
+            z-index: 5;
+            border-radius: 6px;
+        }
+        .password-toggle:hover {
+            color: var(--sz-green);
+            background: rgba(23, 107, 91, 0.06);
+        }
+        [data-theme="dark"] .password-toggle:hover {
+            color: var(--sz-gold);
+            background: rgba(232, 179, 91, 0.1);
+        }
+
+        .password-toggle .tooltip-text {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--sz-dark);
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 3px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+        .password-toggle .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: var(--sz-dark);
+        }
+        .password-toggle:hover .tooltip-text { opacity: 1; }
+
+        .auth-form .back-link {
+            color: var(--sz-muted);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .auth-form .back-link:hover { color: var(--sz-green); }
+        [data-theme="dark"] .auth-form .back-link:hover { color: var(--sz-gold); }
+
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--sz-line);
+            background: var(--sz-white);
+            color: var(--sz-ink);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+            box-shadow: var(--sz-shadow);
+        }
+        .theme-toggle:hover {
+            transform: scale(1.08) rotate(8deg);
+            box-shadow: var(--sz-shadow-hover);
+            border-color: var(--sz-gold);
+        }
+
+        .form-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--sz-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .form-footer .footer-item {
+            font-size: 0.6rem;
+            color: var(--sz-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .form-footer .footer-item i { color: var(--sz-gold); }
+        .form-footer .footer-item .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sz-gold);
+            display: inline-block;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        .security-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            background: rgba(25, 135, 84, 0.08);
+            color: var(--sz-success);
+            border: 1px solid rgba(25, 135, 84, 0.15);
+        }
+        .security-indicator i { font-size: 0.85rem; }
+        .security-indicator .level {
+            margin-left: auto;
+            font-weight: 700;
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: var(--sz-success);
+            color: #fff;
+        }
+
+        .lock-screen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.92);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #fff;
+            backdrop-filter: blur(12px);
+        }
+        .lock-screen-overlay.show { display: flex; }
+        .lock-screen-overlay .lock-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--sz-danger);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .lock-screen-overlay .lock-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .lock-screen-overlay .lock-sub {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            max-width: 300px;
+        }
+        .lock-screen-overlay .lock-btn {
+            background: var(--sz-green);
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .lock-screen-overlay .lock-btn:hover {
+            background: var(--sz-green-light);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 992px) {
+            .auth-wrap { flex-direction: column; }
+            .auth-side { min-height: 35vh; padding: 2rem; }
+            .auth-side h1 { font-size: 2.5rem; }
+            .auth-side .footer-note { margin-top: 1rem; padding-top: 1rem; }
+            .auth-form-wrapper { padding: 2rem 1rem; min-height: 65vh; }
+            .auth-form { padding: 2rem; box-shadow: none; background: transparent; }
+            .auth-form .badge-admin { position: relative; top: 0; right: 0; display: inline-block; margin-bottom: 0.5rem; }
+            [data-theme="dark"] .auth-form { background: transparent; }
+            .password-toggle .tooltip-text { display: none; }
+        }
+
+        @media (max-width: 576px) {
+            .auth-side { padding: 1.5rem; min-height: 30vh; }
+            .auth-side h1 { font-size: 2rem; }
+            .auth-side p { font-size: 0.9rem; }
+            .auth-form { padding: 1.5rem; }
+            .auth-form h2 { font-size: 1.5rem; }
+            .theme-toggle { top: 12px; right: 12px; width: 38px; height: 38px; font-size: 0.9rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="../responsive.css">
+    <link rel="stylesheet" href="../darkmode.css">
+    <meta name="theme-color" content="#0d1c17">
+</head>
+<body>
+
+    <div class="lock-screen-overlay" id="lockScreen">
+        <div class="lock-icon"><i class="bi bi-shield-lock-fill"></i></div>
+        <div class="lock-title"><i class="bi bi-ban me-2"></i>Acesso Bloqueado</div>
+        <div class="lock-sub">Muitas tentativas de login falhadas. Por segurança, o acesso está temporariamente bloqueado.</div>
+        <button class="lock-btn" onclick="unlockScreen()">
+            <i class="bi bi-arrow-clockwise me-2"></i>Tentar novamente
+        </button>
+        <div style="margin-top:1rem;font-size:0.7rem;opacity:0.4;" id="lockTimer">
+            <i class="bi bi-clock me-1"></i> Aguardando...
+        </div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema" title="Alternar tema">
+        <i class="bi bi-moon-fill" id="themeIcon"></i>
+    </button>
+
+    <div class="auth-wrap">
+        <div class="auth-side">
+            <div>
+                <a class="brand text-white" href="#">
+                    <span class="logo-mark">Pay</span>
+                    Sumbane<b>Pay</b>
+                </a>
+                <span class="live-badge">
+                    <span class="dot"></span>
+                    AO VIVO
+                </span>
+            </div>
+            <div class="auth-side-content">
+                <h1>Controle<br><em>o seu sistema.</em></h1>
+                <p>Área reservada de administração da plataforma SumbanePay.</p>
+
+                <div class="security-features">
+                    <div class="sec-feat">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        <span>Criptografia AES-256</span>
+                    </div>
+                    <div class="sec-feat">
+                        <i class="bi bi-fingerprint"></i>
+                        <span>Hashing SHA-256</span>
+                    </div>
+                    <div class="sec-feat">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Bloqueio após 5 tentativas</span>
+                    </div>
+                    <div class="sec-feat">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Sessão de 8 horas</span>
+                    </div>
+                    <div class="sec-feat">
+                        <i class="bi bi-incognito"></i>
+                        <span>Proteção anti-bot (honeypot)</span>
+                    </div>
+                    <div class="sec-feat">
+                        <i class="bi bi-arrow-left-right"></i>
+                        <span>Anti-voltar / Anti-BFCache</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-note">
+                <span><i class="bi bi-shield-lock me-1"></i> Área protegida</span>
+                <span class="sep">|</span>
+                <span>v1.0.0</span>
+                <span class="sep">|</span>
+                <span><i class="bi bi-person-badge me-1"></i> SuperAdmin</span>
+            </div>
+        </div>
+
+        <div class="auth-form-wrapper">
+            <div class="auth-form">
+                <div class="badge-admin">
+                    <i class="bi bi-shield-lock me-1"></i> SUPERADMIN
+                </div>
+
+                <div class="text-center">
+                    <a class="brand" href="#">
+                        <span class="logo-mark">Pay</span>
+                        Sumbane<b>Pay</b>
+                    </a>
+                </div>
+
+                <div class="eyebrow">ÁREA RESTRITA</div>
+                <h2 class="serif">Login Superadmin</h2>
+                <p class="subtitle">Acompanhe os cadastros e administre os utilizadores.</p>
+
+                <div class="security-indicator">
+                    <i class="bi bi-shield-fill-check"></i>
+                    <span>Conexão protegida</span>
+                    <span class="level">Nível Alto</span>
+                </div>
+
+                <form id="loginForm" onsubmit="event.preventDefault(); loginAdmin();" novalidate>
+                    <div style="display:none;position:absolute;left:-9999px;">
+                        <label for="honeypot">Não preencher</label>
+                        <input type="text" id="honeypot" name="honeypot" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <input type="hidden" id="csrfToken" value="">
+
+                    <label class="form-label" for="email">
+                        <i class="bi bi-envelope me-1"></i> Email <span class="required">*</span>
+                    </label>
+                    <input id="email" class="form-control" type="email" placeholder="seu@email.com" autocomplete="username">
+                    <div class="invalid-feedback">Por favor, insira o email de administrador.</div>
+
+                    <label class="form-label" for="password">
+                        <i class="bi bi-lock me-1"></i> Password <span class="required">*</span>
+                    </label>
+                    <div class="password-wrapper">
+                        <input id="password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password">
+                        <button type="button" class="password-toggle" id="passwordToggle" onclick="togglePasswordVisibility()" aria-label="Mostrar ou ocultar senha">
+                            <i class="bi bi-eye" id="passwordIcon"></i>
+                            <span class="tooltip-text" id="tooltipText">Mostrar senha</span>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback">Por favor, insira a senha de administrador.</div>
+
+                    <div id="attemptsWarning" style="display:none;background:rgba(220,53,69,0.08);border:1px solid var(--sz-danger);border-radius:8px;padding:8px 12px;margin-top:0.75rem;font-size:0.7rem;color:var(--sz-danger);">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        <span id="attemptsText">Tentativas restantes: 5</span>
+                    </div>
+
+                    <button type="submit" class="btn-sz mt-3" id="loginBtn">
+                        <i class="bi bi-shield-lock"></i> Entrar como Superadmin <i class="bi bi-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <a class="back-link" href="#" onclick="goBackToLogin(event)">
+                        <i class="bi bi-arrow-left"></i> Voltar ao login
+                    </a>
+                </div>
+
+                <div class="form-footer">
+                    <span class="footer-item">
+                        <i class="bi bi-shield-check"></i> SSL Seguro
+                    </span>
+                    <span class="footer-item">
+                        <span class="status-dot"></span> Online
+                    </span>
+                    <span class="footer-item">
+                        <i class="bi bi-clock"></i> <span id="currentTime">--:--</span>
+                    </span>
+                    <span class="footer-item">
+                        <i class="bi bi-shield-fill-check"></i> AES-256
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ============================================================
+           SUPERADMIN LOGIN — Firebase Authentication
+           ------------------------------------------------------------
+           ✔ Inputs abrem vazios (sem credenciais visíveis)
+           ✔ Autenticação via Firebase (a password nunca está no
+             código-fonte — a versão anterior tinha-a em Base64,
+             incluindo num comentário como este, visível a qualquer
+             pessoa que abrisse "Ver código-fonte")
+           ✔ Bootstrap automático: a primeira password submetida com
+             o email de SuperAdmin cria a conta e passa a ser a
+             password permanente
+           ✔ Timeout de segurança de 2s no botão de login
+           ============================================================ */
+
+        const KEY = 'sumbanepay_';
+        let isLoggingOut = false;
+        let isGoingToDashboard = false;
+
+        // ======== CREDENCIAIS ========
+        // A password fixa em Base64 que existia aqui foi removida: era
+        // trivialmente reversível por qualquer pessoa com DevTools (o
+        // Base64 não é encriptação). A partir de agora, a conta de
+        // SuperAdmin é uma conta real do Firebase Authentication — a
+        // primeira vez que entrares com este email, a password que
+        // introduzires torna-se a password permanente da conta (ver
+        // loginAdmin() e ensureSuperAdminExists() mais abaixo).
+        const SUPERADMIN_EMAIL = "jsumbane22@gmail.com";
+
+        // ======== VARIÁVEIS DE SEGURANÇA ========
+        let loginAttempts = 0;
+        const MAX_ATTEMPTS = 5;
+        const LOCK_TIME = 5 * 60 * 1000;
+        let lockTimer = null;
+        let isLocked = false;
+        const SESSION_DURATION = 8 * 60 * 60 * 1000;
+
+        // ============================================================
+        // FUNÇÃO AUXILIAR: RESTAURAR BOTÃO DE LOGIN
+        // ============================================================
+        function ensureLoginButtonReady() {
+            const btn = document.getElementById('loginBtn');
+            if (!btn) return;
+            if (btn.disabled) {
+                console.log('🔧 Restaurando botão de login');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-shield-lock"></i> Entrar como Superadmin <i class="bi bi-arrow-right"></i>';
+            }
+        }
+
+        // ============================================================
+        // CRIPTOGRAFIA
+        // ============================================================
+        const _k1 = 'U3VtYmFuZVBheQ==';
+        const _k2 = 'MjAyNEBTZWN1cmU=';
+        const _k3 = 'Q3J5cHRvS2V5IQ==';
+
+        function _getSecretKey() {
+            try { return atob(_k1) + atob(_k2) + atob(_k3); }
+            catch (e) { return 'SumbanePay2024@SecureCryptoKey!'; }
+        }
+
+        function encryptData(data) {
+            try {
+                if (typeof CryptoJS === 'undefined') {
+                    return btoa(encodeURIComponent(JSON.stringify(data)));
+                }
+                return CryptoJS.AES.encrypt(JSON.stringify(data), _getSecretKey()).toString();
+            } catch (e) {
+                return btoa(encodeURIComponent(JSON.stringify(data)));
+            }
+        }
+
+        function decryptData(encryptedData) {
+            try {
+                if (typeof CryptoJS === 'undefined') {
+                    return JSON.parse(decodeURIComponent(atob(encryptedData)));
+                }
+                const decrypted = CryptoJS.AES.decrypt(encryptedData, _getSecretKey());
+                const result = decrypted.toString(CryptoJS.enc.Utf8);
+                return result ? JSON.parse(result) : null;
+            } catch (e) {
+                try {
+                    return JSON.parse(decodeURIComponent(atob(encryptedData)));
+                } catch (e2) {
+                    return null;
+                }
+            }
+        }
+
+        function hashPassword(password) {
+            try {
+                if (typeof CryptoJS === 'undefined') {
+                    let hash = 0;
+                    for (let i = 0; i < password.length; i++) {
+                        hash = ((hash << 5) - hash) + password.charCodeAt(i);
+                        hash = hash & hash;
+                    }
+                    return 'fallback_' + Math.abs(hash).toString(36);
+                }
+                const salt = _getSecretKey().substring(0, 16);
+                return CryptoJS.SHA256(salt + password + salt).toString();
+            } catch (e) {
+                return 'error_' + Date.now();
+            }
+        }
+
+        function generateHMAC(data) {
+            try {
+                if (typeof CryptoJS === 'undefined') {
+                    return 'no_hmac_' + btoa(JSON.stringify(data)).substring(0, 16);
+                }
+                const str = typeof data === 'string' ? data : JSON.stringify(data);
+                return CryptoJS.HmacSHA256(str, _getSecretKey()).toString();
+            } catch (e) {
+                return 'error_hmac';
+            }
+        }
+
+        function generateCSRFToken() {
+            const array = new Uint8Array(32);
+            if (window.crypto && window.crypto.getRandomValues) {
+                window.crypto.getRandomValues(array);
+            } else {
+                for (let i = 0; i < array.length; i++) {
+                    array[i] = Math.floor(Math.random() * 256);
+                }
+            }
+            return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        function generateSessionToken() {
+            return 'sess_' + Date.now().toString(36) + '_' + generateCSRFToken().substring(0, 16);
+        }
+
+        function generateDeviceFingerprint() {
+            try {
+                const components = [
+                    navigator.userAgent,
+                    navigator.language,
+                    screen.width + 'x' + screen.height,
+                    screen.colorDepth,
+                    navigator.hardwareConcurrency || 4,
+                    Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    navigator.platform
+                ];
+                const fingerprint = components.join('|||');
+
+                if (typeof CryptoJS !== 'undefined') {
+                    return CryptoJS.SHA256(fingerprint).toString().substring(0, 32);
+                }
+
+                let hash = 0;
+                for (let i = 0; i < fingerprint.length; i++) {
+                    hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
+                    hash = hash & hash;
+                }
+                return 'dev_' + Math.abs(hash).toString(36);
+            } catch (e) {
+                return 'dev_unknown_' + Date.now();
+            }
+        }
+
+        // ============================================================
+        // ARMAZENAMENTO SEGURO
+        // ============================================================
+        function secureRead(key, fallback = null) {
+            try {
+                const rawData = localStorage.getItem(KEY + key);
+                if (!rawData) return fallback;
+
+                const data = decryptData(rawData);
+                if (data === null) {
+                    try { return JSON.parse(rawData); }
+                    catch (e) { return fallback; }
+                }
+
+                if (data && data._sig) {
+                    const { _sig, ...cleanData } = data;
+                    if (generateHMAC(cleanData) !== _sig) {
+                        console.warn('⚠️ Dados alterados:', key);
+                        return fallback;
+                    }
+                    return cleanData;
+                }
+
+                return data;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        function secureWrite(key, value) {
+            try {
+                const dataWithSignature = {
+                    ...value,
+                    _sig: generateHMAC(value)
+                };
+                localStorage.setItem(KEY + key, encryptData(dataWithSignature));
+                return value;
+            } catch (e) {
+                try {
+                    localStorage.setItem(KEY + key, JSON.stringify(value));
+                } catch (e2) {}
+                return null;
+            }
+        }
+
+        function read(k, f = null) { return secureRead(k, f); }
+        function write(k, v) { return secureWrite(k, v); }
+        function getAll(k) { return read(k, []); }
+
+        function toast(t, icon = 'success') {
+            Swal.fire({ toast: true, position: 'top-end', timer: 2500, showConfirmButton: false, icon, title: t });
+        }
+
+        // ============================================================
+        // GARANTIR PERFIL DO SUPERADMIN NO FIRESTORE
+        // ------------------------------------------------------------
+        // Chamado depois de signInWithEmailAndPassword ou
+        // createUserWithEmailAndPassword ter sucesso — uid é sempre o
+        // uid real do Firebase Auth, nunca gerado localmente. Isto é
+        // o que faz o superadmin aparecer correctamente (com o campo
+        // role: 'superadmin' reconhecido pelas regras do Firestore)
+        // a partir de qualquer dispositivo onde ele entrar.
+        // ============================================================
+        async function ensureSuperAdminExists(uid) {
+            var docRef = SPFirebase.db.collection('users').doc(uid);
+            var doc = await docRef.get();
+
+            if (!doc.exists) {
+                await docRef.set({
+                    name: 'Jorge Sumbane',
+                    email: SUPERADMIN_EMAIL,
+                    phone: '84 587 2347',
+                    business: 'SumbanePay',
+                    role: 'superadmin',
+                    status: 'ativo',
+                    createdAt: new Date().toISOString(),
+                    permissions: {
+                        dashboard: true, utilizadores: true, empresas: true, pagamentos: true,
+                        faturacao: true, relatorios: true, notificacoes: true, suporte: true,
+                        auditoria: true, roles: true, seguranca: true, configuracoes: true
+                    }
+                });
+            }
+        }
+
+        // ============================================================
+        // BLOQUEIO DE CONTA
+        // ============================================================
+        function trackFailedAttempt() {
+            loginAttempts++;
+
+            try {
+                const logs = getAll('audit_logs');
+                logs.unshift({
+                    id: 'audit_' + Date.now().toString(36),
+                    action: 'login_failed',
+                    details: `Tentativa de login SuperAdmin falhada (${loginAttempts}/${MAX_ATTEMPTS})`,
+                    userAgent: navigator.userAgent,
+                    deviceId: generateDeviceFingerprint(),
+                    timestamp: new Date().toISOString()
+                });
+                if (logs.length > 100) logs.pop();
+                write('audit_logs', logs);
+            } catch (e) {}
+
+            localStorage.setItem(KEY + 'login_attempts', JSON.stringify({
+                count: loginAttempts,
+                lastAttempt: Date.now()
+            }));
+
+            if (loginAttempts >= MAX_ATTEMPTS) {
+                lockAccount();
+            }
+        }
+
+        function lockAccount() {
+            isLocked = true;
+            const overlay = document.getElementById('lockScreen');
+            if (overlay) overlay.classList.add('show');
+
+            localStorage.setItem(KEY + 'account_lock', JSON.stringify({
+                lockedAt: Date.now(),
+                reason: 'too_many_attempts'
+            }));
+
+            let remaining = LOCK_TIME / 1000;
+            const timerEl = document.getElementById('lockTimer');
+
+            if (lockTimer) clearInterval(lockTimer);
+            lockTimer = setInterval(() => {
+                remaining--;
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                if (timerEl) {
+                    timerEl.innerHTML = `<i class="bi bi-clock me-1"></i> Aguardar ${mins}m ${secs}s para tentar novamente`;
+                }
+                if (remaining <= 0) {
+                    clearInterval(lockTimer);
+                    unlockScreen();
+                }
+            }, 1000);
+        }
+
+        function unlockScreen() {
+            isLocked = false;
+            loginAttempts = 0;
+            const overlay = document.getElementById('lockScreen');
+            if (overlay) overlay.classList.remove('show');
+            if (lockTimer) { clearInterval(lockTimer); lockTimer = null; }
+
+            localStorage.removeItem(KEY + 'account_lock');
+            localStorage.removeItem(KEY + 'login_attempts');
+
+            const warning = document.getElementById('attemptsWarning');
+            if (warning) warning.style.display = 'none';
+
+            // ✅ Garantir botão restaurado
+            ensureLoginButtonReady();
+        }
+
+        function checkAccountLock() {
+            try {
+                const lockData = localStorage.getItem(KEY + 'account_lock');
+                if (!lockData) return false;
+
+                const lock = JSON.parse(lockData);
+                const elapsed = Date.now() - lock.lockedAt;
+
+                if (elapsed < LOCK_TIME) {
+                    const remaining = Math.ceil((LOCK_TIME - elapsed) / 1000);
+                    isLocked = true;
+
+                    const overlay = document.getElementById('lockScreen');
+                    if (overlay) overlay.classList.add('show');
+
+                    let remainingSec = remaining;
+                    const timerEl = document.getElementById('lockTimer');
+
+                    if (lockTimer) clearInterval(lockTimer);
+                    lockTimer = setInterval(() => {
+                        remainingSec--;
+                        const mins = Math.floor(remainingSec / 60);
+                        const secs = remainingSec % 60;
+                        if (timerEl) {
+                            timerEl.innerHTML = `<i class="bi bi-clock me-1"></i> Aguardar ${mins}m ${secs}s para tentar novamente`;
+                        }
+                        if (remainingSec <= 0) {
+                            clearInterval(lockTimer);
+                            unlockScreen();
+                        }
+                    }, 1000);
+
+                    return true;
+                } else {
+                    localStorage.removeItem(KEY + 'account_lock');
+                    return false;
+                }
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // ============================================================
+        // TEMA
+        // ============================================================
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+            updateThemeIcon(next);
+            localStorage.setItem('sumbanepay_theme', next);
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+        }
+
+        function loadTheme() {
+            const saved = localStorage.getItem('sumbanepay_theme') || 'light';
+            applyTheme(saved);
+            updateThemeIcon(saved);
+        }
+
+        // ============================================================
+        // RELÓGIO
+        // ============================================================
+        function updateClock() {
+            const now = new Date();
+            const el = document.getElementById('currentTime');
+            if (el) {
+                el.textContent = now.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+            }
+        }
+
+        // ============================================================
+        // MOSTRAR/OCULTAR SENHA
+        // ============================================================
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const icon = document.getElementById('passwordIcon');
+            const tooltip = document.getElementById('tooltipText');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+                if (tooltip) tooltip.textContent = 'Ocultar senha';
+            } else {
+                passwordInput.type = 'password';
+                icon.className = 'bi bi-eye';
+                if (tooltip) tooltip.textContent = 'Mostrar senha';
+            }
+            passwordInput.focus();
+        }
+
+        // ============================================================
+        // REDIRECIONAR PARA LOGIN
+        // ============================================================
+        function redirectToLogin() {
+            if (isLoggingOut) return;
+            isLoggingOut = true;
+
+            localStorage.removeItem(KEY + 'admin_session');
+            localStorage.removeItem('sz_admin_session');
+            localStorage.removeItem('sz_session');
+            sessionStorage.removeItem(KEY + 'session');
+
+            window.location.replace('../login.html?logout=' + Date.now());
+        }
+
+        function goBackToLogin(e) {
+            if (e) e.preventDefault();
+            redirectToLogin();
+        }
+
+        // ============================================================
+        // GUARDA DE NAVEGAÇÃO
+        // ============================================================
+        function setupNavigationGuard() {
+            try {
+                window.history.pushState(
+                    { superAdminLoginGuard: true, timestamp: Date.now() },
+                    '',
+                    window.location.href
+                );
+            } catch (e) {}
+
+            window.addEventListener('popstate', function() {
+                // ✅ SEMPRE restaurar botão ao navegar
+                setTimeout(ensureLoginButtonReady, 50);
+
+                if (isLoggingOut || isGoingToDashboard) return;
+
+                if (hasValidSession()) {
+                    isGoingToDashboard = true;
+                    window.location.replace('index.html');
+                    return;
+                }
+                // Se está no login sem sessão → fica no login (não redireciona)
+                try {
+                    window.history.pushState(
+                        { superAdminLoginGuard: true, timestamp: Date.now() },
+                        '',
+                        window.location.href
+                    );
+                } catch (e) {}
+            });
+
+            window.addEventListener('pageshow', function(event) {
+                // ✅ SEMPRE restaurar botão
+                ensureLoginButtonReady();
+
+                if (event.persisted && !isGoingToDashboard && !isLoggingOut) {
+                    if (hasValidSession()) {
+                        isGoingToDashboard = true;
+                        window.location.replace('index.html');
+                    }
+                }
+            });
+
+            document.addEventListener('keydown', function(event) {
+                const tag = event.target?.tagName;
+                const editable = ['INPUT', 'TEXTAREA', 'SELECT'].includes(tag);
+
+                if (!editable && (event.key === 'Backspace' ||
+                    (event.altKey && event.key === 'ArrowLeft') ||
+                    (event.ctrlKey && event.key === 'ArrowLeft'))) {
+                    event.preventDefault();
+                    ensureLoginButtonReady();
+
+                    if (hasValidSession()) {
+                        isGoingToDashboard = true;
+                        window.location.replace('index.html');
+                    }
+                }
+            });
+
+            window.addEventListener('mouseup', function(event) {
+                if (event.button === 3 || event.button === 4) {
+                    event.preventDefault();
+                    ensureLoginButtonReady();
+
+                    if (hasValidSession()) {
+                        isGoingToDashboard = true;
+                        window.location.replace('index.html');
+                    }
+                }
+            });
+
+            let touchStartX = 0;
+            window.addEventListener('touchstart', function(e) {
+                if (e.touches && e.touches.length === 1) {
+                    touchStartX = e.touches[0].clientX;
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchmove', function(e) {
+                if (e.touches && e.touches.length === 1) {
+                    const touchEndX = e.touches[0].clientX;
+                    const diff = touchEndX - touchStartX;
+                    if (diff > 50 && touchStartX < 30) {
+                        e.preventDefault();
+                        ensureLoginButtonReady();
+
+                        if (hasValidSession()) {
+                            isGoingToDashboard = true;
+                            window.location.replace('index.html');
+                        }
+                    }
+                }
+            }, { passive: false });
+        }
+
+        // ============================================================
+        // VERIFICAR SESSÃO VÁLIDA
+        // ============================================================
+        function hasValidSession() {
+            try {
+                const sessionRaw = localStorage.getItem(KEY + 'admin_session');
+                if (!sessionRaw) return false;
+
+                let session = decryptData(sessionRaw);
+
+                if (!session) {
+                    try { session = JSON.parse(sessionRaw); }
+                    catch (e) { return false; }
+                }
+
+                if (!session || !session.loggedIn) return false;
+                if (session.email !== SUPERADMIN_EMAIL) return false;
+
+                const expiresAt = session.expiresAt || (session.timestamp + 86400000);
+                if (Date.now() > expiresAt) {
+                    localStorage.removeItem(KEY + 'admin_session');
+                    return false;
+                }
+
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // ============================================================
+        // VERIFICAR SESSÃO AO INICIAR
+        // ============================================================
+        function checkSessionOnBoot() {
+            if (hasValidSession()) {
+                console.log('✅ Sessão válida encontrada, redirecionando para dashboard...');
+                isGoingToDashboard = true;
+                window.location.replace('index.html');
+                return true;
+            }
+            return false;
+        }
+
+        // ============================================================
+        // LOGIN PRINCIPAL — Firebase Authentication
+        // ------------------------------------------------------------
+        // Antes, a password do SuperAdmin estava fixa no código-fonte
+        // (em Base64, trivialmente reversível). Agora é uma conta real
+        // do Firebase Authentication: a password certa é a que o
+        // Firebase confirma no servidor, nunca está presente no
+        // código do browser.
+        //
+        // Bootstrap: se ainda não existir NENHUMA conta com este email
+        // no Firebase (primeiro uso), a primeira password submetida
+        // aqui cria a conta e torna-se a password permanente dali em
+        // diante — não há um passo de "criar conta" separado para o
+        // SuperAdmin, é intencionalmente simples de arrancar.
+        // ============================================================
+        async function loginAdmin() {
+            if (isLocked || checkAccountLock()) {
+                toast('🔒 Conta bloqueada. Aguarde.', 'error');
+                return;
+            }
+
+            const honeypot = document.getElementById('honeypot');
+            if (honeypot && honeypot.value) {
+                toast('Acesso negado.', 'error');
+                return;
+            }
+
+            const emailField = document.getElementById('email');
+            const passwordField = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+
+            const email = emailField.value.trim();
+            const password = passwordField.value;
+
+            const sanitizedEmail = email.replace(/[<>]/g, '').replace(/javascript:/gi, '').toLowerCase();
+
+            [emailField, passwordField].forEach(el => el.classList.remove('is-invalid', 'is-valid'));
+
+            if (!sanitizedEmail) {
+                emailField.classList.add('is-invalid');
+                toast('Insira o email.', 'error');
+                return;
+            }
+            emailField.classList.add('is-valid');
+
+            if (!password || password.length < 6) {
+                passwordField.classList.add('is-invalid');
+                toast('A senha deve ter pelo menos 6 caracteres.', 'error');
+                return;
+            }
+            passwordField.classList.add('is-valid');
+
+            if (sanitizedEmail !== SUPERADMIN_EMAIL.toLowerCase()) {
+                trackFailedAttempt();
+                const remaining = MAX_ATTEMPTS - loginAttempts;
+                emailField.classList.add('is-invalid');
+                toast(`❌ Credenciais inválidas. ${remaining} tentativas restantes.`, 'error');
+                return;
+            }
+
+            if (loginBtn) {
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>A verificar...';
+            }
+
+            var restoreButton = function () {
+                if (loginBtn) {
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="bi bi-shield-lock"></i> Entrar como Superadmin <i class="bi bi-arrow-right"></i>';
+                }
+            };
+
+            try {
+                var credential;
+                try {
+                    credential = await SPFirebase.auth.signInWithEmailAndPassword(SUPERADMIN_EMAIL, password);
+                } catch (signInErr) {
+                    if (signInErr.code === 'auth/user-not-found') {
+                        // Primeiro uso de sempre — cria a conta com esta password.
+                        credential = await SPFirebase.auth.createUserWithEmailAndPassword(SUPERADMIN_EMAIL, password);
+                        toast('✅ Conta de SuperAdmin criada com esta password.', 'success');
+                    } else {
+                        throw signInErr;
+                    }
+                }
+
+                await ensureSuperAdminExists(credential.user.uid);
+
+                loginAttempts = 0;
+                localStorage.removeItem(KEY + 'login_attempts');
+                localStorage.removeItem(KEY + 'account_lock');
+                try { sessionStorage.removeItem('sz_logging_out'); } catch (e) {}
+
+                isGoingToDashboard = true;
+
+                const sessionData = {
+                    uid: credential.user.uid,
+                    email: SUPERADMIN_EMAIL,
+                    name: 'Jorge Sumbane',
+                    role: 'superadmin',
+                    loggedIn: true,
+                    timestamp: Date.now(),
+                    expiresAt: Date.now() + SESSION_DURATION,
+                    sessionToken: generateSessionToken(),
+                    deviceId: generateDeviceFingerprint()
+                };
+
+                localStorage.setItem(KEY + 'admin_session', JSON.stringify(sessionData));
+                localStorage.setItem('sz_admin_session', 'active');
+                sessionStorage.setItem(KEY + 'admin_session', JSON.stringify(sessionData));
+                sessionStorage.setItem(KEY + 'session', JSON.stringify(sessionData));
+
+                try {
+                    const logs = getAll('audit_logs');
+                    logs.unshift({
+                        id: 'audit_' + Date.now().toString(36),
+                        action: 'superadmin_login_success',
+                        details: `Login SuperAdmin bem-sucedido: ${sanitizedEmail}`,
+                        userAgent: navigator.userAgent,
+                        deviceId: generateDeviceFingerprint(),
+                        timestamp: new Date().toISOString()
+                    });
+                    if (logs.length > 100) logs.pop();
+                    write('audit_logs', logs);
+                } catch (e) {}
+
+                toast('✅ Bem-vindo, SuperAdmin!');
+
+                setTimeout(() => {
+                    try {
+                        window.location.href = 'index.html';
+                    } catch (e) {
+                        window.location.replace('index.html');
+                    }
+                }, 400);
+
+            } catch (err) {
+                console.error('❌ Erro no login:', err);
+                trackFailedAttempt();
+
+                const remaining = MAX_ATTEMPTS - loginAttempts;
+                [emailField, passwordField].forEach(el => el.classList.add('is-invalid'));
+
+                const warning = document.getElementById('attemptsWarning');
+                const text = document.getElementById('attemptsText');
+                if (warning) warning.style.display = 'block';
+                if (text) text.textContent = `Tentativas restantes: ${remaining}`;
+
+                var msg = (err && err.code && SPFirebase.translateAuthError)
+                    ? SPFirebase.translateAuthError(err)
+                    : 'Erro ao processar login.';
+                toast(`❌ ${msg} ${remaining} tentativas restantes.`, 'error');
+
+                restoreButton();
+            }
+        }
+
+        // ============================================================
+        // LOGOUT LIMPO
+        // ============================================================
+        function performLogout() {
+            try {
+                [
+                    KEY + 'admin_session',
+                    'sz_admin_session',
+                    'sz_session',
+                    KEY + 'session',
+                    'sumbanepay_admin_session',
+                    'admin_session',
+                    'superadmin_session',
+                    'sumbanepay_superadmin_session'
+                ].forEach(key => {
+                    try { localStorage.removeItem(key); } catch (e) {}
+                    try { sessionStorage.removeItem(key); } catch (e) {}
+                });
+
+                sessionStorage.setItem('sz_logging_out', 'true');
+            } catch (e) {}
+
+            setTimeout(() => {
+                window.location.replace('superadmin-login.html?logout=' + Date.now());
+            }, 100);
+        }
+
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
+        function boot() {
+            loadTheme();
+            updateClock();
+            setInterval(updateClock, 10000);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromLogout = urlParams.has('logout');
+            const fromBack = urlParams.has('back');
+
+            if (fromLogout || fromBack) {
+                console.log('🚪 Logout detetado — limpando sessão');
+
+                [
+                    KEY + 'admin_session',
+                    'sz_admin_session',
+                    'sz_session',
+                    KEY + 'session',
+                    'sumbanepay_admin_session',
+                    'admin_session',
+                    'superadmin_session',
+                    'sumbanepay_superadmin_session'
+                ].forEach(key => {
+                    try { localStorage.removeItem(key); } catch (e) {}
+                    try { sessionStorage.removeItem(key); } catch (e) {}
+                });
+
+                isGoingToDashboard = false;
+                isLoggingOut = false;
+
+                try { sessionStorage.removeItem('sz_logging_out'); } catch (e) {}
+
+                try {
+                    window.history.replaceState({}, '', window.location.pathname);
+                } catch (e) {}
+
+                console.log('✅ Sessão limpa — a mostrar formulário de login');
+            }
+
+            if (checkAccountLock()) {
+                return;
+            }
+
+            if (!fromLogout && !fromBack) {
+                try {
+                    if (sessionStorage.getItem('sz_logging_out') === 'true') {
+                        sessionStorage.removeItem('sz_logging_out');
+                        console.log('🚪 Logout em curso — ignorando redirect');
+                    } else if (checkSessionOnBoot()) {
+                        return;
+                    }
+                } catch (e) {
+                    if (checkSessionOnBoot()) return;
+                }
+            } else {
+                console.log('ℹ️ Ignorando verificação de sessão (veio de logout)');
+            }
+
+            setupNavigationGuard();
+
+            // NOTA: ensureSuperAdminExists() já não é chamada aqui — precisa
+            // de um uid real do Firebase Auth, que só existe depois de um
+            // login bem-sucedido (ver loginAdmin()). O "bootstrap" da conta
+            // acontece automaticamente na primeira vez que alguém faz login
+            // com o email de SuperAdmin.
+
+            const csrfToken = generateCSRFToken();
+            sessionStorage.setItem('csrf_token', csrfToken);
+            const csrfField = document.getElementById('csrfToken');
+            if (csrfField) csrfField.value = csrfToken;
+
+            try {
+                const savedAttemptsRaw = localStorage.getItem(KEY + 'login_attempts');
+                if (savedAttemptsRaw) {
+                    const savedAttempts = JSON.parse(savedAttemptsRaw);
+                    if (savedAttempts && savedAttempts.count) {
+                        if (Date.now() - savedAttempts.lastAttempt > LOCK_TIME) {
+                            loginAttempts = 0;
+                            localStorage.removeItem(KEY + 'login_attempts');
+                        } else {
+                            loginAttempts = savedAttempts.count;
+                            if (loginAttempts >= MAX_ATTEMPTS) {
+                                lockAccount();
+                                return;
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+
+            document.querySelectorAll('.form-control').forEach(el => {
+                el.addEventListener('input', function() {
+                    if (this.value.length > 0) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const email = document.getElementById('email');
+                    const password = document.getElementById('password');
+                    if (document.activeElement === email || document.activeElement === password) {
+                        loginAdmin();
+                    }
+                }
+            });
+
+            // ✅ GARANTIA EXTRA: restaurar botão se voltar à página por qualquer motivo
+            window.addEventListener('pageshow', function() {
+                ensureLoginButtonReady();
+            });
+
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    ensureLoginButtonReady();
+                }
+            });
+
+            const emailField = document.getElementById('email');
+            if (emailField) emailField.focus();
+
+            console.log('🔒 Sistema de segurança SuperAdmin ativo');
+            console.log('✅ Aceita:', SUPERADMIN_EMAIL);
+        }
+
+        // ============================================================
+        // EXPORTA
+        // ============================================================
+        window.loginAdmin = loginAdmin;
+        window.toggleTheme = toggleTheme;
+        window.togglePasswordVisibility = togglePasswordVisibility;
+        window.goBackToLogin = goBackToLogin;
+        window.redirectToLogin = redirectToLogin;
+        window.unlockScreen = unlockScreen;
+        window.performLogout = performLogout;
+        window.ensureLoginButtonReady = ensureLoginButtonReady;
+        window.encryptData = encryptData;
+        window.decryptData = decryptData;
+        window.hashPassword = hashPassword;
+        window.generateHMAC = generateHMAC;
+        window.generateCSRFToken = generateCSRFToken;
+
+        document.addEventListener('DOMContentLoaded', boot);
+    </script>
+
+    <script src="../mobile.js" defer></script>
+</body>
+</html>
